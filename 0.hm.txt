@@ -1,0 +1,18 @@
+[
+{"maze" : [
+	"RyGrBgY",
+	"gbygybb",
+	"YgBgRyY"],
+"start" : "0,0",
+"end" : "3,0",
+"startColour" : "w"
+},
+{"maze" : [
+	"RyGrBgY",
+	"gbygybb",	
+	"YgBgRyY"],
+"start" : "3,0",
+"end" : "0,0",
+"startColour" : "w"
+}
+]
