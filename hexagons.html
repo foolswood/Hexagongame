@@ -211,6 +211,9 @@ function loadMaze(maze) {
 	clearChildren("hexes");
 	clearChildren("joins");
 	clearChildren("route");
+	if (maze.startColour == undefined) { //Default startColour to white
+		maze.startColour = "w";
+	}
 	startColour = "url(#"+maze.startColour+")";
 	//Setup
 	gridSize(Math.ceil(m[0].length/2), Math.ceil(m.length/2));
