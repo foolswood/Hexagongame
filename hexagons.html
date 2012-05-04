@@ -289,8 +289,8 @@ var mf_no = 0;
 var mazes = [];
 var m_no = 1;
 function loadNextMaze() {
-	if (m_no > mazes.length) {
-		if (mf_no > mazeFiles.length) {
+	if (m_no >= mazes.length) {
+		if (mf_no >= mazeFiles.length) {
 			mf_no = 0;
 		}
 		var mapFile = new XMLHttpRequest();
