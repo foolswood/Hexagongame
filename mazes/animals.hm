@@ -1,0 +1,12 @@
+[
+{"maze" : [
+	"RrGrGrGrRrG",
+	"bbbbbbbbbbb",
+	"GrGrRrGrGrG",
+	"bbbbbbbbbbb",
+	"RrRrGrRrRrR"],
+"start" : "0,1",
+"end" : "0,1",
+"startColour" : "w"
+}
+]
