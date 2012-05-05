@@ -9,6 +9,7 @@ lowcolours=["r","g","y","b"]
 maplist=[]
 directions=[[1,0],[1,1],[0,1],[-1,1],[-1,0],[0,-1]]
 begin=[5,6]
+iterations=3
 
 def col(x,y):
     row=maplist[y]
@@ -30,6 +31,25 @@ def adjasenttest(x0,y0,co):
             adjasentlist.append(coordinates)
         n=n+1
     return adjasentlist
+
+def spread(oldpoints):
+    nmax=len(oldpoints)-1
+    n=0
+    newpoints=[]
+
+    while n<nmax:
+        coordinates=oldpoints[n]
+        c1=str.lower(coordinates[2])
+        newcoordinates=adjasenttest(coordinates[0], coordinates[1],c1)
+        
+        a=0
+        while a<len(newcoordinates)-1:
+            count=oldpoints.count(newcoordinates[a])+newpoints.count(newcoordinates[a])
+            if count==0:
+                newpoints.append(newcoordinates[a])
+            a=a+1
+        n=n+1
+    return newpoints
 
 
 while n<length:
@@ -62,29 +82,18 @@ closepoints=[]
 i=0
 while i<4:
     colour=lowcolours[i]
-    print colour
-    print adjasenttest(begin[0],begin[1],colour)
+    #print colour
+    #print adjasenttest(begin[0],begin[1],colour)
     closepoints=closepoints+adjasenttest(begin[0],begin[1],colour)
     i=i+1
 
-print closepoints
-
-
-iterations=4
-it=0
-
-while it<iterations:
-    nmax=len(closepoints)-1
-    n=0
-    while n<nmax:
-        coordinates=closepoints[n]
-        c1=str.lower(coordinates[2])
-        newcoordinates=adjasenttest(coordinates[0], coordinates[1],c1)
-        closepoints=closepoints+newcoordinates
-        n=n+1
-    it=it+1
 
 print closepoints
 
-
-
+i=0
+while i<iterations:
+    newpoints=spread(closepoints)
+    print newpoints
+    closepoints=newpoints
+    i=i+1
+    
