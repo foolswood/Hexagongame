@@ -1,9 +1,9 @@
 [
 {"maze" : [
-	"RbGbBgYrKrG",
-	"rkygkbybrgk",
+	"RbGbBgYgKrG",
+	"rkygkbybygk",
 	"BgGyRkYgKyG",
-	"bgrybkrbybk",
+	"ygrybkrbybk",
 	"RgKyGkBrYgR"],
 "start" : "0,1",
 "end" : "0,1",
