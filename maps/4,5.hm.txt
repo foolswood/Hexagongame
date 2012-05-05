@@ -1,5 +1,20 @@
 [
 {"maze" : [
+	"GyGrYgRyYrB",
+	"gyrgyggrrbg",
+	"ByGyYbYgGgR",
+	"ybrrbgryyry",
+	"YgRyYbGgBgB",
+	"brgrbyrybrb",
+	"GyBrGgYgYbR",
+	"bgrgbbrrrgr",
+	"BgYbRyByGyR",
+	"ryyygrggbby"],
+"start" : "1,1",
+"end" : "4,4",
+"startColour" : "w"
+}
+{"maze" : [
 	"BrBbGrBbGbR",
 	"ygrgrbgbrrg",
 	"GyBgByRbBbG",

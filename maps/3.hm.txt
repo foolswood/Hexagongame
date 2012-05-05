@@ -11,4 +11,16 @@
 "end" : "4,3",
 "startColour" : "w"
 }
+{"maze" : [
+	"GyBrY",
+	"brybr",
+	"YbGbRbRrY",
+	"gbygbryr",
+	"RgBrGgB",
+	"yrbyrbyr",
+	"GrYbBrGbY"],
+"start" : "4,3",
+"end" : "1,0",
+"startColour" : "w"
+}
 ]
