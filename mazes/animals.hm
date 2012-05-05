@@ -1,10 +1,10 @@
 [
 {"maze" : [
-	"RrGrGrGrRrG",
-	"bbbbbbbbbbb",
-	"GrGrRrGrGrG",
-	"bbbbbbbbbbb",
-	"RrRrGrRrRrR"],
+	"RrGbBgYrKrG",
+	"rkbbbbbbbgk",
+	"BgGrRrYgKyG",
+	"bgbybkbbbbb",
+	"RrKrGrBrYrR"],
 "start" : "0,1",
 "end" : "0,1",
 "startColour" : "w"
