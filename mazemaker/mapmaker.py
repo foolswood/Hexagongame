@@ -8,7 +8,7 @@ lowcolours=["r","g","y","b"]
 maplist=[]
 ldirections=[[1,0],[1,1],[0,1],[-1,1],[-1,0],[0,-1]]
 hdirections=[[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[0,1]]
-begin=[5,6]
+begin=[5,6,"w"]
 
 
 def col(x,y):
@@ -42,7 +42,7 @@ def adjasenttest(x0,y0,co):
     return adjasentlist
 
 def spread(oldpoints,allpoints):
-    nmax=len(oldpoints)-1
+    nmax=len(oldpoints)
     n=0
     newpoints=[]
 
@@ -90,19 +90,21 @@ def mapmaking(width, length):
     return maplist
 
 def possibilitytest(maplist,begin):
-    allpoints=[]
     closepoints=[]
-    i=0
-    while i<4:
-        colour=lowcolours[i]
-        #print colour
-        #print adjasenttest(begin[0],begin[1],colour)
-        closepoints=closepoints+adjasenttest(begin[0],begin[1],colour)
-        i=i+1
 
-    allpoints=allpoints+closepoints
-    print closepoints
-    moves=1
+    if begin[2]=="w":
+        begin.pop()
+        closepoints=[[begin[i] for i in range(2)] for i in range(4)]
+        n=0
+        while n<4:
+            closepoints[n].append(capcolours[n])
+            n=n+1
+    else:
+        closepoints=[begin]
+
+    allpoints=closepoints
+
+    moves=0
     i=0
     while i<1:
         newpoints=spread(closepoints,allpoints)
