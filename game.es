@@ -1,14 +1,3 @@
-var colourMap = { //Colours for dividing lines
-	"w": "white",
-	"k": "black",
-	"r": "red",
-	"g": "forestgreen",
-	"b": "blue",
-	"y": "yellow"
-}
-</script>
-
-<script type="text/ecmascript">
 var xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
 
 var hexWidth = 1000;
