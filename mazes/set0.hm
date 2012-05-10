@@ -12,6 +12,24 @@
 "startColour" : "w"
 },
 {"maze" : [
+	"GbKyBrYrB",
+	"kbbgkrgby",
+	"BgGyRkRbG",
+	"gbkgggyry",
+	"RgBrKrGrG",
+	"bkgbkbkby",
+	"YkRbYkBgR",
+	"byryrygry",
+	"RyGkKbKbY",
+	"grrybgyyb",
+	"GgYkRkRkY",
+	"ybgbkgkyg",
+	"KyBrKgGrB"],
+"start" : "2,1",
+"end" : "2,6",
+"startColour" : "w"
+},
+{"maze" : [
 	"YbYrBgBrY",
 	"gyyrbbybb",
 	"YyBbGbYbR",
