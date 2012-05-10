@@ -15,7 +15,7 @@ function getRowColumn(hexagon) {
 	var x = hexagon.getAttribute("x");
 	var y = hexagon.getAttribute("y");
 	var r = Math.floor((y-(hexHeight/2))/hexHeight);
-	var c = Math.floor(((x/hexWidth)-0.5)*1.5);
+	var c = Math.round(((x/hexWidth)-0.5)*1.333);
 	return [c,r];
 }
 
@@ -198,6 +198,9 @@ function loadMaze(maze) {
 		} else { //Divider Line
 			for (j=0; j<l.length; j++) {
 				c = l[j];
+				if (c == " ") {
+					continue;
+				}
 				if ((j+1)%2) {
 					genDivider([j/2, (i-1)/2], [j/2, (i+1)/2], c);
 				} else {
