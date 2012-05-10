@@ -56,9 +56,19 @@ var colourMap = { //Colours for dividing lines
 }
 </script>
 
-<script src="mazeList.es" type="text/ecmascript"></script>
+<textArea id="pastedMaze" rows="20" cols="100">
+</textArea>
+<button id="mazeLoadButton">Load</button>
 
-<script src="mazeGet.es" type="text/ecmascript"></script>
+<script type="text/ecmascript">
+function loadNextMaze() {
+}
+
+function buttonPressed(evt) {
+	loadMaze(JSON.parse(document.getElementById("pastedMaze").value));
+}
+document.getElementById("mazeLoadButton").onclick = buttonPressed;
+</script>
 
 <script src="game.es" type="text/ecmascript"></script>
 
