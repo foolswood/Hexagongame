@@ -1,0 +1,15 @@
+[
+{ "maze" : [
+	"RgGgBbYyR",
+	"gbrbgybrr",
+	"RrGyBbYyR",
+	"gbbyrrggy",
+	"RbGyWbYyR",
+	"grggrrbyy",
+	"RrGgBbYrR",
+	"gbgbgybyr",
+	"RrGrByYgR"],
+"start" : "0,0",
+"end" : "4,4"
+}
+]
