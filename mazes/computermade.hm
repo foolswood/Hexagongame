@@ -1,33 +1,19 @@
 [
 {"maze" : [
-
 	"RgBrYbYbBgY",
-
 	"ygbyyrybbygy",
-
 	"RgGgBrYgRgBbB",
-
 	"yrrbbbybygyyy",
-
 	"BbGbYbGgRbGgR",
-
 	"bggybbrgyyrby",
-
 	"  GgRgBrYbGbY",
-
 	"   bybyygbyyg",
-
 	"    YrRgGrGbY"],
-
-"start" : "2,3"
-,
+"start" : "2,3",
 "end" : "4,2",
-
 "startColour" : "w"
-
 },
 {"maze" : [
-
 	"YgByYyGbByRgY",
 	"gyyrrbbrggrbb",
 	"GgGrBrRgGrRbB",
@@ -45,11 +31,8 @@
 	"RgRbRrYgBgRbR",
 	"yygrybbbbygbg",
 	"RyGrGbGbBbYbB"],
-"start" : "2,3"
-,
+"start" : "2,3",
 "end" : "2,8",
-
 "startColour" : "w"
-
 }
 ]
