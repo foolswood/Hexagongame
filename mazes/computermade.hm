@@ -14,25 +14,38 @@
 "startColour" : "w"
 },
 {"maze" : [
-	"YgByYyGbByRgY",
-	"gyyrrbbrggrbb",
-	"GgGrBrRgGrRbB",
-	"bryyyybgygyrg",
-	"YgYrRyBrByYbY",
-	"rgbbbygrgbygr",
-	"YbRrYyYyGrGgG",
-	"gryrybgyrrgrg",
-	"GrGyRyBgBrYrY",
-	"bygrrbryyrgbg",
-	"YrRyGrGgYbRbB",
-	"ygygrygbgrybr",
-	"ByBrGbBgGgRgG",
-	"gbygrrgyyybgr",
-	"RgRbRrYgBgRbR",
-	"yygrybbbbygbg",
-	"RyGrGbGbBbYbB"],
-"start" : "2,3",
-"end" : "2,8",
+
+	"  YrRyBrBbY",
+
+	" gbbbygrgb",
+
+	"YbRrYyYyG",
+
+	"gryrybgyrr",
+
+	"GrGyRyBgBkY",
+
+	"  grrbryyrg",
+
+	"  RyGrGgYbK",
+
+	" gygrygbgrg",
+
+	"ByBrGbBgGrR",
+
+	"kgygrrgyykb",
+
+	"RgRbRrYrKgR",
+
+	"bygrykbbby",
+
+	"KrGrGbGbB"],
+
+"start" : "2,1",
+
+"end" : "2,6",
+
 "startColour" : "w"
+
 }
 ]
