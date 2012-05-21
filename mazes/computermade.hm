@@ -47,5 +47,108 @@
 
 "startColour" : "w"
 
+},
+{"maze" : [
+
+	"  R               ",
+
+	" gy               ",
+
+	"ByR   R       GgB ",
+
+	"  rb rrb     rb   ",
+
+	"  YrRyByBrYbYrR   ",
+
+	"   brgrgggrbgyb   ",
+
+	"    RbBbBbRgYyR   ",
+
+	"    rgbrybgbggy   ",
+
+	"    YrRrYyYrBrB   ",
+
+	"    gybygbr       ",
+
+	"RrYrGrRgYyG       ",
+
+	"grgygbryygb       ",
+
+	"GyGbBrGyRrY       ",
+
+	"ybbggyy           ",
+
+	"GbYbRrB           ",
+
+	"bryrbgy           ",
+
+	"RyRgYrR           ",
+
+	"grbgrrgy          ",
+
+	"YbBrRyGbG         ",
+
+	"                  ",
+
+	"                  "],
+
+"start" : "3,3",
+
+"end" : "7,2",
+
+"startColour" : "w"
+
 }
+,
+{"maze" : [
+
+	"      GyGgRgG     ",
+
+	"     rgygyyyy     ",
+	"    YyRyBrYbR     ",
+
+	"    grgrgrbry     ",
+
+	" rRbYbBgGgRgR     ",
+
+	" gryggryybgyg     ",
+
+	" bGyGbGbRbRyRrB   ",
+
+	" ggggyb   rrbgr   ",
+
+	" yBgGyY   GbYrR   ",
+
+	" yyygbgy gbrrgby  ",
+
+	" gYbGbByYgBgYgGbG ",
+
+	" grbbrgrrygryybrb ",
+
+	" rYbGrGbBgGgRyRrR ",
+
+	"  rgbgbbrbbbybg   ",
+
+	"  GrByBgYgRyYbG   ",
+
+	" rgryygygryygrr   ",
+	" gRbYrBbRbRyGrR   ",
+
+	" yrgbybbbbbrbyy   ",
+
+	" rRyGrGyGyRbGbB   ",
+
+	"      bryrbgbr    ",
+
+	"      RgGrByB     "],
+
+"start" : "2,3",
+
+"end" : "4,10",
+
+"startColour" : "w"
+
+}
+
 ]
+
