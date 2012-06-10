@@ -1,8 +1,5 @@
 var xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
 
-var hexWidth = 1000;
-var hexHeight = 866;
-
 function getXY(col, row) {
 	//Returns placement position for a grid reference.
 	var x = ((0.75*col)+0.5)*hexWidth;
