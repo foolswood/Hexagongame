@@ -87,17 +87,17 @@ function linkId(a, b) {
 	//Get the identifier linking these points.
 	if (a[1] == b[1]) {
 		if (a[0] > b[0]) {
-			return (a+b).toString()
+			return a+";"+b
 		} else {
 			if (a[0] < b[0]) {
-				return (b+a).toString()
+				return b+";"+a
 			}
 		}
 	} else {
 		if (a[1] < b[1]) {
-			return (a+b).toString()
+			return a+";"+b
 		} else {
-			return (b+a).toString()
+			return b+";"+a
 		} 
 	}
 	return null
