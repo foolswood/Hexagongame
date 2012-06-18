@@ -1,0 +1,25 @@
+[
+{"maze" : [
+
+	"YbYbBgYrB",
+
+	"yrybbygyy",
+
+	"BrYgRgBbB",
+
+	"bbybbgrbb",
+
+	"YbGgRbGgR",
+
+	"bbrbbyyby",
+
+	"RyBgYgGbY"]
+,
+"start" : "0,2",
+
+"end" : "2,2",
+
+"startColour" : "w"
+
+}
+]
