@@ -4,10 +4,14 @@ function loadSet(ms, progress) {
 	if (progress == null) {
 		//Generate the progress data structure
 		function genProgress(mazes) { //This insane construction exists because you can't delete a local variable
-			var m;
+			var m, i, s;
 			progress = [];
-			for (m = 0; m < mazes.length; m++)
-				progress.push("n" * (mazes[m].nEnds + 1));
+			for (m = 0; m < mazes.length; m++) {
+				s = "";
+				for (i = 0; i <= mazes[m].nEnds; i++)
+					s += "n";
+				progress.push(s);
+			}
 			return progress;
 		}
 		progress = genProgress(ms.mazes);
