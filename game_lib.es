@@ -16,11 +16,11 @@ function getRowColumn(hexagon) {
 	return [c,r];
 }
 
-function genHexagon(col, row, colour, id) {
+function genHexagon(col, row, colour) {
 	//Create a hexagon at col,row specified colour, id is usually null.
 	var pos = getXY(col, row);
 	var newhex = document.createElementNS(svgNS, "use");
-	newhex.setAttribute("id", id);
+	newhex.setAttribute("id", "h"+col+","+row);
 	newhex.setAttribute("x", pos[0]);
 	newhex.setAttribute("y", pos[1]);
 	newhex.setAttribute("fill", "url(#"+colour+")");
@@ -42,7 +42,7 @@ function drawDivider(hp, stroke, side) {
 
 function endMarker(h) {
 	//Put the end marker above the hexagon h.
-	var m = document.getElementById("e");
+	var m = document.getElementById("end");
 	m.setAttribute("cx", h.getAttribute("x"));
 	m.setAttribute("cy", h.getAttribute("y"));
 }
@@ -60,7 +60,7 @@ function fillId(thing) {
 
 function playerMove(h, fill, record) {
 	//Move the player to hexagon h, specified fill, record is whether to add to the route.
-	var m = document.getElementById("p");
+	var m = document.getElementById("player");
 	var x, y;
 	if (record) {
 		var l = document.createElementNS(svgNS, "line");
@@ -87,17 +87,17 @@ function linkId(a, b) {
 	//Get the identifier linking these points.
 	if (a[1] == b[1]) {
 		if (a[0] > b[0]) {
-			return a+";"+b
+			return a+"-"+b
 		} else {
 			if (a[0] < b[0]) {
-				return b+";"+a
+				return b+"-"+a
 			}
 		}
 	} else {
 		if (a[1] < b[1]) {
-			return a+";"+b
+			return a+"-"+b
 		} else {
-			return b+";"+a
+			return b+"-"+a
 		} 
 	}
 	return null
@@ -142,19 +142,14 @@ function clearChildren(group) {
 	}
 }
 
-function loadMaze(maze) {
-	var m = maze.maze;
-	var i, j, c, hexpos, hex;
+function loadMaze(m) {
+	var i, j, c;
 	//Clear existing drawing and globals
 	joins = {};
 	path = [];
 	clearChildren("hexes");
 	clearChildren("joins");
 	clearChildren("route");
-	if (maze.startColour == undefined) { //Default startColour to white
-		maze.startColour = "w";
-	}
-	startColour = "url(#"+maze.startColour+")";
 	//Setup
 	gridSize(Math.ceil(m[0].length/2), Math.ceil(m.length/2));
 	//Draw
@@ -168,21 +163,7 @@ function loadMaze(maze) {
 				}
 				if ((j+1)%2) {
 					//Hexagon
-					hexpos = [j/2, i/2].toString();
-					switch (hexpos) {
-						case maze.end:
-							hex = "end";
-							break;
-						default:
-							hex = null;
-					}
-					hex = genHexagon(j/2, i/2, c, hex);
-					if (hexpos ==  maze.start) {
-						playerMove(hex, startColour, false);
-					}
-					if (hexpos == maze.end) {
-						endMarker(hex);
-					}
+					genHexagon(j/2, i/2, c);
 				} else {
 					//Divider
 					if ((j+1)%4) {
@@ -217,4 +198,12 @@ function joinedBy(ha,hb) {
 	var a = getRowColumn(ha);
 	var b = getRowColumn(hb);
 	return joins[linkId(a,b)];
+}
+
+function hexClickHandler(evt) {
+	var h = evt.target.correspondingUseElement; //Standard
+	if (h == undefined) {
+		h = evt.target.parentElement; //Firefox
+	}
+	hexClick(h);
 }

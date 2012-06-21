@@ -1,3 +1,5 @@
+var game;
+
 function loadSet(ms, progress) {
 	//Constructs a mazeSet object
 	this.nMazes = ms.mazes.length;
@@ -26,7 +28,7 @@ function loadSet(ms, progress) {
 				c = line[x];
 				if (c == "?") {
 					ml += progress[count++][0];
-					hl.push([x, y]);
+					hl.push([x/2, y/2]);
 				} else {
 					ml += c;
 				}
@@ -51,13 +53,25 @@ function loadSet(ms, progress) {
 	//		cols = progress[i][1:];
 	//	}	
 	//}
-	this.menuHexClick = function(evt) {
+	this.menuHexClick = function(h) {
 		//Play the corresponding maze
+		var i, loc;
+		loc = h.id.slice(1);
+		for (i=0; i<hexLocs.length; i++) {
+			if (hexLocs[i].toString() == loc) {
+				break;
+			}
+		}
+		if (i < hexLocs.length) {
+			gameStandard(ms.mazes[i]);
+		} else if (loc == ms.start) {
+			gameStandard(ms);
+		}
 	}
 	this.showMenu = function() {
 		//Draw the level select menu
-		loadMaze(ms);
-		//onHexClick = this.menuHexClick;
+		loadMaze(ms.maze);
+		hexClick = this.menuHexClick;
 	}
 }
 

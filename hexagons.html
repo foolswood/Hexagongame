@@ -31,9 +31,10 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 			<stop offset="1" stop-color="goldenrod" />
 		</radialGradient>
 		<linearGradient id="n">
+			<!-- Replace this when solidColor is common -->
 			<stop stop-color="grey"/>
 		<linearGradient/>
-		<polygon id="hex" points="500,0  250,433 -250,433 -500,0 -250,-433 250,-433" onclick="hexClick(evt)" />
+		<polygon id="hex" points="500,0  250,433 -250,433 -500,0 -250,-433 250,-433" onclick="hexClickHandler(evt)" />
 		<polyline id="left" points="-500,0 -250,433" />
 		<polyline id="center" points="250,433 -250,433" />
 		<polyline id="right" points="250,433 500,0" />
@@ -42,10 +43,10 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 	</g>
 	<g id="joins" stroke-width="50" stroke-linecap="round">
 	</g>
-	<circle id="e" r="280" stroke="white" stroke-width="50" fill="none" />
+	<circle id="end" r="280" stroke="white" stroke-width="50" fill="none" display="none" />
 	<g id="route" stroke-width="20" stroke-linecap="round" display="none">
 	</g>
-	<circle id="p" r="200" stroke="white" stroke-width="30" onclick="reset(evt)" />
+	<circle id="player" r="200" stroke="white" stroke-width="30" display="none" onclick="reset(evt)" />
 </svg>
 
 <script type="text/ecmascript">
@@ -65,6 +66,8 @@ var hexWidth = 1000;
 <script src="game_lib.es" type="text/ecmascript"></script>
 
 <script src="menmaze.es" type="text/ecmascript"></script>
+
+<script src="std_game.es" type="text/ecmascript"></script>
 
 <script src="menu.es" type="text/ecmascript"></script>
 
