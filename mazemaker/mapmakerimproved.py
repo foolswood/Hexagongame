@@ -1,15 +1,15 @@
-# Filename: randmap.py
+# Filename: mapmaker.py
 import math, random
 
-width=9
-length=11
+width=5
+length=5
 capcolours=["R","G","Y","B"]
 lowcolours=["r","g","y","b"]
 maplist=[]
 ldirections=[[1,0],[1,1],[0,1],[-1,1],[-1,0],[0,-1]]
 hdirections=[[1,0],[1,-1],[0,-1],[-1,-1],[-1,0],[0,1]]
-begin=[4,6,"w"]
-
+begin=[2,2,"w"]
+record=[]
 
 def col(x,y):
     try:
@@ -17,49 +17,12 @@ def col(x,y):
         c=row[x]
     except:
         c="blocked"
+
+    if x<0 or y<0:
+        c="blocked"
     return c
 
-def adjasenttest(x0,y0,co):
-    adjasentlist=[]
-    n=0
-    
-    if x0%4==0:
-        directions=hdirections
-    else:
-        directions=ldirections
-    
-    while n<6:
-        direction=directions[n]
-        k=direction[0]
-        i=direction[1]
-        if co==col(x0+k,y0+i):
-            x1=x0+(2*k)
-            y1=y0+(2*i)
-            c1=col(x0,y0)
-            coordinates=[x1,y1,c1]
-            adjasentlist.append(coordinates)
-        n=n+1
-    return adjasentlist
-
-def spread(oldpoints,allpoints):
-    nmax=len(oldpoints)
-    n=0
-    newpoints=[]
-
-    while n<nmax:
-        coordinates=oldpoints[n]
-        c1=str.lower(coordinates[2])
-        newcoordinates=adjasenttest(coordinates[0], coordinates[1],c1)
-        a=0
-        while a<len(newcoordinates):
-            count=allpoints.count(newcoordinates[a])+newpoints.count(newcoordinates[a])
-            if count==0:
-                newpoints.append(newcoordinates[a])
-            a=a+1
-        n=n+1
-    return newpoints
-
-def mapmaking(width, length):
+def rectmap(width, length):
     n=0
     while n<length:
         x=0
@@ -85,26 +48,61 @@ def mapmaking(width, length):
         n=n+1
     return maplist
 
+def adjasenttest(x0,y0,co):
+    adjasentlist=[]
+    
+    if x0%4==0:
+        directions=hdirections
+    else:
+        directions=ldirections
+    
+    for n in range(0,6):
+        direction=directions[n]
+        k=direction[0]
+        i=direction[1]
+        if co==col(x0+k,y0+i):
+            x1=x0+(2*k)
+            y1=y0+(2*i)
+            c1=col(x0,y0)
+            coordinates=[x1,y1,c1]
+            adjasentlist.append(coordinates)
+        
+    return adjasentlist
+
+def spread(oldpoints,allpoints):
+    newpoints=[]
+    
+    for i in oldpoints:
+        c1=str.lower(i[2])
+        newcoordinates=adjasenttest(i[0], i[1], c1)
+        for a in newcoordinates:
+            count=allpoints.count(a)+newpoints.count(a)
+            if count==0:
+                newpoints.append(a)
+                record.append([i, a])
+    return newpoints
+
 def possibilitytest(maplist,begin):
     closepoints=[]
 
     if begin[2]=="w":
-        begin.pop()
         closepoints=[[begin[i] for i in range(2)] for i in range(4)]
         n=0
         while n<4:
             closepoints[n].append(capcolours[n])
+            record.append([begin,closepoints[n]])
             n=n+1
     else:
         closepoints=[begin]
 
     allpoints=closepoints
-
+    
     moves=0
     i=0
     while i<1:
         newpoints=spread(closepoints,allpoints)
         allpoints=allpoints+newpoints
+
         print newpoints
     
         if newpoints==[]:
@@ -117,12 +115,11 @@ def possibilitytest(maplist,begin):
     return end, moves, allpoints
 
 def removeuseless(maplist, allpoints):
-    y=0
+
     ymax=len(maplist)
-    while y<ymax:
-        x=0
+    for y in range(0, ymax, 2):
         xmax=len(maplist[y])
-        while x<xmax:
+        for x in range(0, xmax, 2):
             n=0
             nmax=len(allpoints)
             count=0
@@ -135,8 +132,6 @@ def removeuseless(maplist, allpoints):
                 point.append(cut)
             if count==0:
                 maplist[y][x]=" "
-            x=x+2
-        y=y+2
 
     y=0
     while y<ymax:
@@ -155,15 +150,13 @@ def removeuseless(maplist, allpoints):
                     try:
                         maplist[y+i][x+k]=" "
                     except:
-                        g=1
-                        #do nothing
+                        pass
                     n=n+1    
             x=x+2
         y=y+2
-    y=0
-    while y<ymax:
-        maplist[y].pop(0)
-        y=y+1
+
+    for i in maplist:
+        i.pop(0)
             
     return maplist
 
@@ -180,10 +173,23 @@ def printnice(maplist):
         print '''   "''',row,'''",'''
         y=y+1
 
+def trace(point):
+    solution=[point]
+    while point!=begin:
+        for i in record:
+            if i[1]==point:
+                solution=[i[0]]+solution
+                point=i[0]
+                break
+    return solution
+            
 
-maze=mapmaking(width, length)
+
+maze=rectmap(width, length)
 end, move, allpoints=possibilitytest(maze,begin)
 print end, move, len(allpoints)
 maze=removeuseless(maze,allpoints)
 printnice(maze)
+
+print trace(end)
 

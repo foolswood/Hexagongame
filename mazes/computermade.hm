@@ -50,47 +50,43 @@
 },
 {"maze" : [
 
-	"  R               ",
+	"  R",
 
-	" gy               ",
+	" gy",
 
-	"ByR   R       GgB ",
+	"ByR   R       GgB",
 
-	"  rb rrb     rb   ",
+	"  rb rrb     rb",
 
-	"  YrRyByBrYbYrR   ",
+	"  YrRyByBrYbYrR",
 
-	"   brgrgggrbgyb   ",
+	"   brgrgggrbgyb",
 
-	"    RbBbBbRgYyR   ",
+	"    RbBbBbRgYyR",
 
-	"    rgbrybgbggy   ",
+	"    rgbrybgbggy",
 
-	"    YrRrYyYrBrB   ",
+	"    YrRrYyYrBrB",
 
-	"    gybygbr       ",
+	"    gybygbr",
 
-	"RrYrGrRgYyG       ",
+	"RrYrGrRgYyG",
 
-	"grgygbryygb       ",
+	"grgygbryygb",
 
-	"GyGbBrGyRrY       ",
+	"GyGbBrGyRrY",
 
-	"ybbggyy           ",
+	"ybbggyy",
 
-	"GbYbRrB           ",
+	"GbYbRrB",
 
-	"bryrbgy           ",
+	"bryrbgy",
 
-	"RyRgYrR           ",
+	"RyRgYrR",
 
-	"grbgrrgy          ",
+	"grbgrrgy",
 
-	"YbBrRyGbG         ",
-
-	"                  ",
-
-	"                  "],
+	"YbBrRyGbG"],
 
 "start" : "3,3",
 
@@ -102,45 +98,45 @@
 ,
 {"maze" : [
 
-	"      GyGgRgG     ",
+	"    GyGgRgG",
 
-	"     rgygyyyy     ",
-	"    YyRyBrYbR     ",
+	"   rgygyyyy",
+	"  YyRyBrYbR",
 
-	"    grgrgrbry     ",
+	"  grgrgrbry",
 
-	" rRbYbBgGgRgR     ",
+	"RbYbBgGgRgR",
 
-	" gryggryybgyg     ",
+	"ryggryybgyg",
 
-	" bGyGbGbRbRyRrB   ",
+	"GyGbGbRbRyRrB",
 
-	" ggggyb   rrbgr   ",
+	"gggyb   rrbgr",
 
-	" yBgGyY   GbYrR   ",
+	"BgGyY   GbYrR",
 
-	" yyygbgy gbrrgby  ",
+	"yygbgy gbrrgby",
 
-	" gYbGbByYgBgYgGbG ",
+	"YbGbByYgBgYgGbG",
 
-	" grbbrgrrygryybrb ",
+	"rbbrgrrygryybrb",
 
-	" rYbGrGbBgGgRyRrR ",
+	"YbGrGbBgGgRyRrR",
 
-	"  rgbgbbrbbbybg   ",
+	"rgbgbbrbbbybg",
 
-	"  GrByBgYgRyYbG   ",
+	"GrByBgYgRyYbG",
 
-	" rgryygygryygrr   ",
-	" gRbYrBbRbRyGrR   ",
+	"gryygygryygrr",
+	"RbYrBbRbRyGrR",
 
-	" yrgbybbbbbrbyy   ",
+	"rgbybbbbbrbyy",
 
-	" rRyGrGyGyRbGbB   ",
+	"RyGrGyGyRbGbB",
 
-	"      bryrbgbr    ",
+	"    bryrbgbr",
 
-	"      RgGrByB     "],
+	"    RgGrByB"],
 
 "start" : "2,3",
 
@@ -150,5 +146,25 @@
 
 }
 
+{"maze" : [
+	"  GyGgRgByG",
+	"  rgrgygbgr",
+	"  YrBbByYbR",
+	" ybbgyyrbrb",
+	" bGgYbByBgB",
+	" yrbygryrb",
+	" yRyRrBgG",
+	" bggybrgy",
+	" yGbGbGbGbY",
+	" gygggrygrbr",
+	" gBbBgYyBgBgBbRyB",
+	" g     grbrygby",
+	"        RrGyYgG",
+	"        brbyrb",
+	"        RbBgR"],
+"start" : "2,1",
+"end" : "6,7",
+"startColour" : "w"
+}
 ]
 
