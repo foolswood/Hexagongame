@@ -18,9 +18,10 @@ function loadSet(ms, progress) {
 		}
 		progress = genProgress(ms.mazes);
 	}
-	function genMeta(ms, progress, hl) {
-		//Generate metaMaze and hexLocs
-		var line, c, ml, x, y, count = 0, mm = [];
+	function genMeta() {
+		//Generate metaMaze and hexLocs (if first run)
+		var dohl, line, c, ml, x, y, count = 0, mm = [];
+		(hexLocs.length == 0) ? dohl = true : dohl = false;
 		for (y = 0; y < ms.mazeLayout.length; y++) {
 			ml = "";
 			line = ms.mazeLayout[y];
@@ -28,7 +29,9 @@ function loadSet(ms, progress) {
 				c = line[x];
 				if (c == "?") {
 					ml += progress[count++][0];
-					hl.push([x/2, y/2]);
+					if (dohl) {
+						hexLocs.push([x/2, y/2]);
+					}
 				} else {
 					ml += c;
 				}
@@ -38,7 +41,6 @@ function loadSet(ms, progress) {
 		ms.maze = mm;
 	}
 	var hexLocs = [];
-	genMeta(ms, progress, hexLocs);
 	this.finishChange = function(evt) {
 		//Callback for clicking the coloured circles
 		//Update hexagon
@@ -53,6 +55,32 @@ function loadSet(ms, progress) {
 	//		cols = progress[i][1:];
 	//	}	
 	//}
+	this.playing;
+	this.completeCallback = function(col) {
+		//When maze has been completed
+		game.cleanup();
+		var pstr = progress[this.playing].slice(1); //Completed colours section of string
+		if (pstr.indexOf(col) == -1) { //Hasn't been completed this colour before
+			var nstr;
+			nstr = pstr.slice(0, pstr.indexOf("n")) + col;
+			while (nstr.length < pstr.length) {
+				nstr += "n";
+			}
+			if (pstr[0] == "n") {
+				progress[this.playing] = col+nstr;
+			} else {
+				progress[this.playing] = pstr[0]+nstr;
+			}
+		}
+		this.showMenu();
+	}
+	mazeComplete = this.completeCallback;
+	this.completeMeta = function(col) {
+		mazeComplete = this.completeCallback;
+		alert("Congrats!");
+		game.cleanup();
+		this.showMenu();
+	}
 	this.menuHexClick = function(h) {
 		//Play the corresponding maze
 		var i, loc;
@@ -62,19 +90,22 @@ function loadSet(ms, progress) {
 				break;
 			}
 		}
+		this.playing = i;
 		if (i < hexLocs.length) {
 			gameStandard(ms.mazes[i]);
 		} else if (loc == ms.start) {
+			mazeComplete = this.completeMeta;
 			gameStandard(ms);
 		}
 	}
 	this.showMenu = function() {
 		//Draw the level select menu
+		genMeta();
 		loadMaze(ms.maze);
-		hexClick = this.menuHexClick;
+		hexClick = [this, this.menuHexClick];
 	}
+	this.showMenu()
 }
 
 //To instanciate
 mazeSet = new loadSet(msd, null);
-mazeSet.showMenu();

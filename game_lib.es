@@ -200,10 +200,15 @@ function joinedBy(ha,hb) {
 	return joins[linkId(a,b)];
 }
 
+var mazeComplete;
+
 function hexClickHandler(evt) {
 	var h = evt.target.correspondingUseElement; //Standard
 	if (h == undefined) {
 		h = evt.target.parentElement; //Firefox
 	}
-	hexClick(h);
+	var c = hexClick[1].call(hexClick[0], h);
+	if (c != null) {
+		mazeComplete.call(mazeSet, c);
+	}
 }

@@ -1,39 +1,4 @@
 var joins;
-var path;
-var startColour;
-
-//function reset(evt) {
-//	//Restart current maze.
-//	playerMove(path[0], startColour, false);
-//	document.getElementById("route").setAttribute("display", "none"); //Hide Route (if shown)
-//	clearChildren("route");
-//	path = [path[0]];
-//}
-
-//function mazeComplete() {
-//	var route = document.getElementById("route")
-//	route.setAttribute("display", "inline"); //Show Path
-//	alert("Success");
-//	route.setAttribute("display", "none");
-//	loadNextMaze();
-//}
-
-//function hexClick(evt) {
-//	//Hexagon was clicked on (the game).
-//	var h; //Svg Use Element that got clicked
-//	h = evt.target.correspondingUseElement; //Standard
-//	if (h == undefined) {
-//		h = evt.target.parentElement; //Firefox
-//	}
-//	var pl = path.length; //Step number.
-//	var join = joinedBy(path[pl-1], h);
-//	if ((join != undefined) && ((join == fillId(path[pl-2])) || (join == "w") || (fillId(path[pl-2]) == "w"))) { //Valid step.
-//		playerMove(h, path[pl-1].getAttribute("fill"), true);
-//		if (h.getAttribute("id") == "end") {
-//			mazeComplete();
-//		}
-//	}
-//}
 
 function parseCoordStr(s) {
 	s = s.split(",");
@@ -41,8 +6,10 @@ function parseCoordStr(s) {
 }
 
 function reset(evt) {
-	if (!game.gameReset())
+	if (game.gameReset()) {
+		game.cleanup()
 		mazeSet.showMenu()
+	}
 }
 
 function gameStandard(m) {
@@ -69,12 +36,46 @@ function gameStandard(m) {
 	p.setAttribute("cy", newPos[1]);
 	p.setAttribute("fill", "url(#"+col+")");
 	p.setAttribute("display", "inline");
+	//Route
+	this.route = [[pos, col]];
+	this.drawRoute = function() {
+		var group, end, start = this.route[0][0];
+		group = document.getElementById("route");
+		start = getXY(start[0], start[1]);
+		var l, c, i;
+		c = this.route[0][1];
+		for (i = 1; i < this.route.length; i++) {
+			end = this.route[i][0];
+			end = getXY(end[0], end[1]);
+			l = document.createElementNS(svgNS, "line");
+			l.setAttribute("stroke", colourMap[c]);
+			l.setAttribute("x1", start[0]);
+			l.setAttribute("y1", start[1]);
+			l.setAttribute("x2", end[0]);
+			l.setAttribute("y2", end[1]);
+			group.appendChild(l);
+			c = this.route[i][1];
+			start = end;
+		}
+	}
 	this.gameReset = function() {
-		//resets maze, returning false if maze was already at start
-		//if maze at start
+		//resets maze, returning true if maze was already at start
+		if (this.route.length == 1) { //maze at start
+			return true;
+		} else { //reset
+			pos = parseCoordStr(m.start);
+			newPos = getXY(pos[0], pos[1]);
+			p.setAttribute("cx", newPos[0]);
+			p.setAttribute("cy", newPos[1]);
+			col = m.startColour;
+			p.setAttribute("fill", "url(#"+col+")");
+			this.route = [[pos, col]];
+			return false;
+		}
+	}
+	this.cleanup = function() {
 		p.setAttribute("display", "none");
 		e.setAttribute("display", "none");
-		return false
 	}
 	this.gameHexClick = function(h) {
 		//The game
@@ -88,11 +89,13 @@ function gameStandard(m) {
 			p.setAttribute("cx", newPos[0]);
 			p.setAttribute("cy", newPos[1]);
 			p.setAttribute("fill", "url(#"+col+")");
+			this.route.push([pos, col]);
 			if (pos.toString() == m.end) {
+				this.drawRoute();
 				alert("Complete");
-				//Maybe make it so the handler sorts out the next maze if a colour specifier is returned instead of null
+				return col;
 			}
 		}
 	}
-	hexClick = this.gameHexClick;
+	hexClick = [this, this.gameHexClick];
 }
