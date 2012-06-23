@@ -1,47 +1,37 @@
-var joins;
-
-function parseCoordStr(s) {
-	s = s.split(",");
-	return [parseInt(s[0]), parseInt(s[1])]
-}
-
-function reset(evt) {
-	if (game.gameReset()) {
-		game.cleanup()
-		mazeSet.showMenu()
-	}
+function circleMove(c, pcPair) {
+	var loc = getXY(pcPair[0]);
+	c.setAttribute("cx", loc[0]);
+	c.setAttribute("cy", loc[1]);
+	c.setAttribute("fill", "url(#"+pcPair[1]+")");
 }
 
 function gameStandard(m) {
 	loadMaze(m.maze);
-	var col;
-	if (m.startColour == undefined)
-		m.startColour = "w";
-	col = m.startColour;
-	//Draw markers
-	var p, e, pos, newPos;
+	var p, e, pos, newPos, nextCol, startHexCol, col = m.startColour;
+	if (col == undefined)
+		col = "w";
+	//End marker
 	e = document.getElementById("end");
 	pos = parseCoordStr(m.end);
 	pos = getXY(pos);
 	e.setAttribute("cx", pos[0]);
 	e.setAttribute("cy", pos[1]);
 	e.setAttribute("display", "inline");
+	//Player marker and initial conditions
 	p = document.getElementById("player");
 	pos = parseCoordStr(m.start);
-	newPos = getXY(pos);
-	p.setAttribute("cx", newPos[0]);
-	p.setAttribute("cy", newPos[1]);
-	p.setAttribute("fill", "url(#"+col+")");
+	startHexCol = nextCol = fillId(document.getElementById("h"+pos));
+	newPos = [pos, col];
+	circleMove(p, newPos);
 	p.setAttribute("display", "inline");
 	//Route
-	this.route = [[pos, col]];
+	this.route = [newPos];
 	this.drawRoute = function() {
 		var group, end, start = getXY(this.route[0][0]);
 		group = document.getElementById("route");
 		var l, i, c = this.route[0][1];
 		for (i = 1; i < this.route.length; i++) {
-			end = this.route[i][0];
-			end = getXY(end);
+			end = getXY(this.route[i][0]);
 			l = document.createElementNS(svgNS, "line");
 			l.setAttribute("stroke", colourMap[c]);
 			l.setAttribute("x1", start[0]);
@@ -58,13 +48,12 @@ function gameStandard(m) {
 		if (this.route.length == 1) { //maze at start
 			return true;
 		} else { //reset
-			pos = parseCoordStr(m.start);
-			newPos = getXY(pos);
-			p.setAttribute("cx", newPos[0]);
-			p.setAttribute("cy", newPos[1]);
-			col = m.startColour;
-			p.setAttribute("fill", "url(#"+col+")");
-			this.route = [[pos, col]];
+			newPos = this.route[0];
+			col = newPos[1];
+			nextCol = startHexCol;
+			circleMove(p, newPos);
+			this.route = [newPos];
+			pos = newPos[0];
 			return false;
 		}
 	}
@@ -74,23 +63,22 @@ function gameStandard(m) {
 	}
 	this.gameHexClick = function(h) {
 		//The game
-		var jcol;
-		newPos = parseCoordStr(h.id.slice(1));
+		var jcol; //Join colour
+		newPos = h.id.slice(1);
 		jcol = joins[linkId(pos, newPos)];
 		if ((jcol != undefined) && (jcol == col || jcol == "w" || col == "w")) {
-			col = fillId(document.getElementById("h"+pos.toString())); //Lacks Elegance
-			pos = newPos;
-			newPos = getXY(pos);
-			p.setAttribute("cx", newPos[0]);
-			p.setAttribute("cy", newPos[1]);
-			p.setAttribute("fill", "url(#"+col+")");
-			this.route.push([pos, col]);
+			col = nextCol;
+			pos = parseCoordStr(newPos);
+			newPos = [pos, col];
+			circleMove(p, newPos);
+			this.route.push(newPos);
 			if (pos.toString() == m.end) {
 				this.drawRoute();
 				alert("Complete");
 				clearChildren("route");
 				return col;
 			}
+			nextCol = fillId(h);
 		}
 	}
 	hexClick = [this, this.gameHexClick];
