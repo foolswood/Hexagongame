@@ -212,3 +212,11 @@ function hexClickHandler(evt) {
 		mazeComplete.call(mazeSet, c);
 	}
 }
+
+function finishCircleHandler(evt) {
+	var h = evt.target.correspondingUseElement; //Standard
+	if (h == undefined) {
+		h = evt.target.parentElement; //Firefox
+	}
+	fcClick[1].call(fcClick[0], h);
+}

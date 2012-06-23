@@ -4,6 +4,7 @@ var msd = {
 ],
 "start" : "2,0",
 "end" : "0,0",
+"nEnds" : "3",
 
 "mazes" : [
 {"maze" : [
@@ -13,7 +14,7 @@ var msd = {
 "start" : "0,0",
 "end" : "3,0",
 "startColour" : "w",
-"nEnds" : "3"
+"nEnds" : "6"
 },
 {"maze" : [
 	"RyGrBgY",

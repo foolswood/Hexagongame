@@ -14,6 +14,11 @@ function loadSet(ms, progress) {
 					s += "n";
 				progress.push(s);
 			}
+			s = "";
+			for (i = 0; i <= ms.nEnds; i++) {
+				s+= "n";
+			}
+			progress.push(s);
 			return progress;
 		}
 		progress = genProgress(ms.mazes);
@@ -41,20 +46,50 @@ function loadSet(ms, progress) {
 		ms.maze = mm;
 	}
 	var hexLocs = [];
-	this.finishChange = function(evt) {
+	this.finishChange = function(c) {
+		var col, pos, hex, i;
 		//Callback for clicking the coloured circles
+		col = fillId(c);
 		//Update hexagon
+		pos = c.getAttribute("id").slice(2);
+		hex = document.getElementById("h"+pos);
+		hex.setAttribute("fill", "url(#"+col+")");
 		//Update progress
-		//Update metaMaze?
+		for (i = 0; i < this.nMazes; i++) {
+			if (hexLocs[i].toString() == pos) {
+				progress[i] = col+progress[i].slice(1);
+				break;
+			}
+		}
+		//Update metaMaze (meaning it wouldn't have to be regenerated)?
 	}
-	//this.drawFinishColours = function() {
-	//	//Draw on some finish colour circles
-	//	var loc, cols;
-	//	for (i = 0; i++; i < this.nMazes) {
-	//		loc = this.hexLocs[i];
-	//		cols = progress[i][1:];
-	//	}	
-	//}
+	fcClick = [this, this.finishChange];
+	this.drawFinishColours = function() {
+		//Draw on some finish colour circles
+		var pos, loc, col, cols, circ, layer, i, j, offset, glyph;
+		layer = document.getElementById("finishMarkers");
+		glyph = "#finishCircle";
+		for (i = 0; i <= this.nMazes; i++) {
+			if (i == this.nMazes) {
+				pos = parseCoordStr(ms.start);
+				glyph = "#finishStar";
+			} else {
+				pos = hexLocs[i];
+			}
+			cols = progress[i].slice(1);
+			loc = getXY(pos[0], pos[1]);
+			for (j = 0; j < cols.length; j++) {
+				offset = finishPositions[j];
+				circ = document.createElementNS(svgNS, "use");
+				circ.setAttribute("id", "c"+j+pos);
+				circ.setAttribute("x", loc[0]+offset[0]);
+				circ.setAttribute("y", loc[1]+offset[1]);
+				circ.setAttribute("fill", "url(#"+cols[j]+")");
+				circ.setAttributeNS(xlinkNS, "href", glyph);
+				layer.appendChild(circ);
+			}
+		}
+	}
 	this.playing;
 	this.completeCallback = function(col) {
 		//When maze has been completed
@@ -76,10 +111,9 @@ function loadSet(ms, progress) {
 	}
 	mazeComplete = this.completeCallback;
 	this.completeMeta = function(col) {
-		mazeComplete = this.completeCallback;
 		alert("Congrats!");
-		game.cleanup();
-		this.showMenu();
+		mazeComplete = this.completeCallback;
+		this.completeCallback(col);
 	}
 	this.menuHexClick = function(h) {
 		//Play the corresponding maze
@@ -91,20 +125,23 @@ function loadSet(ms, progress) {
 			}
 		}
 		this.playing = i;
+		clearChildren("finishMarkers");
 		if (i < hexLocs.length) {
-			gameStandard(ms.mazes[i]);
+			game = new gameStandard(ms.mazes[i]);
 		} else if (loc == ms.start) {
-			mazeComplete = this.completeMeta;
-			gameStandard(ms);
+			//mazeComplete = this.completeMeta;
+			genMeta();
+			game = new gameStandard(ms);
 		}
 	}
 	this.showMenu = function() {
 		//Draw the level select menu
 		genMeta();
 		loadMaze(ms.maze);
+		this.drawFinishColours();
 		hexClick = [this, this.menuHexClick];
 	}
-	this.showMenu()
+	this.showMenu();
 }
 
 //To instanciate

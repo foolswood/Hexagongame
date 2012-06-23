@@ -13,9 +13,6 @@ function reset(evt) {
 }
 
 function gameStandard(m) {
-	//NEEDS ROUTE PLOT!
-	//There are efficiency savings and interactivity gains to be made here
-	game = this;
 	loadMaze(m.maze);
 	var col;
 	if (m.startColour == undefined)

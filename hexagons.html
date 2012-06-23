@@ -34,25 +34,23 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 			<!-- Replace this when solidColor is common -->
 			<stop stop-color="grey"/>
 		<linearGradient/>
-		<polygon id="hex" points="500,0  250,433 -250,433 -500,0 -250,-433 250,-433" onclick="hexClickHandler(evt)" />
+		<polygon id="hex" points="500,0 250,433 -250,433 -500,0 -250,-433 250,-433" onclick="hexClickHandler(evt)" />
 		<polyline id="left" points="-500,0 -250,433" />
 		<polyline id="center" points="250,433 -250,433" />
 		<polyline id="right" points="250,433 500,0" />
+		<circle id="finishCircle" r="60" onclick="finishCircleHandler(evt)" /> <!-- NOT the endpoint -->
+		<polygon id="finishStar" points="0,30 -35.3,48.5 -28.5,9.3 -57.1,-18.5 -17.6,-24.3 -0,-60 17.6,-24.3 57.1,-18.5 28.5,9.3 35.3,48.5" />
 	</defs>
 	<g id="hexes">
 	</g>
 	<g id="joins" stroke-width="50" stroke-linecap="round">
 	</g>
 	<circle id="end" r="280" stroke="white" stroke-width="50" fill="none" display="none" />
+	<g id="finishMarkers" stroke="white" stroke-width="10">
+	</g>
 	<g id="route" stroke-width="20" stroke-linecap="round">
 	</g>
 	<circle id="player" r="200" stroke="white" stroke-width="30" display="none" onclick="reset(evt)" />
-	<circle r="60" stroke="white" stroke-width="10" cx="870" cy="433" fill="url(#g)" />
-	<circle r="60" stroke="white" stroke-width="10" cx="130" cy="433" fill="url(#g)" />
-	<circle r="60" stroke="white" stroke-width="10" cx="685" cy="753" fill="url(#g)" />
-	<circle r="60" stroke="white" stroke-width="10" cx="315" cy="753" fill="url(#g)" />
-	<circle r="60" stroke="white" stroke-width="10" cx="685" cy="113" fill="url(#g)" />
-	<circle r="60" stroke="white" stroke-width="10" cx="315" cy="113" fill="url(#g)" />
 </svg>
 
 <script type="text/ecmascript">
@@ -67,6 +65,8 @@ var colourMap = { //Colours for dividing lines
 
 var hexHeight = 866;
 var hexWidth = 1000;
+
+var finishPositions = [[370, 0], [185, 320], [-185, 320], [-370, 0], [-185, -320], [185, -320]];
 </script>
 
 <script src="game_lib.es" type="text/ecmascript"></script>
