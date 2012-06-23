@@ -80,13 +80,8 @@ function loadSet(ms, progress) {
 			loc = getXY(pos);
 			for (j = 0; j < cols.length; j++) {
 				offset = finishPositions[j];
-				circ = document.createElementNS(svgNS, "use");
-				circ.setAttribute("id", "c"+j+pos);
-				circ.setAttribute("x", loc[0]+offset[0]);
-				circ.setAttribute("y", loc[1]+offset[1]);
-				circ.setAttribute("fill", "url(#"+cols[j]+")");
-				circ.setAttributeNS(xlinkNS, "href", glyph);
-				layer.appendChild(circ);
+				offset = [offset[0]+loc[0], offset[1]+loc[1]];
+				layer.appendChild(newUse(glyph, "c"+j+pos, offset, cols[j]));
 			}
 		}
 	}
