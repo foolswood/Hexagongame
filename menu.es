@@ -77,7 +77,7 @@ function loadSet(ms, progress) {
 				pos = hexLocs[i];
 			}
 			cols = progress[i].slice(1);
-			loc = getXY(pos[0], pos[1]);
+			loc = getXY(pos);
 			for (j = 0; j < cols.length; j++) {
 				offset = finishPositions[j];
 				circ = document.createElementNS(svgNS, "use");

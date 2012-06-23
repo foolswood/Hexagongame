@@ -1,24 +1,15 @@
 var xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
 
-function getXY(col, row) {
+function getXY(pos) {
 	//Returns placement position for a grid reference.
-	var x = ((0.75*col)+0.5)*hexWidth;
-	var y = ((row+((col%2)*0.5))+0.5)*hexHeight;
+	var x = ((0.75*pos[0])+0.5)*hexWidth;
+	var y = ((pos[1]+((pos[0]%2)*0.5))+0.5)*hexHeight;
 	return [x,y]
-}
-
-function getRowColumn(hexagon) {
-	//Returns where this hexagon is on the grid.
-	var x = hexagon.getAttribute("x");
-	var y = hexagon.getAttribute("y");
-	var r = Math.floor((y-(hexHeight/2))/hexHeight);
-	var c = Math.round(((x/hexWidth)-0.5)*1.333);
-	return [c,r];
 }
 
 function genHexagon(col, row, colour) {
 	//Create a hexagon at col,row specified colour, id is usually null.
-	var pos = getXY(col, row);
+	var pos = getXY([col, row]);
 	var newhex = document.createElementNS(svgNS, "use");
 	newhex.setAttribute("id", "h"+col+","+row);
 	newhex.setAttribute("x", pos[0]);
@@ -31,20 +22,13 @@ function genHexagon(col, row, colour) {
 
 function drawDivider(hp, stroke, side) {
 	//Draw a divider on the bottom of hexagon hp, stroke is colour, side is left/right/center
-	var pos = getXY(hp[0], hp[1]);
+	var pos = getXY(hp);
 	var newd = document.createElementNS(svgNS, "use");
 	newd.setAttribute("x", pos[0]);
 	newd.setAttribute("y", pos[1]);
 	newd.setAttribute("stroke", stroke);
 	newd.setAttributeNS(xlinkNS, "href", "#"+side);
 	document.getElementById("joins").appendChild(newd);
-}
-
-function endMarker(h) {
-	//Put the end marker above the hexagon h.
-	var m = document.getElementById("end");
-	m.setAttribute("cx", h.getAttribute("x"));
-	m.setAttribute("cy", h.getAttribute("y"));
 }
 
 function fillId(thing) {
@@ -58,49 +42,13 @@ function fillId(thing) {
 	return c.slice(5,6);
 }
 
-function playerMove(h, fill, record) {
-	//Move the player to hexagon h, specified fill, record is whether to add to the route.
-	var m = document.getElementById("player");
-	var x, y;
-	if (record) {
-		var l = document.createElementNS(svgNS, "line");
-		l.setAttribute("stroke", colourMap[fillId(m)]);
-		x = m.getAttribute("cx");
-		y = m.getAttribute("cy");
-		l.setAttribute("x1", x);
-		l.setAttribute("y1", y);
-	}
-	x = h.getAttribute("x");
-	y = h.getAttribute("y");
-	m.setAttribute("cx", x);
-	m.setAttribute("cy", y);
-	m.setAttribute("fill", fill);
-	path.push(h);
-	if (record) {
-		l.setAttribute("x2", x);
-		l.setAttribute("y2", y);
-		document.getElementById("route").appendChild(l);
-	}
-}
-
 function linkId(a, b) {
 	//Get the identifier linking these points.
-	if (a[1] == b[1]) {
-		if (a[0] > b[0]) {
-			return a+"-"+b
-		} else {
-			if (a[0] < b[0]) {
-				return b+"-"+a
-			}
-		}
+	if (a < b) {
+		return a+"-"+b;
 	} else {
-		if (a[1] < b[1]) {
-			return a+"-"+b
-		} else {
-			return b+"-"+a
-		} 
+		return b+"-"+a;
 	}
-	return null
 }
 
 function genDivider(a, b, colour) {
@@ -142,14 +90,14 @@ function clearChildren(group) {
 	}
 }
 
+var joins;
+
 function loadMaze(m) {
 	var i, j, c;
 	//Clear existing drawing and globals
 	joins = {};
-	path = [];
 	clearChildren("hexes");
 	clearChildren("joins");
-	clearChildren("route");
 	//Setup
 	gridSize(Math.ceil(m[0].length/2), Math.ceil(m.length/2));
 	//Draw
@@ -193,13 +141,6 @@ function loadMaze(m) {
 	}
 }
 
-function joinedBy(ha,hb) {
-	//Return the boundary colour if adjacent, else undefined.
-	var a = getRowColumn(ha);
-	var b = getRowColumn(hb);
-	return joins[linkId(a,b)];
-}
-
 var mazeComplete;
 
 function hexClickHandler(evt) {
@@ -213,10 +154,24 @@ function hexClickHandler(evt) {
 	}
 }
 
+var fcClick;
+
 function finishCircleHandler(evt) {
 	var h = evt.target.correspondingUseElement; //Standard
 	if (h == undefined) {
 		h = evt.target.parentElement; //Firefox
 	}
 	fcClick[1].call(fcClick[0], h);
+}
+
+function parseCoordStr(s) {
+	s = s.split(",");
+	return [parseInt(s[0]), parseInt(s[1])]
+}
+
+function reset(evt) {
+	if (game.gameReset()) {
+		game.cleanup()
+		mazeSet.showMenu()
+	}
 }

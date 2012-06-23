@@ -22,13 +22,13 @@ function gameStandard(m) {
 	var p, e, pos, newPos;
 	e = document.getElementById("end");
 	pos = parseCoordStr(m.end);
-	pos = getXY(pos[0], pos[1]);
+	pos = getXY(pos);
 	e.setAttribute("cx", pos[0]);
 	e.setAttribute("cy", pos[1]);
 	e.setAttribute("display", "inline");
 	p = document.getElementById("player");
 	pos = parseCoordStr(m.start);
-	newPos = getXY(pos[0], pos[1]);
+	newPos = getXY(pos);
 	p.setAttribute("cx", newPos[0]);
 	p.setAttribute("cy", newPos[1]);
 	p.setAttribute("fill", "url(#"+col+")");
@@ -36,14 +36,12 @@ function gameStandard(m) {
 	//Route
 	this.route = [[pos, col]];
 	this.drawRoute = function() {
-		var group, end, start = this.route[0][0];
+		var group, end, start = getXY(this.route[0][0]);
 		group = document.getElementById("route");
-		start = getXY(start[0], start[1]);
-		var l, c, i;
-		c = this.route[0][1];
+		var l, i, c = this.route[0][1];
 		for (i = 1; i < this.route.length; i++) {
 			end = this.route[i][0];
-			end = getXY(end[0], end[1]);
+			end = getXY(end);
 			l = document.createElementNS(svgNS, "line");
 			l.setAttribute("stroke", colourMap[c]);
 			l.setAttribute("x1", start[0]);
@@ -61,7 +59,7 @@ function gameStandard(m) {
 			return true;
 		} else { //reset
 			pos = parseCoordStr(m.start);
-			newPos = getXY(pos[0], pos[1]);
+			newPos = getXY(pos);
 			p.setAttribute("cx", newPos[0]);
 			p.setAttribute("cy", newPos[1]);
 			col = m.startColour;
@@ -82,7 +80,7 @@ function gameStandard(m) {
 		if ((jcol != undefined) && (jcol == col || jcol == "w" || col == "w")) {
 			col = fillId(document.getElementById("h"+pos.toString())); //Lacks Elegance
 			pos = newPos;
-			newPos = getXY(pos[0], pos[1]);
+			newPos = getXY(pos);
 			p.setAttribute("cx", newPos[0]);
 			p.setAttribute("cy", newPos[1]);
 			p.setAttribute("fill", "url(#"+col+")");
@@ -90,6 +88,7 @@ function gameStandard(m) {
 			if (pos.toString() == m.end) {
 				this.drawRoute();
 				alert("Complete");
+				clearChildren("route");
 				return col;
 			}
 		}
