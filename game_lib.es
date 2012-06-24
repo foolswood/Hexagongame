@@ -104,17 +104,13 @@ function loadMaze(m) {
 				if (c == " ") { //Gaps in the maze and impasses
 					continue;
 				}
-				if ((j+1)%2) {
+				if ((j+1)%2) { //Odd
 					//Hexagon
 					pos = [j/2, i/2];
 					hexGroup.appendChild(newUse("#hex", "h"+pos, getXY(pos), c));
-				} else {
+				} else { //Even
 					//Divider
-					if ((j+1)%4) {
-						genDivider(joinGroup, [(j-1)/2, i/2], [(j+1)/2, i/2], c);
-					} else {
-						genDivider(joinGroup, [(j-1)/2, i/2], [(j+1)/2, i/2], c);
-					}
+					genDivider(joinGroup, [(j-1)/2, i/2], [(j+1)/2, i/2], c);
 				}
 			}
 		} else { //Divider Line
@@ -123,10 +119,10 @@ function loadMaze(m) {
 				if (c == " ") {
 					continue;
 				}
-				if ((j+1)%2) {
+				if ((j+1)%2) { //Odd
 					genDivider(joinGroup, [j/2, (i-1)/2], [j/2, (i+1)/2], c);
-				} else {
-					if ((j+1)%4) {
+				} else { //Even
+					if ((j+1)%4) { //Not divisible by 4
 						genDivider(joinGroup, [(j+1)/2, (i-1)/2], [(j-1)/2, (i+1)/2], c);
 					} else {
 						genDivider(joinGroup, [(j-1)/2, (i-1)/2], [(j+1)/2, (i+1)/2], c);
