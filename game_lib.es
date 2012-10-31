@@ -66,13 +66,27 @@ function genDivider(joinGroup, a, b, colour) {
 	joins[linkId(a,b)] = colour;
 }
 
+var gridRatio = 1;
 function gridSize(c, r) {
 	//Setup the viewbox for a maze of size cxr
 	r = (r+0.5)*hexHeight;
 	c = ((0.75*c)+0.25)*hexWidth;
 	var g = document.getElementById("gameGrid");
 	g.setAttribute("viewBox", "0 0 "+c.toString()+" "+r.toString());
+	gridRatio = c/r;
+	scaleToWindow();
 }
+
+function scaleToWindow() {
+	//make the browser show it the right size
+	var g =	document.getElementById("gameGrid");
+	if (gridRatio > (window.innerWidth/window.innerHeight)) {
+		g.setAttribute("height", window.innerHeight/gridRatio);
+	} else {
+		g.setAttribute("height", window.innerHeight);
+	}
+}
+window.onresize = scaleToWindow;
 
 function clearChildren(group) {
 	//Remove all children of group.

@@ -1,9 +1,15 @@
 var msd = {
 "mazeLayout" : [
-	"?w?wK"
+	"  K    ",
+	" rby",
+	"?g?y?",
+	"bgrgg",
+	"?r?y?r?",
+	"bbwbgy",
+	"?wBw?"
 ],
-"start" : "2,0",
-"end" : "0,0",
+"start" : "1,3",
+"end" : "1,0",
 "nEnds" : "3",
 
 "mazes" : [
@@ -14,7 +20,7 @@ var msd = {
 "start" : "0,0",
 "end" : "3,0",
 "startColour" : "w",
-"nEnds" : "6"
+"nEnds" : "1"
 },
 {"maze" : [
 	"RyGrBgY",
@@ -22,6 +28,112 @@ var msd = {
 	"YgBgRyY"],
 "start" : "3,0",
 "end" : "0,0",
+"nEnds" : "1"
+},
+{"maze" : [
+	"GyBrY    ",
+	"brybr",
+	"YbGbRbRrY",
+	"gbkgbryr",
+	"RgBkGgk",
+	"yrbyrbyr",
+	"krYbBrGbR"],
+"start" : "1,0",
+"end" : "4,3",
+"startColour" : "w",
+"nEnds" : "1"
+},
+{"maze" : [
+	"YgBbBrG  ",
+	"bygrgbbr",
+	"GrBrRgRry",
+	"rbrbgyy",
+	"RrGbGrR",
+	"brybgrbg",
+	"YgRgBrByB"],
+"start" : "1,0",
+"end" : "4,3",
+"startColour" : "w",
+"nEnds" : "1"
+},
+{"maze" : [
+	"YbYbBgYrB",
+	"yrybbygyy",
+	"BrYgRgBbB",
+	"bbybbgrbb",
+	"YbGgRbGgR",
+	"bbrbbyyby",
+	"RyBgYgGbY"],
+"start" : "0,2",
+"end" : "2,2",
+"startColour" : "w",
+"nEnds" : "3"
+},
+{"maze" : [
+	"          Y          ",
+	"         rkr         ",
+	"        ByGrK        ",
+	"        bbkyb        ",
+	"        RgBgR        ",
+	"          r          ",
+	"  B       G       G  ",
+	" bgr     byk     kgr ",
+	"GbRgYbBgRgRkYrKyRgYrG",
+	"yykbyr ygbbgyb gkbrgg",
+	"BkYbK   KrYbB   RrBgR",
+	"          k          ",
+	"          B          ",
+	"         gyy         ",
+	"        KbYbG        ",
+	"        rrbky        ",
+	"        GbRyB        "],
+"start" : "4,4",
+"end" : "6,5",
+"startColour" : "w",
 "nEnds" : "2"
+},
+{"maze" : [
+	"RbGbBgYgKrG",
+	"rkygkbybygk",
+	"BgGyRkYgKyG",
+	"ygrybkrbybk",
+	"RgKyGkBrYgR"],
+"start" : "0,1",
+"end" : "0,1",
+"startColour" : "w",
+"nEnds" : "1"
+},
+{ "maze" : [
+	"RgGgBbYyR",
+	"gbrbggbrr",
+	"RrGyBbYyR",
+	"gbbyrrggy",
+	"RbGyWbYyR",
+	"grggrrbyy",
+	"RrGgBbYrR",
+	"gbgbgybyr",
+	"RrGrByYgR"],
+"start" : "0,0",
+"end" : "4,4",
+"nEnds" :"1"
+},
+{"maze" : [
+	"GbKyBrYrB",
+	"kbbgkrgby",
+	"BgGyRkRbG",
+	"gbkgggyry",
+	"RgBrKrGrG",
+	"bkgbkbkby",
+	"YkRbYkBgR",
+	"byryrygry",
+	"RyGkKbKbY",
+	"grrybgyyb",
+	"GgYkRkRkY",
+	"ybgbkgkyg",
+	"KyBrKgGrB"],
+"start" : "2,1",
+"end" : "2,6",
+"startColour" : "w",
+"nEnds" : "1"
 }]
 }
