@@ -14,138 +14,74 @@
 "startColour" : "w"
 },
 {"maze" : [
-
 	"  YrRyBrBbY",
-
 	" gbbbygrgb",
-
 	"YbRrYyYyG",
-
 	"gryrybgyr",
-
 	"GrGyRyBgBkY",
-
 	"  grrbryyrg",
-
 	"  RyGrGgYbK",
-
 	" gygrygbgrg",
-
 	"ByBrGbBgGrR",
-
 	"kgygrrgyykb",
-
 	"RgRbRrYrKgR",
-
 	"bygrykbbby",
-
 	"KrGrGbGbB"],
-
 "start" : "2,1",
-
 "end" : "2,6",
-
 "startColour" : "w"
-
 },
 {"maze" : [
-
 	"  R",
-
 	" gy",
-
 	"ByR   R       GgB",
-
 	"  rb rrb     rb",
-
 	"  YrRyByBrYbYrR",
-
 	"   brgrgggrbgyb",
-
 	"    RbBbBbRgYyR",
-
 	"    rgbrybgbggy",
-
 	"    YrRrYyYrBrB",
-
 	"    gybygbr",
-
 	"RrYrGrRgYyG",
-
 	"grgygbryygb",
-
 	"GyGbBrGyRrY",
-
 	"ybbggyy",
-
 	"GbYbRrB",
-
 	"bryrbgy",
-
 	"RyRgYrR",
-
 	"grbgrrgy",
-
 	"YbBrRyGbG"],
-
 "start" : "3,3",
-
 "end" : "7,2",
-
 "startColour" : "w"
-
 }
 ,
 {"maze" : [
-
 	"    GyGgRgG",
-
 	"   rgygyyyy",
 	"  YyRyBrYbR",
-
 	"  grgrgrbry",
-
 	"RbYbBgGgRgR",
-
 	"ryggryybgyg",
-
 	"GyGbGbRbRyRrB",
-
 	"gggyb   rrbgr",
-
 	"BgGyY   GbYrR",
-
 	"yygbgy gbrrgby",
-
 	"YbGbByYgBgYgGbG",
-
 	"rbbrgrrygryybrb",
-
 	"YbGrGbBgGgRyRrR",
-
 	"rgbgbbrbbbybg",
-
 	"GrByBgYgRyYbG",
-
 	"gryygygryygrr",
 	"RbYrBbRbRyGrR",
-
 	"rgbybbbbbrbyy",
-
 	"RyGrGyGyRbGbB",
-
 	"    bryrbgbr",
-
 	"    RgGrByB"],
-
 "start" : "2,3",
-
 "end" : "4,10",
-
 "startColour" : "w"
-
 }
-
 {"maze" : [
 	"  GyGgRgByG",
 	"  rgrgygbgr",
