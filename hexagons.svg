@@ -1,0 +1,66 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg id="gameGrid" viewBox="0 0 6000 6000"
+xmlns="http://www.w3.org/2000/svg" version="1.1"
+xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<radialGradient id="shading" cx="0.4" cy="0.4" fx="0.4" fy="0.25" r="0.5" />
+		<radialGradient id="w" xlink:href="#shading">
+			<stop offset="0" stop-color="white"/>
+			<stop offset="1" stop-color="lightgrey" />
+		</radialGradient>
+		<radialGradient id="k" xlink:href="#shading">
+			<stop offset="0" stop-color="dimgrey"/>
+			<stop offset="1" stop-color="black" />
+		</radialGradient>
+		<radialGradient id="r" xlink:href="#shading">
+			<stop offset="0" stop-color="red" />
+			<stop offset="1" stop-color="darkred" />
+		</radialGradient>
+		<radialGradient id="g" xlink:href="#shading">
+			<stop offset="0" stop-color="forestgreen" />
+			<stop offset="1" stop-color="darkgreen" />
+		</radialGradient>
+		<radialGradient id="b" xlink:href="#shading">
+			<stop offset="0" stop-color="blue" />
+			<stop offset="1" stop-color="darkblue" />
+		</radialGradient>
+		<radialGradient id="y" xlink:href="#shading">
+			<stop offset="0" stop-color="yellow" />
+			<stop offset="1" stop-color="goldenrod" />
+		</radialGradient>
+		<linearGradient id="n">
+			<!-- Replace this when solidColor is common -->
+			<stop stop-color="grey"/>
+		</linearGradient>
+		<polygon id="hex" points="500,0 250,433 -250,433 -500,0 -250,-433 250,-433" onclick="useClicked(evt)" />
+		<polyline id="left" points="-500,0 -250,433" />
+		<polyline id="center" points="250,433 -250,433" />
+		<polyline id="right" points="250,433 500,0" />
+		<circle id="finishCircle" r="60" onclick="useClicked(evt)" /> <!-- NOT the endpoint -->
+		<polygon id="finishStar" onclick="useClicked(evt)" points="0,30 -35.3,48.5 -28.5,9.3 -57.1,-18.5 -17.6,-24.3 -0,-60 17.6,-24.3 57.1,-18.5 28.5,9.3 35.3,48.5" />
+	</defs>
+	<g id="hexes">
+	</g>
+	<g id="dividers" stroke-width="50" stroke-linecap="round">
+	</g>
+	<circle id="end" r="280" stroke="white" stroke-width="50" fill="none" display="none" />
+	<g id="finishMarkers" stroke="white" stroke-width="10">
+	</g>
+	<g id="route" stroke-width="20" stroke-linecap="round">
+	</g>
+	<circle id="player" r="200" stroke="white" stroke-width="30" display="none" onclick="staticClicked(evt)" />
+    <script type="text/ecmascript"> <![CDATA[
+        function useClicked(evt) {
+            var e = evt.target.correspondingUseElement; //Standard
+            if (e == undefined) {
+                e = evt.target.parentElement; //Firefox
+            }
+            document.clickHandler(e)
+        }
+
+        function staticClicked(evt) {
+            document.clickHandler(evt.target)
+        }
+    ]]> </script>
+</svg>
