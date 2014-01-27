@@ -1,6 +1,5 @@
 function gameStandard(iface, m, doneCallback) {
     var hexes = loadMaze(m.maze, iface)
-    console.log(saveMaze(hexes))
     var pos, col, nextCol
     //End marker
     iface.endMarker.move(m.end)
@@ -23,7 +22,7 @@ function gameStandard(iface, m, doneCallback) {
                 doneCallback(null)
             } else { //reset
                 pos = route[0][0]
-                nextCol = route[0][1]
+                nextCol = hexes[m.start].getColour()
                 col = m.startcolour
                 route = [route[0]]
                 iface.playerMarker.move(pos)
