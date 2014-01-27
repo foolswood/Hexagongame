@@ -8,27 +8,27 @@ var msd = {
 	"bbwbgy",
 	"?wBw?"
 ],
-"start" : "1,3",
-"end" : "1,0",
-"nEnds" : "3",
+"start" : [1,3],
+"end" : [1,0],
+"nEnds" : 3,
 
 "mazes" : [
 {"maze" : [
 	"RyGrBgY",
 	"gbygybb",
 	"YgBgRyY"],
-"start" : "0,0",
-"end" : "3,0",
+"start" : [0,0],
+"end" : [3,0],
 "startColour" : "w",
-"nEnds" : "1"
+"nEnds" : 1
 },
 {"maze" : [
 	"RyGrBgY",
 	"gbygybb",
 	"YgBgRyY"],
-"start" : "3,0",
-"end" : "0,0",
-"nEnds" : "1"
+"start" : [3,0],
+"end" : [0,0],
+"nEnds" : 1
 },
 {"maze" : [
 	"GyBrY    ",
@@ -38,10 +38,10 @@ var msd = {
 	"RgBkGgk",
 	"yrbyrbyr",
 	"krYbBrGbR"],
-"start" : "1,0",
-"end" : "4,3",
+"start" : [1,0],
+"end" : [4,3],
 "startColour" : "w",
-"nEnds" : "1"
+"nEnds" : 1
 },
 {"maze" : [
 	"YgBbBrG  ",
@@ -51,10 +51,10 @@ var msd = {
 	"RrGbGrR",
 	"brybgrbg",
 	"YgRgBrByB"],
-"start" : "1,0",
-"end" : "4,3",
+"start" : [1,0],
+"end" : [4,3],
 "startColour" : "w",
-"nEnds" : "1"
+"nEnds" : 1
 },
 {"maze" : [
 	"YbYbBgYrB",
@@ -64,10 +64,10 @@ var msd = {
 	"YbGgRbGgR",
 	"bbrbbyyby",
 	"RyBgYgGbY"],
-"start" : "0,2",
-"end" : "2,2",
+"start" : [0,2],
+"end" : [2,2],
 "startColour" : "w",
-"nEnds" : "3"
+"nEnds" : 3
 },
 {"maze" : [
 	"          Y          ",
@@ -87,10 +87,10 @@ var msd = {
 	"        KbYbG        ",
 	"        rrbky        ",
 	"        GbRyB        "],
-"start" : "4,4",
-"end" : "6,5",
+"start" : [4,4],
+"end" : [6,5],
 "startColour" : "w",
-"nEnds" : "2"
+"nEnds" : 2
 },
 {"maze" : [
 	"RbGbBgYgKrG",
@@ -98,10 +98,10 @@ var msd = {
 	"BgGyRkYgKyG",
 	"ygrybkrbybk",
 	"RgKyGkBrYgR"],
-"start" : "0,1",
-"end" : "0,1",
+"start" : [0,1],
+"end" : [0,1],
 "startColour" : "w",
-"nEnds" : "1"
+"nEnds" : 1
 },
 { "maze" : [
 	"RgGgBbYyR",
@@ -113,9 +113,9 @@ var msd = {
 	"RrGgBbYrR",
 	"gbgbgybyr",
 	"RrGrByYgR"],
-"start" : "0,0",
-"end" : "4,4",
-"nEnds" :"1"
+"start" : [0,0],
+"end" : [4,4],
+"nEnds" : 1
 },
 {"maze" : [
 	"GbKyBrYrB",
@@ -131,9 +131,9 @@ var msd = {
 	"GgYkRkRkY",
 	"ybgbkgkyg",
 	"KyBrKgGrB"],
-"start" : "2,1",
-"end" : "2,6",
+"start" : [2,1],
+"end" : [2,6],
 "startColour" : "w",
-"nEnds" : "1"
+"nEnds" : 1
 }]
 }

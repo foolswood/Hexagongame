@@ -180,6 +180,7 @@ function SVGInterface(element_id) {
         clearChildren(hexGroup)
         clearChildren(dividerGroup)
         clearChildren(routeGroup)
+        clearChildren(finishMarkers)
         this.playerMarker.setShown(false)
         this.endMarker.setShown(false)
     }

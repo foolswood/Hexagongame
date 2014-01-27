@@ -6,21 +6,14 @@
 <script src="svg_interface.es" type="text/ecmascript"></script>
 <script src="loader.es" type="text/ecmascript"></script>
 <script src="std_game.es" type="text/ecmascript"></script>
+<script src="menu.es" type="text/ecmascript"></script>
+
+<script src="menmaze.es" type="text/ecmascript"></script>
 
 <script>
 window.onload = function() {
-    var m = {
-        "maze" : [
-            "RyGrBgY",
-            "gbygybb",
-            "YgBgRyY"],
-        "start" : [0,0],
-        "end" : [3,0],
-        "startColour" : "w",
-        "nEnds" : 1
-    }
     var i = new SVGInterface("A")
-    gameStandard(i, m, function(x) {alert(x); i.clear()})
+    loadSet(i, msd)
 }
 </script>
 </html>
