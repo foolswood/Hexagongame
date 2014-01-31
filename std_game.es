@@ -2,48 +2,46 @@ function gameStandard(iface, m, doneCallback) {
     var hexes = loadMaze(m.maze, iface)
     var pos, col, nextCol
     //End marker
-    iface.endMarker.move(m.end)
-    iface.endMarker.setShown(true)
+    iface.endMarker.position = m.end
+    iface.endMarker.visible = true
     //Player marker and initial conditions
     if (m.startcolour == undefined)
         m.startcolour = "w"
     col = m.startcolour
     pos = m.start
-    nextCol = hexes[pos].getColour()
-    iface.playerMarker.setColour(col)
-    iface.playerMarker.move(pos)
-    iface.playerMarker.setShown(true)
+    nextCol = hexes[pos].colour
+    iface.playerMarker.colour = col
+    iface.playerMarker.position = pos
+    iface.playerMarker.visible = true
     //Route
     var route = [[pos, col]];
-    iface.playerMarker.setCallback(
-        function() {
-            //resets maze
-            if (route.length == 1) { //maze at start
-                doneCallback(null)
-            } else { //reset
-                pos = route[0][0]
-                nextCol = hexes[m.start].getColour()
-                col = m.startcolour
-                route = [route[0]]
-                iface.playerMarker.move(pos)
-                iface.playerMarker.setColour(col)
-            }
+    iface.playerMarker.callback = function() {
+        //resets maze
+        if (route.length == 1) { //maze at start
+            doneCallback(null)
+        } else { //reset
+            pos = route[0][0]
+            nextCol = hexes[m.start].colour
+            col = m.startcolour
+            route = [route[0]]
+            iface.playerMarker.position = pos
+            iface.playerMarker.colour = col
         }
-    )
+    }
     var hexFunc = function(hex) {
         var entryPoints = hex.dividers.map(function(x) {return x[0].toString()})
-        var hexCol = hex.getColour()
-        var hexPos = hex.getPos()
+        var hexCol = hex.colour
+        var hexPos = hex.position
         var moveFunc =  function() {
             var i = entryPoints.indexOf(pos.toString())
             if (i != -1) {
-                var dcol = hex.dividers[i][1].getColour()
+                var dcol = hex.dividers[i][1].colour
                 if (col == "w" || dcol == "w" || col == dcol) {
                     col = nextCol
                     pos = hexPos
                     nextCol = hexCol
-                    iface.playerMarker.move(pos)
-                    iface.playerMarker.setColour(col)
+                    iface.playerMarker.position = pos
+                    iface.playerMarker.colour = col
                     route.push([pos, hexCol])
                     return
                 }
@@ -63,7 +61,7 @@ function gameStandard(iface, m, doneCallback) {
     }
     for (var h in hexes) {
         var hex = hexes[h]
-        hex.setCallback(hexFunc(hex))
+        hex.callback = hexFunc(hex)
     }
     /*IF EDIT
     this.solve = function() {

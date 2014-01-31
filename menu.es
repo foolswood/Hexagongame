@@ -60,7 +60,7 @@ function loadSet(iface, ms, progress=null) {
     }
     var finishMarkerCb = function(hex, i, j) {
         return function() {
-            hex.setColour(progress[i][j])
+            hex.colour = progress[i][j]
             //Update meta?
         }
     }
@@ -71,20 +71,18 @@ function loadSet(iface, ms, progress=null) {
         for (i=0; i<mazeHexes.length; i++) {
             pos = mazeHexes[i]
             hex = hexes[pos]
-            hex.setCallback(playMazeFunc(i))
+            hex.callback = playMazeFunc(i)
             markers = iface.addFinishMarkers(pos, progress[i].length)
             for (j=0; j<progress[i].length; j++) {
-                markers[j].setCallback(finishMarkerCb(hex, i, j))
-                markers[j].setColour(progress[i][j])
+                markers[j].callback = finishMarkerCb(hex, i, j)
+                markers[j].colour = progress[i][j]
             }
         }
         hex = hexes[ms.end]
-        hex.setCallback(
-            function () {
-                iface.clear()
-                gameStandard(iface, ms, function (col) {updateProgress(progress[progress.length-1], col)})
-            }
-        )
+        hex.callback = function () {
+            iface.clear()
+            gameStandard(iface, ms, function (col) {updateProgress(progress[progress.length-1], col)})
+        }
         markers = iface.addFinishMarkers(ms.end, progress[progress.length-1].length, true)
     }
     show()
