@@ -70,7 +70,7 @@ function saveMaze(hexes) {
     var height = 0, width = 0
     var h, pos
     for (h in hexes) {
-        pos = hexes[h].getPos()
+        pos = hexes[h].position
         if (pos[0] > width) {
             width = pos[0]
         }
@@ -92,11 +92,11 @@ function saveMaze(hexes) {
     var hex, divider, d
     for (h in hexes) {
         hex = hexes[h]
-        pos = hex.getPos()
-        ms[pos[1]*2][pos[0]*2] = hex.getColour().toUpperCase()
+        pos = hex.position
+        ms[pos[1]*2][pos[0]*2] = hex.colour.toUpperCase()
         for (d in hex.dividers) {
             divider = hex.dividers[d]
-            ms[pos[1] + divider[0][1]][pos[0] + divider[0][0]] = divider[1].getColour()
+            ms[pos[1] + divider[0][1]][pos[0] + divider[0][0]] = divider[1].colour
         }
     }
     ms = ms.map(function (x) {return x.join("")})

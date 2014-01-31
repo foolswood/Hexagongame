@@ -58,10 +58,11 @@ function loadSet(iface, ms, progress=null) {
             gameStandard(iface, ms.mazes[i], function(col) {updateProgress(progress[i], col)})
         }
     }
-    var finishMarkerCb = function(hex, i, j) {
+    var finishMarkerCb = function(hex, i, j, hexes) {
         return function() {
             hex.colour = progress[i][j]
             //Update meta?
+            ms.maze = saveMaze(hexes)
         }
     }
     var show = function() {
@@ -74,7 +75,7 @@ function loadSet(iface, ms, progress=null) {
             hex.callback = playMazeFunc(i)
             markers = iface.addFinishMarkers(pos, progress[i].length)
             for (j=0; j<progress[i].length; j++) {
-                markers[j].callback = finishMarkerCb(hex, i, j)
+                markers[j].callback = finishMarkerCb(hex, i, j, hexes)
                 markers[j].colour = progress[i][j]
             }
         }
