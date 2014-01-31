@@ -3,48 +3,45 @@ var xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
 function SVGUIElement(svg_iface, dom_elem, colour_fill) {
     var colour, position
 
-    this.move = function(pos) {
+    this.__defineSetter__("position", function(pos) {
         var loc = svg_iface.svgCoord(pos)
         dom_elem.setAttribute("x", loc[0])
         dom_elem.setAttribute("cx", loc[0])
         dom_elem.setAttribute("y", loc[1])
         dom_elem.setAttribute("cy", loc[1])
         position = pos
-    }
+    })
 
-    this.getPos = function() {
+    this.__defineGetter__("position", function() {
         return position
-    }
+    })
 
     if (colour_fill) {
-        this.setColour = function(col) {
+        this.__defineSetter__("colour", function(col) {
             dom_elem.setAttribute("fill", "url(#"+col+")")
             colour = col
-        }
-        this.getColour = function() {
-            return colour
-        }
+        })
     } else {
-        this.setColour = function(col) {
+        this.__defineSetter__("colour", function(col) {
             dom_elem.setAttribute("stroke", svg_iface.strokeColourMap[col])
             colour = col
-        }
-        this.getColour = function() {
-            return colour
-        }
+        })
     }
+    this.__defineGetter__("colour", function() {
+        return colour
+    })
 
-    this.setShown = function(bool) {
+    this.__defineSetter__("visible", function(bool) {
         if (bool) {
             dom_elem.removeAttribute("display")
         } else {
             dom_elem.setAttribute("display", "none")
         }
-    }
+    })
 
-    this.setCallback = function(func) {
+    this.__defineSetter__("callback", function(func) {
         svg_iface.addSvgCallback(dom_elem, func)
-    }
+    })
 }
 
 function SVGInterface(element_id) {
@@ -93,27 +90,27 @@ function SVGInterface(element_id) {
         var divider
         if (a[0] == b[0]) { //a on top of b
             divider = this.svgNewUse("center")
-            divider[0].move(a)
+            divider[0].position = a
         } else {
             if (b[1] == a[1]) { //Same Line
                 if (a[0]%2) { //Odd Rows
                     divider = this.svgNewUse("left")
-                    divider[0].move(b)
+                    divider[0].position = b
                 } else { //Even Rows
                     divider = this.svgNewUse("right")
-                    divider[0].move(a)
+                    divider[0].position = a
                 }
             } else { //Line Below
                 if (a[0] - b[0] == 1) {
                     divider = this.svgNewUse("left")
-                    divider[0].move(a)
+                    divider[0].position = a
                 } else {
                     divider = this.svgNewUse("right")
-                    divider[0].move(a)
+                    divider[0].position = a
                 }
             }
         }
-        divider[0].setColour(colour)
+        divider[0].colour = colour
         dividerGroup.appendChild(divider[1])
         return divider[0]
     }
@@ -121,8 +118,8 @@ function SVGInterface(element_id) {
     this.addHex = function(pos, colour) {
         var hex = this.svgNewUse("hex", true);
         hexGroup.appendChild(hex[1])
-        hex[0].setColour(colour)
-        hex[0].move(pos)
+        hex[0].colour = colour
+        hex[0].position = pos
         return hex[0]
     }
 
@@ -181,8 +178,8 @@ function SVGInterface(element_id) {
         clearChildren(dividerGroup)
         clearChildren(routeGroup)
         clearChildren(finishMarkers)
-        this.playerMarker.setShown(false)
-        this.endMarker.setShown(false)
+        this.playerMarker.visible = false
+        this.endMarker.visible = false
     }
 
     this.setSize = function(c, r) {
