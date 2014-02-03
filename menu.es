@@ -5,12 +5,12 @@ function loadSet(iface, ms, progress=null) {
         progress = [];
         for (m = 0; m < ms.mazes.length; m++) {
             s = []
-            for (i = 0; i <= ms.mazes[m].nEnds; i++)
+            for (i = 0; i < ms.mazes[m].nEnds; i++)
                 s.push("n")
             progress.push(s)
         }
         s = []
-        for (i = 0; i <= ms.nEnds; i++) {
+        for (i = 0; i < ms.nEnds; i++) {
             s.push("n")
         }
         progress.push(s);
@@ -61,13 +61,12 @@ function loadSet(iface, ms, progress=null) {
     var finishMarkerCb = function(hex, i, j, hexes) {
         return function() {
             hex.colour = progress[i][j]
-            //Update meta?
             ms.maze = saveMaze(hexes)
         }
     }
     var show = function() {
         //Cache the callbacks?
-        var hexes = loadMaze(mm, iface)
+        var hexes = loadMaze(ms.maze, iface)
         var i, j, hex, pos, markers
         for (i=0; i<mazeHexes.length; i++) {
             pos = mazeHexes[i]
@@ -82,9 +81,12 @@ function loadSet(iface, ms, progress=null) {
         hex = hexes[ms.end]
         hex.callback = function () {
             iface.clear()
-            gameStandard(iface, ms, function (col) {updateProgress(progress[progress.length-1], col)})
+            gameStandard(iface, ms, function (col) {updateProgress(progress[i], col)})
         }
-        markers = iface.addFinishMarkers(ms.end, progress[progress.length-1].length, true)
+        markers = iface.addFinishMarkers(ms.end, progress[i].length, true)
+        for (j=0; j<progress[i].length; j++) {
+            markers[j].colour = progress[i][j]
+        }
     }
     show()
 }
