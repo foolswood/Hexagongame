@@ -77,7 +77,10 @@ function SVGInterface(element_id) {
     }
 
     this.domIdCounter = 1
-    this.svgNewUse = function(type, colour_fill=false) {
+    this.svgNewUse = function(type, colour_fill) {
+        if (colour_fill === undefined) {
+            colour_fill = false
+        }
         //Creates a new svgUse object
         var nu = svg.createElementNS(svgNS, "use")
         nu.setAttribute("id", "no"+this.domIdCounter++)
@@ -123,7 +126,10 @@ function SVGInterface(element_id) {
         return hex[0]
     }
 
-    this.addFinishMarkers = function(pos, n, meta=false) {
+    this.addFinishMarkers = function(pos, n, meta) {
+        if (meta === undefined) {
+            meta = false
+        }
         var loc = this.svgCoord(pos)
         var elem, x, y
         var elems = []
@@ -144,9 +150,6 @@ function SVGInterface(element_id) {
             elems.push(elem[0])
         }
         return elems
-    }
-
-    this.hideFinishMarkers = function(val=true) {
     }
 
     this.addRoute = function(route) {
