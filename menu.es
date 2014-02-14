@@ -1,5 +1,5 @@
-function loadSet(iface, ms, progress=null) {
-	if (progress == null) {
+function loadSet(iface, ms, progress) {
+	if (progress === undefined) {
 		//Generate the progress 
         var m, i, s;
         progress = [];
