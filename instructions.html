@@ -1,0 +1,47 @@
+<html>
+<h1>How to play</h1>
+<body>
+<object id="A" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
+<p>The player marker may move through sides that match the its colour. In this case it may move through the red sides.</p>
+<object id="B" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
+<p>If the player marker is white it may move through sides of any colour. Any marker colour may move through a white side.</p>
+<object id="C" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
+<p>The aim is to get the player marker to the finish ring.</p>
+<object id="D" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
+<p>The player marker changes colour to that of the hexagon which was previously entered.</p>
+</body>
+
+<script src="svg_interface.es" type="text/ecmascript"></script>
+<script src="loader.es" type="text/ecmascript"></script>
+
+<script>
+window.onload = function() {
+    encircled = ['  R  ', '  g  ', 'BrGbB', ' gbr ', 'R B R']
+    var i = new SVGInterface("A")
+    loadMaze(encircled, i)
+    i.playerMarker.position = [1,1]
+    i.playerMarker.visible = true
+    i.playerMarker.colour = "r"
+
+    var j = new SVGInterface("B")
+    loadMaze(encircled, j)
+    j.playerMarker.position = [1,1]
+    j.playerMarker.visible = true
+    j.playerMarker.colour = "w"
+
+    var k = new SVGInterface("C")
+    loadMaze(['RgB'], k)
+    k.playerMarker.position = [0,0]
+    k.playerMarker.visible = true
+    k.playerMarker.colour = "w"
+    k.endMarker.position = [1,0]
+    k.endMarker.visible = true
+
+    var l = new SVGInterface("D")
+    loadMaze(['RgB'], l)
+    l.playerMarker.position = [1,0]
+    l.playerMarker.visible = true
+    l.playerMarker.colour = "r"
+}
+</script>
+</html>
