@@ -1,7 +1,5 @@
-<html>
-<object id="A" type="image/svg+xml" data="hexagons.svg" width="800" height="600"/>
-
-<<<<<<< HEAD
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg id="gameGrid" viewBox="0 0 6000 6000"
 xmlns="http://www.w3.org/2000/svg" version="1.1"
 xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -34,59 +32,35 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 		<linearGradient id="n">
 			<!-- Replace this when solidColor is common -->
 			<stop stop-color="grey"/>
-		<linearGradient/>
-		<polygon id="hex" points="500,0 250,433 -250,433 -500,0 -250,-433 250,-433" onclick="hexClickHandler(evt)" />
+		</linearGradient>
+		<polygon id="hex" points="500,0 250,433 -250,433 -500,0 -250,-433 250,-433" onclick="useClicked(evt)" />
 		<polyline id="left" points="-500,0 -250,433" />
 		<polyline id="center" points="250,433 -250,433" />
 		<polyline id="right" points="250,433 500,0" />
-		<circle id="finishCircle" r="60" onclick="finishCircleHandler(evt)" /> <!-- NOT the endpoint -->
-		<polygon id="finishStar" points="0,30 -35.3,48.5 -28.5,9.3 -57.1,-18.5 -17.6,-24.3 -0,-60 17.6,-24.3 57.1,-18.5 28.5,9.3 35.3,48.5" />
+		<circle id="finishCircle" r="60" onclick="useClicked(evt)" /> <!-- NOT the endpoint -->
+		<polygon id="finishStar" onclick="useClicked(evt)" points="0,30 -35.3,48.5 -28.5,9.3 -57.1,-18.5 -17.6,-24.3 -0,-60 17.6,-24.3 57.1,-18.5 28.5,9.3 35.3,48.5" />
 	</defs>
 	<g id="hexes">
 	</g>
-	<g id="joins" stroke-width="50" stroke-linecap="round">
+	<g id="dividers" stroke-width="50" stroke-linecap="round">
 	</g>
 	<circle id="end" r="280" stroke="white" stroke-width="50" fill="none" display="none" />
 	<g id="finishMarkers" stroke="white" stroke-width="10">
 	</g>
 	<g id="route" stroke-width="20" stroke-linecap="round">
 	</g>
-	<circle id="player" r="200" stroke="white" stroke-width="30" display="none" onclick="reset(evt)" />
+	<circle id="player" r="200" stroke="white" stroke-width="30" display="none" onclick="staticClicked(evt)" />
+    <script type="text/ecmascript"> <![CDATA[
+        function useClicked(evt) {
+            var e = evt.target.correspondingUseElement; //Standard
+            if (e == undefined) {
+                e = evt.target.parentElement; //Firefox
+            }
+            document.clickHandler(e)
+        }
+
+        function staticClicked(evt) {
+            document.clickHandler(evt.target)
+        }
+    ]]> </script>
 </svg>
-
-<script type="text/ecmascript">
-var colourMap = { //Colours for dividing lines
-	"w": "white",
-	"k": "black",
-	"r": "red",
-	"g": "forestgreen",
-	"b": "blue",
-	"y": "yellow"
-}
-
-var hexHeight = 866;
-var hexWidth = 1000;
-
-var finishPositions = [[370, 0], [185, 320], [-185, 320], [-370, 0], [-185, -320], [185, -320]];
-</script>
-
-<script src="game_lib.es" type="text/ecmascript"></script>
-
-<script src="level2.es" type="text/ecmascript"></script>
-
-=======
-<script src="svg_interface.es" type="text/ecmascript"></script>
-<script src="loader.es" type="text/ecmascript"></script>
->>>>>>> dave/menu
-<script src="std_game.es" type="text/ecmascript"></script>
-<script src="menu.es" type="text/ecmascript"></script>
-
-<script src="menmaze.es" type="text/ecmascript"></script>
-
-<script>
-window.onload = function() {
-    var i = new SVGInterface("A")
-    loadSet(i, msd)
-}
-</script>
-</html>

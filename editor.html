@@ -1,0 +1,19 @@
+<html>
+<object id="A" type="image/svg+xml" data="hexagons.svg" width="800" height="600"></object>
+<textarea id="raw" cols=80 rows=40></textarea>
+<button id="btn" type="button" onclick="preview_raw()" >Make it so!</button>
+
+<script src="svg_interface.es" type="text/ecmascript"></script>
+<script src="loader.es" type="text/ecmascript"></script>
+<script src="std_game.es" type="text/ecmascript"></script>
+<script src="menu.es" type="text/ecmascript"></script>
+
+<script>
+var i = new SVGInterface("A")
+
+function preview_raw() {
+    var maze = JSON.parse(document.getElementById("raw").value)
+    loadMaze(maze, i)
+}
+</script>
+</html>
