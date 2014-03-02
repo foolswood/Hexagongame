@@ -1,7 +1,14 @@
 <html>
+<h2>Preview</h2>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="800" height="600"></object>
-<textarea id="raw" cols=80 rows=40></textarea>
-<button id="btn" type="button" onclick="preview_raw()" >Make it so!</button>
+
+<h2>Raw Json</h2>
+<textarea id="raw" cols=80 rows=40>{"maze":["RgB"],"start":[0,0],"end":[1,0]}</textarea>
+<button type="button" onclick="preview_raw()" >Make it so!</button>
+
+<h2>Plain Maze</h2>
+<textarea id="plain" cols=80 rows=40>RgB</textarea>
+<button type="button" onclick="preview_plain()" >Make it plain!</button>
 
 <script src="svg_interface.es" type="text/ecmascript"></script>
 <script src="loader.es" type="text/ecmascript"></script>
@@ -9,11 +16,25 @@
 <script src="menu.es" type="text/ecmascript"></script>
 
 <script>
-var i = new SVGInterface("A")
+var iface
 
 function preview_raw() {
-    var maze = JSON.parse(document.getElementById("raw").value)
-    loadMaze(maze, i)
+    var level = JSON.parse(document.getElementById("raw").value)
+    gameStandard(iface, level, preview_raw)
 }
+
+function preview_plain() {
+    var maze = document.getElementById("plain").value.split('\n')
+    var level = JSON.parse(document.getElementById("raw").value)
+    level.maze = maze
+    document.getElementById("raw").value = JSON.stringify(level)
+    preview_raw()
+}
+
+window.onload = function() {
+    iface = new SVGInterface("A")
+    preview_raw()
+}
+
 </script>
 </html>
