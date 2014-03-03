@@ -10,8 +10,15 @@
 
 <script>
 window.onload = function() {
+    window.onresize()
     var i = new SVGInterface("A")
     loadSet(i, msd)
+}
+
+window.onresize = function() {
+    var o = document.getElementById("A")
+    o.height = window.innerHeight
+    o.width = window.innerWidth
 }
 </script>
 </html>
