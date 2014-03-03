@@ -1,5 +1,5 @@
 <html>
-<object id="A" type="image/svg+xml" data="hexagons.svg" width="800" height="600"/>
+<object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"/>
 
 <script src="svg_interface.es" type="text/ecmascript"></script>
 <script src="loader.es" type="text/ecmascript"></script>
@@ -10,15 +10,8 @@
 
 <script>
 window.onload = function() {
-    window.onresize()
     var i = new SVGInterface("A")
     loadSet(i, msd)
-}
-
-window.onresize = function() {
-    var o = document.getElementById("A")
-    o.height = window.innerHeight
-    o.width = window.innerWidth
 }
 </script>
 </html>
