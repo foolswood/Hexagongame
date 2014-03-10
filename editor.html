@@ -40,6 +40,7 @@
 <script src="serialiser.es" type="text/ecmascript"></script>
 <script src="std_game.es" type="text/ecmascript"></script>
 <script src="menu.es" type="text/ecmascript"></script>
+<script src="solver.es" type="text/ecmascript"></script>
 
 <script>
 var iface, active_tool, active_analyser
@@ -65,7 +66,8 @@ function tool_select(val) {
 }
 
 function preview() {
-    gameStandard(iface, level, preview)
+    var gs = new gameStandard(iface, level, preview)
+    console.log(solver([level.start, "w"], gs.get_moves))
 }
 
 function apply() {
