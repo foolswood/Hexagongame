@@ -30,7 +30,7 @@
         <button type="button" onclick="analyse()">Analyse</button>
     </div>
     <div class="pile">
-        <textarea id="solver" class="thing">Imagine there's a solver, it's easy if you try...</textarea>
+        <textarea id="solver" class="thing"></textarea>
         <textarea id="loop" class="thing">Imagine there are loop tools, living for today...</textarea>
     </div>
 </div>
@@ -45,10 +45,11 @@
 <script>
 var iface, active_tool, active_analyser
 var level = {"maze": ["RgB"], "start": [0,0], "end": [1,0]}
+var game
 
 function analyser_select(val) {
     var prev = active_analyser
-    active_analyser = document.getElementById(val);
+    active_analyser = document.getElementById(val)
     active_analyser.style.display = "block"
     if (prev !== undefined) {
         prev.style.display = "none"
@@ -67,7 +68,7 @@ function tool_select(val) {
 
 function preview() {
     var gs = new gameStandard(iface, level, preview)
-    console.log(solver([level.start, "w"], gs.get_moves))
+    document.getElementById("solver").value = JSON.stringify(solver([level.start, "w"], gs.get_moves))
 }
 
 function apply() {
