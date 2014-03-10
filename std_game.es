@@ -63,74 +63,15 @@ function gameStandard(iface, m, doneCallback) {
         var hex = hexes[h]
         hex.callback = hexFunc(hex)
     }
-    /*IF EDIT
-    this.solve = function() {
-        //Solve the given maze
-        var bailout = 0;
-        var traversed = {};
-        var finishColours = [];
-        var routes = [];
-        function hexColour(from) {
-            var pos = parseCoordStr(from.slice(1));
-            return m.maze[pos[1]*2][pos[0]*2].toLowerCase();
-        }
-        function validMoves(from) {
-            var moves = [];
-            var loc = from.slice(1);
-            var col = from.slice(0,1);
-            var join, ends, jcol;
-            for (join in joins) {
-                jcol = joins[join];
-                if (jcol == col || jcol == "w" || col == "w") {
-                    ends = join.split("-");
-                    switch (loc) {
-                        case ends[0]:
-                            moves.push(ends[1]);
-                            break;
-                        case ends[1]:
-                            moves.push(ends[0]);
-                            break;
-                    }
-                }
-            }
-            return moves;
-        }
-        function traverse(from, retrace) {
-            retrace += "-" + from;
-            if (from.slice(1) == m.end) {
-                if (finishColours.indexOf(from.slice(0,1))) {
-                    routes.push(retrace.slice(1));
-                    finishColours.push(from.slice(0,1));
-                } else {
-                    routes.push(retrace.slice(1));
-                }
-            } else {
-                if (traversed[from] == undefined) {
-                    traversed[from] = [retrace.slice(1)];
-                    var vMoves = validMoves(from);
-                    var mi, hc = hexColour(from);
-                    for (mi = 0; mi < vMoves.length; mi++) {
-                        traverse(hc+vMoves[mi], retrace);
-                    }
-                } else {
-                    traversed[from].push(retrace.slice(1));
-                }
+    this.get_moves = function(state) {
+        var div = hexes[state[0]].dividers
+        var col = hexes[state[0]].colour
+        var valid = []
+        for (var d=0; d<div.length; d++) {
+            if (state[1] == "w" || div[d][1] == "w" || div[d][1] == state[1]) {
+                valid.push([div[d][0], col])
             }
         }
-        if (m.startColour == undefined) {
-            traverse("w"+m.start, "");
-        } else {
-            traverse(m.startColour+m.start, "");
-        }
-        routes = routes[0].split("-");
-        console.log(routes);
-        function qp(t) {
-            return [parseCoordStr(t.slice(1)), t.slice(0,1)]
-        }
-        routes = routes.map(qp);
-        console.log(routes);
-        this.drawRoute(routes);
-        return finishColours.length;
+        return valid
     }
-    //FI */
 }
