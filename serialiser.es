@@ -13,7 +13,6 @@ function loadMaze(m, iface) {
     var hexes = {}
 	//Setup
     iface.clear()
-	iface.setSize(Math.ceil(m[0].length/2), Math.ceil(m.length/2))
     var newDivider = function(a, b, c) {
         var div = iface.addDivider(a, b, c)
         if (dividers[a] == undefined) {
@@ -60,6 +59,7 @@ function loadMaze(m, iface) {
 			}
 		}
 	}
+    iface.maximise()
     for (var hex in hexes) {
         hexes[hex].dividers = dividers[hex]
     }
