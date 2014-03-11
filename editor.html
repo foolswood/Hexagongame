@@ -30,7 +30,7 @@
         <button type="button" onclick="analyse()">Analyse</button>
     </div>
     <div class="pile">
-        <textarea id="solver" class="thing"></textarea>
+        <textarea id="solver" class="thing">Hit analyse!</textarea>
         <textarea id="loop" class="thing">Imagine there are loop tools, living for today...</textarea>
     </div>
 </div>
@@ -66,9 +66,12 @@ function tool_select(val) {
     }
 }
 
+function analyse() {
+    document.getElementById("solver").value = JSON.stringify(solver([level.start, "w"], get_std_moves_func(iface)))
+}
+
 function preview() {
-    var gs = new gameStandard(iface, level, preview)
-    document.getElementById("solver").value = JSON.stringify(solver([level.start, "w"], gs.get_moves))
+    gameStandard(iface, level, preview)
 }
 
 function apply() {
