@@ -67,6 +67,7 @@ function SVGInterface(element_id) {
     var finishPositions = [[370, 0], [185, 320], [-185, 320], [-370, 0], [-185, -320], [185, -320]];
     // End of data that should be in the svg file really
 
+    this.hexes = []
     this.playerMarker = new SVGUIElement(this, svg.getElementById("player"), true)
     this.endMarker = new SVGUIElement(this, svg.getElementById("end"), true)
 
@@ -123,6 +124,7 @@ function SVGInterface(element_id) {
         hexGroup.appendChild(hex[1])
         hex[0].colour = colour
         hex[0].position = pos
+        this.hexes.push(hex[0])
         return hex[0]
     }
 
@@ -181,6 +183,7 @@ function SVGInterface(element_id) {
         clearChildren(dividerGroup)
         clearChildren(routeGroup)
         clearChildren(finishMarkers)
+        this.hexes = []
         this.playerMarker.visible = false
         this.endMarker.visible = false
     }
