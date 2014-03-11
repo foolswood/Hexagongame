@@ -63,17 +63,4 @@ function gameStandard(iface, m, doneCallback) {
         var hex = hexes[h]
         hex.callback = hexFunc(hex)
     }
-    this.get_moves = function(state) {
-        var divs = hexes[state[0]].dividers
-        var col = hexes[state[0]].colour
-        var valid = []
-        var divCol
-        for (var d=0; d<divs.length; d++) {
-            divCol = divs[d][1].colour
-            if (state[1] == "w" || divCol == "w" || divCol == state[1]) {
-                valid.push([divs[d][0], col])
-            }
-        }
-        return valid
-    }
 }
