@@ -6,9 +6,9 @@ var solver = function(start_state, moves_func) {
         for (var m=0; m<moves.length; m++) {
             next = moves[m]
             if (ways_to[next] === undefined) {
-                ways_to[next] = route
+                ways_to[next] = [route]
                 var new_route = route.slice(0)
-                new_route.push(state)
+                new_route.push(next)
                 traverse(next, new_route)
             } else {
                 ways_to[next].push(route)

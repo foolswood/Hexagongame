@@ -5,7 +5,7 @@ function gameStandard(iface, m, doneCallback) {
     iface.endMarker.position = m.end
     iface.endMarker.visible = true
     //Player marker and initial conditions
-    if (m.startcolour == undefined)
+    if (m.startcolour === undefined)
         m.startcolour = "w"
     col = m.startcolour
     pos = m.start
@@ -64,12 +64,14 @@ function gameStandard(iface, m, doneCallback) {
         hex.callback = hexFunc(hex)
     }
     this.get_moves = function(state) {
-        var div = hexes[state[0]].dividers
+        var divs = hexes[state[0]].dividers
         var col = hexes[state[0]].colour
         var valid = []
-        for (var d=0; d<div.length; d++) {
-            if (state[1] == "w" || div[d][1] == "w" || div[d][1] == state[1]) {
-                valid.push([div[d][0], col])
+        var divCol
+        for (var d=0; d<divs.length; d++) {
+            divCol = divs[d][1].colour
+            if (state[1] == "w" || divCol == "w" || divCol == state[1]) {
+                valid.push([divs[d][0], col])
             }
         }
         return valid
