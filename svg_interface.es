@@ -188,11 +188,37 @@ function SVGInterface(element_id) {
         this.endMarker.visible = false
     }
 
-    this.setSize = function(c, r) {
-        //Setup the viewbox for a maze of size cxr
-        r = (r+0.5)*hexHeight
-        c = ((0.75*c)+0.25)*hexWidth
-        svg.getElementById("gameGrid").setAttribute("viewBox", "0 0 "+c.toString()+" "+r.toString())
+    this.hexBounds = function(hex) {
+        var svgPos = this.svgCoord(hex.position)
+        return [svgPos[0]-(hexWidth/2), svgPos[1]-(hexHeight/2), svgPos[0]+(hexWidth/2), svgPos[1]+(hexHeight/2)]
+    }
+
+    this.maximise = function() {
+        if (this.hexes.length == 0) {
+            return
+        }
+        var hex = this.hexes[0]
+        var hexbounds = this.hexBounds(hex)
+        var bounds = hexbounds
+        for (var h=1; h<this.hexes.length; h++) {
+            hex = this.hexes[h]
+            hexbounds = this.hexBounds(hex)
+            if (hexbounds[0] < bounds[0]) {
+                bounds[0] = hexbounds[0]
+            }
+            if (hexbounds[1] < bounds[1]) {
+                bounds[1] = hexbounds[1]
+            }
+            if (hexbounds[2] > bounds[2]) {
+                bounds[2] = hexbounds[2]
+            }
+            if (hexbounds[3] > bounds[3]) {
+                bounds[3] = hexbounds[3]
+            }
+        }
+        bounds[2] = bounds[2] - bounds[0]
+        bounds[3] = bounds[3] - bounds[1]
+        svg.getElementById("gameGrid").setAttribute("viewBox", bounds.join(" "))
     }
 
     var callbacks = {}
