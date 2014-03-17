@@ -2,11 +2,12 @@ var solver = function(start_state, moves_func) {
     ways_to = {}
     var traverse = function(state, route) {
         var moves = moves_func(state)
-        var next
+        var next, next_json
         for (var m=0; m<moves.length; m++) {
             next = moves[m]
-            if (ways_to[next] === undefined) {
-                ways_to[next] = [route]
+            next_json = JSON.stringify(next)
+            if (ways_to[next_json] === undefined) {
+                ways_to[next_json] = [route]
                 var new_route = route.slice(0)
                 new_route.push(next)
                 traverse(next, new_route)
