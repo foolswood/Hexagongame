@@ -12,7 +12,7 @@ var solver = function(start_state, moves_func) {
                 new_route.push(next)
                 traverse(next, new_route)
             } else {
-                ways_to[next].push(route)
+                ways_to[next_json].push(route)
             }
         }
     }
