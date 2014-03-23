@@ -1,7 +1,7 @@
 <html>
 <style>
 .pile {position:relative}
-.thing {position:absolute; display: none; width: 100%; height: 100%}
+.thing {position: absolute; display: none; width: 100%; height: 100%}
 </style>
 
 <body>
@@ -22,17 +22,13 @@
 </div>
 </div>
 <div style="float: left; width:29%; height: 100%; border: thin solid black">
-    <div id="analyse_menu">
-        <select id="analyser_select", onchange="analyser_select(this.value)">
-            <option value="solver">Solver</option>
-            <option value="loop">Loops</option>
-        </select>
+    <div>
         <button type="button" onclick="analyse()">Analyse</button>
+        <select id="hex_select", onchange="filter_solutions()">
+        </select>
     </div>
-    <div class="pile">
-        <textarea id="solver" class="thing">Hit analyse!</textarea>
-        <textarea id="loop" class="thing">Imagine there are loop tools, living for today...</textarea>
-    </div>
+    <ul id="solution_list">
+    </ul>
 </div>
 </body>
 
@@ -43,18 +39,9 @@
 <script src="solver.es" type="text/ecmascript"></script>
 
 <script>
-var iface, active_tool, active_analyser
+var iface, active_tool
 var level = {"maze": ["RgB"], "start": [0,0], "end": [1,0]}
-var game
-
-function analyser_select(val) {
-    var prev = active_analyser
-    active_analyser = document.getElementById(val)
-    active_analyser.style.display = "block"
-    if (prev !== undefined) {
-        prev.style.display = "none"
-    }
-}
+var game, solutions
 
 function tool_select(val) {
     var prev = active_tool
@@ -66,8 +53,42 @@ function tool_select(val) {
     }
 }
 
+var clearChildren = function(thing) {
+    while (thing.childNodes.length >= 1) {
+        thing.removeChild(thing.firstChild)
+    }
+}
+
+var show_solutions = function(solns) {
+    var sol_list = document.getElementById("solution_list")
+    clearChildren(sol_list)
+    var sol, sol_li
+    for (var s=0; s<solns.length; s++) {
+        sol = document.createTextNode(JSON.stringify(solns[s]))
+        sol_li = document.createElement("li")
+        sol_li.appendChild(sol)
+        sol_list.appendChild(sol_li)
+    }
+}
+
+function filter_solutions() {
+    var select_value = document.getElementById("hex_select").value
+    // Handle the special case where value is ""
+    show_solutions(solutions[select_value])
+}
+
 function analyse() {
-    document.getElementById("solver").value = JSON.stringify(solver([level.start, "w"], get_std_moves_func(iface)))
+    solutions = solver([level.start, "w"], get_std_moves_func(iface))
+    var state_dropdown = document.getElementById("hex_select")
+    var state_text, state_option
+    clearChildren(state_dropdown)
+    for (var s in solutions) {
+        state_text = document.createTextNode(s)
+        state_option = document.createElement("option", value=s)
+        state_option.appendChild(state_text)
+        state_dropdown.appendChild(state_option)
+    }
+    show_solutions(solutions[s])
 }
 
 function preview() {
@@ -98,8 +119,6 @@ document.getElementById("plain").apply = function() {
 window.onload = function() {
     iface = new SVGInterface("A")
     tool_select(document.getElementById("tool_select").value)
-    analyser_select(document.getElementById("analyser_select").value)
-    active_analyser.style.display = "block"
     preview()
 }
 
