@@ -1,6 +1,6 @@
 <html>
 <style>
-.pile {position:relative}
+.pile {position:relative; height: 90%}
 .thing {position: absolute; display: none; width: 100%; height: 100%}
 ul {list-style-type: circle}
 </style>
@@ -17,7 +17,7 @@ ul {list-style-type: circle}
         <button type="button" onclick="apply()">Apply</button>
     </div>
     <div class="pile">
-        <textarea id="json" class="thing">{"maze":["RgB"],"start":[0,0],"end":[1,0]}</textarea>
+        <textarea id="json" class="thing">{"maze":["RgB"],"start":[0,0],"end":[1,0],"startcolour":"w"}</textarea>
         <textarea id="plain" class="thing">RgB</textarea>
     </div>
 </div>
@@ -41,8 +41,9 @@ ul {list-style-type: circle}
 
 <script>
 var iface, active_tool
-var level = {"maze": ["RgB"], "start": [0,0], "end": [1,0]}
+var level = JSON.parse(document.getElementById("json").value)
 var game, solutions
+
 var solver_bg_colours = {
     "r": "mistyrose",
     "b": "lavender",
@@ -67,10 +68,15 @@ var clearChildren = function(thing) {
     }
 }
 
+var prev_route_li
 var route_draw = function(soln) {
     var drawer = function() {
         iface.addRoute(soln)
+        if (prev_route_li != undefined) {
+            prev_route_li.style.listStyleType = "circle"
+        }
         this.style.listStyleType = "disc"
+        prev_route_li = this
     }
     return drawer
 }
