@@ -67,6 +67,14 @@ var clearChildren = function(thing) {
     }
 }
 
+var route_draw = function(soln) {
+    var drawer = function() {
+        iface.addRoute(soln)
+        this.style.listStyleType = "disc"
+    }
+    return drawer
+}
+
 var show_solutions = function(solns) {
     var sol_list = document.getElementById("solution_list")
     clearChildren(sol_list)
@@ -80,6 +88,7 @@ var show_solutions = function(solns) {
             sol_span.style.backgroundColor = solver_bg_colours[soln[t][1]]
             sol_span.appendChild(sol)
             sol_li.appendChild(sol_span)
+            sol_li.onclick = route_draw(soln)
         }
         sol_list.appendChild(sol_li)
     }
@@ -88,7 +97,13 @@ var show_solutions = function(solns) {
 function filter_solutions() {
     var select_value = document.getElementById("hex_select").value
     // Handle the special case where value is ""
-    show_solutions(solutions[select_value])
+    var solns = solutions[select_value]
+    var ep = JSON.parse(select_value)
+    var solns_with_end = []
+    for (var s=0; s<solns.length; s++) {
+        solns_with_end.push(solns[s].concat([ep]))
+    }
+    show_solutions(solns_with_end)
 }
 
 function analyse() {
@@ -102,7 +117,7 @@ function analyse() {
         state_option.appendChild(state_text)
         state_dropdown.appendChild(state_option)
     }
-    show_solutions(solutions[s])
+    filter_solutions()
 }
 
 function preview() {
