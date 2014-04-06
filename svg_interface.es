@@ -77,14 +77,12 @@ function SVGInterface(element_id) {
         return [x, y]
     }
 
-    this.domIdCounter = 1
     this.svgNewUse = function(type, colour_fill) {
         if (colour_fill === undefined) {
             colour_fill = false
         }
         //Creates a new svgUse object
         var nu = svg.createElementNS(svgNS, "use")
-        nu.setAttribute("id", "no"+this.domIdCounter++)
         nu.setAttributeNS(xlinkNS, "href", "#"+type)
         var uie = new SVGUIElement(this, nu, colour_fill)
         return [uie, nu]
