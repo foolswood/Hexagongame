@@ -26,7 +26,7 @@ function loadSet(iface, ms, progress) {
         ml = ""
         for (x = 0; x < line.length; x++) {
             c = line[x]
-            if (c == "?") {
+            if (c === "?") {
                 cb = function(col) {
                     updateProgress(progress[count], col)
                 }
@@ -42,10 +42,10 @@ function loadSet(iface, ms, progress) {
     var updateProgress = function(prog, col) {
         if (col != null) {
             for (var p=0; p<prog.length; p++) {
-                if (prog[p] == "n") {  // Finished in a new colour
+                if (prog[p] === "n") {  // Finished in a new colour
                     prog[p] = col
                     break
-                } else if (prog[p] == col) {  // Finished a second time in the same colour
+                } else if (prog[p] === col) {  // Finished a second time in the same colour
                     break
                 }
             }

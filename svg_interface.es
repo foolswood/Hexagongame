@@ -90,11 +90,11 @@ function SVGInterface(element_id) {
 
     this.addDivider = function(a, b, colour) {
         var divider
-        if (a[0] == b[0]) { //a on top of b
+        if (a[0] === b[0]) { //a on top of b
             divider = this.svgNewUse("center")
             divider[0].position = a
         } else {
-            if (b[1] == a[1]) { //Same Line
+            if (b[1] === a[1]) { //Same Line
                 if (a[0]%2) { //Odd Rows
                     divider = this.svgNewUse("left")
                     divider[0].position = b
@@ -103,7 +103,7 @@ function SVGInterface(element_id) {
                     divider[0].position = a
                 }
             } else { //Line Below
-                if (a[0] - b[0] == 1) {
+                if (a[0] - b[0] === 1) {
                     divider = this.svgNewUse("left")
                     divider[0].position = a
                 } else {
@@ -193,7 +193,7 @@ function SVGInterface(element_id) {
     }
 
     this.maximise = function() {
-        if (this.hexes.length == 0) {
+        if (this.hexes.length === 0) {
             return
         }
         var hex = this.hexes[0]

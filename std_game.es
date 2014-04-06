@@ -17,7 +17,7 @@ function gameStandard(iface, m, doneCallback) {
     var route = [[pos, col]];
     iface.playerMarker.callback = function() {
         //resets maze
-        if (route.length == 1) { //maze at start
+        if (route.length === 1) { //maze at start
             doneCallback(null)
         } else { //reset
             pos = route[0][0]
@@ -36,7 +36,7 @@ function gameStandard(iface, m, doneCallback) {
             var i = entryPoints.indexOf(pos.toString())
             if (i != -1) {
                 var dcol = hex.dividers[i][1].colour
-                if (col == "w" || dcol == "w" || col == dcol) {
+                if (col === "w" || dcol === "w" || col === dcol) {
                     col = nextCol
                     pos = hexPos
                     nextCol = hexCol
@@ -48,7 +48,7 @@ function gameStandard(iface, m, doneCallback) {
             }
             throw "Invalid Move"
         }
-        if (hexPos.toString() == m.end.toString()) {
+        if (hexPos.toString() === m.end.toString()) {
             return function() {
                 moveFunc()
                 iface.addRoute(route)
