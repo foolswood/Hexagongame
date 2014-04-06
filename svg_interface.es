@@ -40,7 +40,7 @@ function SVGUIElement(svg_iface, dom_elem, colour_fill) {
     })
 
     this.__defineSetter__("callback", function(func) {
-        svg_iface.addSvgCallback(dom_elem, func)
+        dom_elem.onclick = func
     })
 }
 
@@ -220,15 +220,5 @@ function SVGInterface(element_id) {
         bounds[2] = bounds[2] - bounds[0]
         bounds[3] = bounds[3] - bounds[1]
         svg.getElementById("gameGrid").setAttribute("viewBox", bounds.join(" "))
-    }
-
-    var callbacks = {}
-
-    svg.clickHandler = function(elem) {
-        callbacks[elem.id]()
-    }
-
-    this.addSvgCallback = function(elem, func) {
-        callbacks[elem.id] = func
     }
 }
