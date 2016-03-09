@@ -8,22 +8,22 @@ var msd = {
 	" ry",
 	"?r?",
 	"   r",
-	"    ?"],
-"start" : "1,0",
-"end" : "2,4",
-"nEnds" : "1",
+	"    K"],
+"start" : [1,0],
+"end" : [2,4],
+"nEnds" : 1,
 
 "mazes" : [
 {"maze" : [
-	"YgBbBrG",
-	"bygrgbbr",
+	"YgBbBrG  ",
+	"bygrgbbr ",
 	"GrBrRgRry",
 	"rbrbgyy",
 	"RrGbGrR",
 	"brybgrbg",
 	"YgRgBrByB"],
-"start" : "1,0",
-"end" : "4,3",
+"start" : [1,0],
+"end" : [4,3],
 "startColour" : "w",
 "nEnds" : "1"
 },
@@ -33,13 +33,13 @@ var msd = {
 	"BgGyRkYgKyG",
 	"ygrybkrbybk",
 	"RgKyGkBrYgR"],
-"start" : "0,1",
-"end" : "0,1",
+"start" : [0,1],
+"end" : [0,1],
 "startColour" : "w",
-"nEnds" : "1"
+"nEnds" : 1
 },
 { "maze" : [
-	"  GbYgK",
+	"  GbYgK  ",
 	" ybrrrby",
 	"BbRrBrRbB",
 	"bbrkygrbk",
@@ -48,9 +48,9 @@ var msd = {
 	"GbYbRbGyK",
 	"   rbr",
 	"    B"],
-"start" : "2,2",
-"end" : "2,2",
-"nEnds" :"1"
+"start" : [2,2],
+"end" : [2,2],
+"nEnds" : 1
 },
 { "maze" : [
 	"RgGgBbYyR",
@@ -62,9 +62,9 @@ var msd = {
 	"RrGgBbYrR",
 	"gbgbgybyr",
 	"RrGrByYgR"],
-"start" : "0,0",
-"end" : "4,4",
-"nEnds" :"1"
+"start" : [0,0],
+"end" : [4,4],
+"nEnds" : 1
 },
 {"maze" : [
 	"          Y          ",
@@ -84,10 +84,10 @@ var msd = {
 	"        KbYbG        ",
 	"        rrbky        ",
 	"        GbRyB        "],
-"start" : "4,4",
-"end" : "6,5",
+"start" : [4,4],
+"end" : [6,5],
 "startColour" : "w",
-"nEnds" : "2"
+"nEnds" : 2
 },
 {"maze" : [
 	"RbYrByYkB",
@@ -97,10 +97,10 @@ var msd = {
 	"YbGgKbGgK",
 	"bbkbbyybg",
 	"KyBgYgGyR"],
-"start" : "0,2",
-"end" : "2,2",
+"start" : [0,2],
+"end" : [2,2],
 "startColour" : "w",
-"nEnds" : "4"
+"nEnds" : 4
 },
 {"maze" : [
 	"  BgRyw       RgYkG",
@@ -114,28 +114,9 @@ var msd = {
 	"  GyR           GrY",
 	"   rr           rr",
 	"    YgRbGbWgBbRbG"],
-"start" : "5,5",
-"end" : "5,1",
+"start" : [5,5],
+"end" : [5,1],
 "startColour" : "w",
-"nEnds" : "1"
-},
-{"maze" : [
-	"GbKyBrYrB",
-	"kbbgkrgby",
-	"BgGyRkRbG",
-	"gbkgggyry",
-	"RgBrKrGrG",
-	"bkgbkbkby",
-	"YkRbYkBgR",
-	"byryrygry",
-	"RyGkKbKbY",
-	"grrybgyyb",
-	"GgYkRkRkY",
-	"ybgbkgkyg",
-	"KyBrKgGrB"],
-"start" : "2,1",
-"end" : "2,6",
-"startColour" : "w",
-"nEnds" : "1"
+"nEnds" : 1
 }]
 }

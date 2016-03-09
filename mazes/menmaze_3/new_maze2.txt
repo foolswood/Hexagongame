@@ -1,0 +1,3 @@
+{"maze":["  KyGgB"," gbrkgyr","YyGrYbRbG","gbyrrgykb","YgRkByKrY","   bbb","    R"],"start":[2,3],"end":[2,0],"startcolour":"w"}
+
+(Nends = 2, (k and b)

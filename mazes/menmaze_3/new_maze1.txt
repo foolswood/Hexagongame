@@ -1,0 +1,1 @@
+ {"maze":["  G"," kyk","YgBgR","r r b","GkGbK","gyw y","RgYrB","  w","  B"],"start":[1,4],"end":[1,0],"startcolour":"w"}
