@@ -40,7 +40,7 @@ function SVGUIElement(svg_iface, dom_elem, colour_fill) {
     })
 
     this.__defineSetter__("callback", function(func) {
-        dom_elem.onclick = func
+        dom_elem.addEventListener('click', func)
     })
 }
 
