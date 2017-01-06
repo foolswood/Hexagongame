@@ -1,7 +1,7 @@
 var xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
 
 function SVGUIElement(svg_iface, dom_elem, colour_fill) {
-    var colour, position
+    var colour, position, _current_cb
 
     this.__defineSetter__("position", function(pos) {
         var loc = svg_iface.svgCoord(pos)
@@ -40,7 +40,11 @@ function SVGUIElement(svg_iface, dom_elem, colour_fill) {
     })
 
     this.__defineSetter__("callback", function(func) {
+        if (_current_cb !== undefined) {
+            dom_elem.removeEventListener('click', _current_cb)
+        }
         dom_elem.addEventListener('click', func)
+        _current_cb = func
     })
 }
 
