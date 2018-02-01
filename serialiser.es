@@ -13,15 +13,14 @@ function loadMaze(m, iface) {
     var hexes = {}
 	//Setup
     iface.clear()
-	iface.setSize(Math.ceil(m[0].length/2), Math.ceil(m.length/2))
     var newDivider = function(a, b, c) {
         var div = iface.addDivider(a, b, c)
-        if (dividers[a] == undefined) {
+        if (dividers[a] === undefined) {
             dividers[a] = [[b, div]]
         } else {
             dividers[a].push([b, div])
         }
-        if (dividers[b] == undefined) {
+        if (dividers[b] === undefined) {
             dividers[b] = [[a, div]]
         } else {
             dividers[b].push([a, div])
@@ -33,7 +32,7 @@ function loadMaze(m, iface) {
 		if ((i+1)%2) { //Hexagon Line
 			for (j=0; j<l.length; j++) {
 				c = l[j]
-                if (c == " ") { //Gaps and impasses
+                if (c === " ") { //Gaps and impasses
                     continue
                 }
 				if ((j+1)%2) { //Odd :. Hexagon
@@ -45,7 +44,7 @@ function loadMaze(m, iface) {
 		} else { //Divider Line
 			for (j=0; j<l.length; j++) {
 				c = l[j]
-				if (c == " ") {
+				if (c === " ") {
 					continue
 				}
 				if ((j+1)%2) { //Odd
@@ -60,6 +59,7 @@ function loadMaze(m, iface) {
 			}
 		}
 	}
+    iface.maximise()
     for (var hex in hexes) {
         hexes[hex].dividers = dividers[hex]
     }
