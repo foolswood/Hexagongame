@@ -1,7 +1,7 @@
 var xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
 
 function SVGUIElement(svg_iface, dom_elem, colour_fill) {
-    var colour, position
+    var colour, position, _current_cb
 
     this.__defineSetter__("position", function(pos) {
         var loc = svg_iface.svgCoord(pos)
@@ -40,7 +40,11 @@ function SVGUIElement(svg_iface, dom_elem, colour_fill) {
     })
 
     this.__defineSetter__("callback", function(func) {
-        svg_iface.addSvgCallback(dom_elem, func)
+        if (_current_cb !== undefined) {
+            dom_elem.removeEventListener('click', _current_cb)
+        }
+        dom_elem.addEventListener('click', func)
+        _current_cb = func
     })
 }
 
@@ -67,6 +71,7 @@ function SVGInterface(element_id) {
     var finishPositions = [[370, 0], [185, 320], [-185, 320], [-370, 0], [-185, -320], [185, -320]];
     // End of data that should be in the svg file really
 
+    this.hexes = []
     this.playerMarker = new SVGUIElement(this, svg.getElementById("player"), true)
     this.endMarker = new SVGUIElement(this, svg.getElementById("end"), true)
 
@@ -76,14 +81,12 @@ function SVGInterface(element_id) {
         return [x, y]
     }
 
-    this.domIdCounter = 1
     this.svgNewUse = function(type, colour_fill) {
         if (colour_fill === undefined) {
             colour_fill = false
         }
         //Creates a new svgUse object
         var nu = svg.createElementNS(svgNS, "use")
-        nu.setAttribute("id", "no"+this.domIdCounter++)
         nu.setAttributeNS(xlinkNS, "href", "#"+type)
         var uie = new SVGUIElement(this, nu, colour_fill)
         return [uie, nu]
@@ -91,11 +94,11 @@ function SVGInterface(element_id) {
 
     this.addDivider = function(a, b, colour) {
         var divider
-        if (a[0] == b[0]) { //a on top of b
+        if (a[0] === b[0]) { //a on top of b
             divider = this.svgNewUse("center")
             divider[0].position = a
         } else {
-            if (b[1] == a[1]) { //Same Line
+            if (b[1] === a[1]) { //Same Line
                 if (a[0]%2) { //Odd Rows
                     divider = this.svgNewUse("left")
                     divider[0].position = b
@@ -104,7 +107,7 @@ function SVGInterface(element_id) {
                     divider[0].position = a
                 }
             } else { //Line Below
-                if (a[0] - b[0] == 1) {
+                if (a[0] - b[0] === 1) {
                     divider = this.svgNewUse("left")
                     divider[0].position = a
                 } else {
@@ -123,6 +126,7 @@ function SVGInterface(element_id) {
         hexGroup.appendChild(hex[1])
         hex[0].colour = colour
         hex[0].position = pos
+        this.hexes.push(hex[0])
         return hex[0]
     }
 
@@ -153,6 +157,7 @@ function SVGInterface(element_id) {
     }
 
     this.addRoute = function(route) {
+        clearChildren(routeGroup)
 		var end, start = this.svgCoord(route[0][0])
 		var elem, i, c = route[0][1]
 		for (i = 1; i < route.length; i++) {
@@ -181,24 +186,41 @@ function SVGInterface(element_id) {
         clearChildren(dividerGroup)
         clearChildren(routeGroup)
         clearChildren(finishMarkers)
+        this.hexes = []
         this.playerMarker.visible = false
         this.endMarker.visible = false
     }
 
-    this.setSize = function(c, r) {
-        //Setup the viewbox for a maze of size cxr
-        r = (r+0.5)*hexHeight
-        c = ((0.75*c)+0.25)*hexWidth
-        svg.getElementById("gameGrid").setAttribute("viewBox", "0 0 "+c.toString()+" "+r.toString())
+    this.hexBounds = function(hex) {
+        var svgPos = this.svgCoord(hex.position)
+        return [svgPos[0]-(hexWidth/2), svgPos[1]-(hexHeight/2), svgPos[0]+(hexWidth/2), svgPos[1]+(hexHeight/2)]
     }
 
-    var callbacks = {}
-
-    svg.clickHandler = function(elem) {
-        callbacks[elem.id]()
-    }
-
-    this.addSvgCallback = function(elem, func) {
-        callbacks[elem.id] = func
+    this.maximise = function() {
+        if (this.hexes.length === 0) {
+            return
+        }
+        var hex = this.hexes[0]
+        var hexbounds = this.hexBounds(hex)
+        var bounds = hexbounds
+        for (var h=1; h<this.hexes.length; h++) {
+            hex = this.hexes[h]
+            hexbounds = this.hexBounds(hex)
+            if (hexbounds[0] < bounds[0]) {
+                bounds[0] = hexbounds[0]
+            }
+            if (hexbounds[1] < bounds[1]) {
+                bounds[1] = hexbounds[1]
+            }
+            if (hexbounds[2] > bounds[2]) {
+                bounds[2] = hexbounds[2]
+            }
+            if (hexbounds[3] > bounds[3]) {
+                bounds[3] = hexbounds[3]
+            }
+        }
+        bounds[2] = bounds[2] - bounds[0]
+        bounds[3] = bounds[3] - bounds[1]
+        svg.getElementById("gameGrid").setAttribute("viewBox", bounds.join(" "))
     }
 }
