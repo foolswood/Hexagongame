@@ -1,4 +1,9 @@
 <html>
+<div id="chooser">
+  <h1>Choose a level:</h1>
+  <button onClick="playLevel(level1)">1</button>
+  <button onClick="playLevel(level2)">2</button>
+</div>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"/>
 
 <script src="svg_interface.es" type="text/ecmascript"></script>
@@ -7,11 +12,14 @@
 <script src="menu_maze.es" type="text/ecmascript"></script>
 
 <script src="levels/level1.es" type="text/ecmascript"></script>
+<script src="levels/level2.es" type="text/ecmascript"></script>
 
 <script>
-window.onload = function() {
+playLevel = function(levelSet) {
+    var chooserDiv = document.getElementById("chooser");
+    (chooserDiv.parentElement).removeChild(chooserDiv)
     var i = new SVGInterface("A")
-    loadSet(i, level1)
+    loadSet(i, levelSet)
 }
 </script>
 </html>
