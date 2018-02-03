@@ -196,9 +196,9 @@ function SVGInterface(element_id) {
         return [svgPos[0]-(hexWidth/2), svgPos[1]-(hexHeight/2), svgPos[0]+(hexWidth/2), svgPos[1]+(hexHeight/2)]
     }
 
-    this.maximise = function() {
+    this.mazeBounds = function() {
         if (this.hexes.length === 0) {
-            return
+            [0, 0, 1, 1]
         }
         var hex = this.hexes[0]
         var bounds = this.hexBounds(hex)
@@ -220,6 +220,10 @@ function SVGInterface(element_id) {
         }
         bounds[2] = bounds[2] - bounds[0]
         bounds[3] = bounds[3] - bounds[1]
-        svg.getElementById("gameGrid").setAttribute("viewBox", bounds.join(" "))
+        return bounds
+    }
+
+    this.maximise = function() {
+        svg.getElementById("gameGrid").setAttribute("viewBox", this.mazeBounds().join(" "))
     }
 }
