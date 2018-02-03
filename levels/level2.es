@@ -1,4 +1,4 @@
-var msd = {
+var level2 = {
 "mazeLayout" : [
 	"  Bk?b?",
 	"      r",
