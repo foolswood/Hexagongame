@@ -201,11 +201,10 @@ function SVGInterface(element_id) {
             return
         }
         var hex = this.hexes[0]
-        var hexbounds = this.hexBounds(hex)
-        var bounds = hexbounds
+        var bounds = this.hexBounds(hex)
         for (var h=1; h<this.hexes.length; h++) {
             hex = this.hexes[h]
-            hexbounds = this.hexBounds(hex)
+            var hexbounds = this.hexBounds(hex)
             if (hexbounds[0] < bounds[0]) {
                 bounds[0] = hexbounds[0]
             }
