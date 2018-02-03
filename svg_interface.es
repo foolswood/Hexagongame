@@ -226,4 +226,19 @@ function SVGInterface(element_id) {
     this.maximise = function() {
         svg.getElementById("gameGrid").setAttribute("viewBox", this.mazeBounds().join(" "))
     }
+
+    this.winModal = function(cb) {
+        var greyBox = svg.getElementById("modalBg")
+        var bounds = this.mazeBounds()
+        greyBox.setAttribute("x", bounds[0])
+        greyBox.setAttribute("y", bounds[1])
+        greyBox.setAttribute("width", bounds[2] + bounds[0])
+        greyBox.setAttribute("height", bounds[3] + bounds[1])
+        greyBox.removeAttribute("display");
+        var modalClicked = function(evt) {
+            greyBox.setAttribute("display", "none");
+            cb();
+        }
+        greyBox.addEventListener('click', modalClicked)
+    }
 }
