@@ -39,6 +39,11 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 		<polyline id="right" points="250,433 500,0" />
 		<circle id="finishCircle" r="60" /> <!-- NOT the endpoint -->
 		<polygon id="finishStar" points="0,30 -35.3,48.5 -28.5,9.3 -57.1,-18.5 -17.6,-24.3 -0,-60 17.6,-24.3 57.1,-18.5 28.5,9.3 35.3,48.5" />
+        <path id="semiL" stroke="white" stroke-width="30" d="
+            M 0 -200
+            L 0 200
+            A 200 200 0 0 0 0 -200" />
+        <use id="semiR" transform="rotate(180, 0, 0)" href="#semiL" />
 	</defs>
 	<g id="hexes">
 	</g>

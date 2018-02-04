@@ -3,12 +3,14 @@
   <h1>Choose a level:</h1>
   <button onClick="playLevel(level1)">1</button>
   <button onClick="playLevel(level2)">2</button>
+  <button onClick="testShardAssemble()">YY</button>
 </div>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"/>
 
 <script src="svg_interface.es" type="text/ecmascript"></script>
 <script src="serialiser.es" type="text/ecmascript"></script>
 <script src="std_game.es" type="text/ecmascript"></script>
+<script src="shard_game.es" type="text/ecmascript"></script>
 <script src="menu_maze.es" type="text/ecmascript"></script>
 
 <script src="levels/level1.es" type="text/ecmascript"></script>
@@ -20,6 +22,20 @@ playLevel = function(levelSet) {
     (chooserDiv.parentElement).removeChild(chooserDiv)
     var i = new SVGInterface("A")
     loadSet(i, levelSet)
+}
+
+yym = {
+    "maze" : [
+        "RyGrBgY",
+        "gbygybb",
+        "YgBgRyY"],
+    "starts" : [[0,0], [3,0]],
+    "startColour" : "w"
+}
+
+testShardAssemble = function() {
+    var i = new SVGInterface("A")
+    gameShardAssemble(i, yym, console.log)
 }
 </script>
 </html>

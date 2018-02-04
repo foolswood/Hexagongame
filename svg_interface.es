@@ -75,6 +75,17 @@ function SVGInterface(element_id) {
     this.playerMarker = new SVGUIElement(this, svg.getElementById("player"), true)
     this.endMarker = new SVGUIElement(this, svg.getElementById("end"), true)
 
+    this.getShardMarkers = function(n_shards) {
+        if (n_shards != 2)
+            throw "Only 2 shards supported for rendering"
+        var a = this.svgNewUse("semiL", true)
+        var b = this.svgNewUse("semiR", true)
+        var gg = svg.getElementById("gameGrid")
+        gg.appendChild(a[1])
+        gg.appendChild(b[1])
+        return [a[0], b[0]]
+    }
+
     this.svgCoord = function(pos) {
         var x = ((0.75*pos[0])+0.5)*hexWidth
         var y = ((pos[1]+((pos[0]%2)*0.5))+0.5)*hexHeight
