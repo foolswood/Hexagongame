@@ -196,16 +196,15 @@ function SVGInterface(element_id) {
         return [svgPos[0]-(hexWidth/2), svgPos[1]-(hexHeight/2), svgPos[0]+(hexWidth/2), svgPos[1]+(hexHeight/2)]
     }
 
-    this.maximise = function() {
+    this.mazeBounds = function() {
         if (this.hexes.length === 0) {
-            return
+            [0, 0, 1, 1]
         }
         var hex = this.hexes[0]
-        var hexbounds = this.hexBounds(hex)
-        var bounds = hexbounds
+        var bounds = this.hexBounds(hex)
         for (var h=1; h<this.hexes.length; h++) {
             hex = this.hexes[h]
-            hexbounds = this.hexBounds(hex)
+            var hexbounds = this.hexBounds(hex)
             if (hexbounds[0] < bounds[0]) {
                 bounds[0] = hexbounds[0]
             }
@@ -221,6 +220,25 @@ function SVGInterface(element_id) {
         }
         bounds[2] = bounds[2] - bounds[0]
         bounds[3] = bounds[3] - bounds[1]
-        svg.getElementById("gameGrid").setAttribute("viewBox", bounds.join(" "))
+        return bounds
+    }
+
+    this.maximise = function() {
+        svg.getElementById("gameGrid").setAttribute("viewBox", this.mazeBounds().join(" "))
+    }
+
+    this.winModal = function(cb) {
+        var greyBox = svg.getElementById("modalBg")
+        var bounds = this.mazeBounds()
+        greyBox.setAttribute("x", bounds[0])
+        greyBox.setAttribute("y", bounds[1])
+        greyBox.setAttribute("width", bounds[2] + bounds[0])
+        greyBox.setAttribute("height", bounds[3] + bounds[1])
+        greyBox.removeAttribute("display");
+        var modalClicked = function(evt) {
+            greyBox.setAttribute("display", "none");
+            cb();
+        }
+        greyBox.addEventListener('click', modalClicked)
     }
 }

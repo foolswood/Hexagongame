@@ -52,8 +52,7 @@ function gameStandard(iface, m, doneCallback) {
             return function() {
                 moveFunc()
                 iface.addRoute(route)
-                alert("Complete")
-                doneCallback(col)
+                iface.winModal(function() {doneCallback(col)})
             }
         } else {
             return moveFunc
