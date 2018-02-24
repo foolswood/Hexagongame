@@ -4,7 +4,7 @@ function gameShardAssemble(iface, m, doneCallback) {
     // Player markers and initial conditions
     markers = iface.getShardMarkers(m.starts.length)
     var resetMaze = function() {
-        positions = m.starts
+        positions = m.starts.slice()
         col = m.startColour
         nextCols = positions.map(pos => hexes[pos].colour)
         for (var i = 0; i < positions.length; i++) {
