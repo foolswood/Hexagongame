@@ -62,7 +62,8 @@ function SVGInterface(element_id) {
         "r": "red",
         "g": "forestgreen",
         "b": "blue",
-        "y": "yellow"
+        "y": "yellow",
+        "p": "magenta"
     }
 
     var hexHeight = 866
