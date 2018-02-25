@@ -27,6 +27,10 @@ function gameShardAssemble(iface, m, doneCallback) {
         positions[posIdx] = p
         markers[posIdx].position = p
     }
+    var allEqual = function(things) {
+        var fstItem = things[0]
+        return things.slice(1).every(p => p === fstItem)
+    }
     updateCol(m.startColour)
     var hexFunc = function (hex) {
         var entryPoints = hex.dividers.map(x => x[0].toString())
@@ -34,21 +38,30 @@ function gameShardAssemble(iface, m, doneCallback) {
         var hexPos = hex.position
         var moveFunc =  function() {
             var indices = positions.map(pos => entryPoints.indexOf(pos.toString()))
+            var finishCols = []
             for (var posIdx = 0; posIdx < indices.length; posIdx++) {
                 var divIdx = indices[posIdx]
                 if (divIdx != -1) {
                     var dcol = hex.dividers[divIdx][1].colour
                     if (col === "w" || dcol === "w" || col === dcol) {
-                        updateCol(nextCols[posIdx])
+                        finishCols.push(nextCols[posIdx])
                         updatePos(posIdx, hexPos)
                         nextCols[posIdx] = hexCol
                     }
                 }
-                var fstPos = positions[0]
-                if (positions.slice(1).every(p => p === fstPos)) {
-                    alert("Win")
-                    doneCallback(col)
+            }
+            if (finishCols.length === 0) {
+                return
+            } else {
+                if (allEqual(finishCols)) {
+                    updateCol(finishCols[0])
+                } else {
+                    updateCol("w")
                 }
+            }
+            if (allEqual(positions)) {
+                alert("Win")
+                doneCallback(col)
             }
         }
         return moveFunc
