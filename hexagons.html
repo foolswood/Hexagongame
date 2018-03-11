@@ -4,6 +4,7 @@
 <script src="svg_interface.es" type="text/ecmascript"></script>
 <script src="serialiser.es" type="text/ecmascript"></script>
 <script src="maze_launcher.es" type="text/ecmascript"></script>
+<script src="progress.es" type="text/ecmascript"></script>
 <script src="std_game.es" type="text/ecmascript"></script>
 <script src="menu_maze.es" type="text/ecmascript"></script>
 
@@ -15,16 +16,8 @@ var topComp = function(iface, mazes, progress) {
     var h = iface.addHex([0,0], "w")
     h.callback = () => playMaze(iface, mazes, () => topComp(iface, mazes, progress), progress)
     var fms = iface.addFinishMarkers([0,0], mazes.nEnds)
-    var fc = progress.finishCols
-    if (fc === undefined) {
-        fc = ""
-    }
     for (var i = 0; i < mazes.nEnds; i++) {
-        var c = fc[i]
-        if (c === undefined) {
-            c = 'n'
-        }
-        fms[i].colour = c
+        fms[i].colour = getFinishCol(progress, i)
     }
     iface.maximise()
 }

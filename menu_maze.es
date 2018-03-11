@@ -55,7 +55,7 @@ function loadStdMenu(iface, ms, onComplete, progress) {
     }
     var finishMarkerCb = function(hex, loc, finIdx, hexes) {
         return function() {
-            var c = colView(getProgressFor(loc).finishCols, finIdx)
+            var c = getFinishCol(getProgressFor(loc), finIdx)
             hex.colour = c
             ensureSubObject(progress, 'chosenFinishes')[loc] = c
             ms.maze = saveMaze(hexes)
@@ -74,7 +74,7 @@ function loadStdMenu(iface, ms, onComplete, progress) {
             markers = iface.addFinishMarkers(pos, maze.nEnds)
             for (j=0; j<maze.nEnds; j++) {
                 markers[j].callback = finishMarkerCb(hex, pos, j, hexes)
-                markers[j].colour = colView(ensureSubObject(p, 'finishCols', ''), j)
+                markers[j].colour = getFinishCol(p, j)
             }
         }
         hex = hexes[ms.end]
@@ -84,7 +84,7 @@ function loadStdMenu(iface, ms, onComplete, progress) {
         }
         markers = iface.addFinishMarkers(ms.end, ms.nEnds, true)
         for (j=0; j<ms.nEnds; j++) {
-            markers[j].colour = colView(progress.finishCols, j)
+            markers[j].colour = getFinishCol(progress, j)
         }
     }
     show()
