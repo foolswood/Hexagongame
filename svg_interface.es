@@ -58,11 +58,12 @@ function SVGInterface(element_id) {
     // Data that I would rather wasn't here
     this.strokeColourMap = { //Colours for dividing lines
         "w": "white",
-        "k": "black",
+        "k": "#252525",
         "r": "red",
         "g": "forestgreen",
         "b": "blue",
-        "y": "yellow"
+        "y": "yellow",
+        "p": "magenta"
     }
 
     var hexHeight = 866
