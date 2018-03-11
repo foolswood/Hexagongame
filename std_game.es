@@ -1,4 +1,12 @@
-function gameStandard(iface, m, doneCallback) {
+function addFinishCol(s, c) {
+    if (s.includes(c)) {
+        return s
+    } else {
+        return s + c
+    }
+}
+
+function gameStandard(iface, m, doneCallback, progress) {
     var hexes = loadMaze(m.maze, iface)
     var pos, col, nextCol
     //End marker
@@ -51,8 +59,9 @@ function gameStandard(iface, m, doneCallback) {
         if (hexPos.toString() === m.end.toString()) {
             return function() {
                 moveFunc()
+                progress.finishCols = addFinishCol(progress.finishCols, col)
                 iface.addRoute(route)
-                iface.winModal(function() {doneCallback(col)})
+                iface.winModal(doneCallback)
             }
         } else {
             return moveFunc

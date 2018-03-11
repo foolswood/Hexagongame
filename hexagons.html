@@ -19,7 +19,7 @@ playLevel = function(levelSet) {
     var chooserDiv = document.getElementById("chooser");
     (chooserDiv.parentElement).removeChild(chooserDiv)
     var i = new SVGInterface("A")
-    loadSet(i, levelSet)
+    loadSet(i, levelSet, console.log, {})
 }
 </script>
 </html>
