@@ -27,9 +27,20 @@ function gameShardAssemble(iface, m, doneCallback) {
         positions[posIdx] = p
         markers[posIdx].position = p
     }
-    var allEqual = function(things) {
+    var allEqual = function(things, eq) {
         var fstItem = things[0]
-        return things.slice(1).every(p => p === fstItem)
+        return things.slice(1).every(p => eq(p, fstItem))
+    }
+    var listEq = function(a, b) {
+        if (a.length === b.length) {
+            for (var i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) {
+                    return false
+                }
+            }
+            return true
+        }
+        return false
     }
     updateCol(m.startColour)
     var hexFunc = function (hex) {
@@ -53,13 +64,13 @@ function gameShardAssemble(iface, m, doneCallback) {
             if (finishCols.length === 0) {
                 return
             } else {
-                if (allEqual(finishCols)) {
+                if (allEqual(finishCols, (a, b) => a === b)) {
                     updateCol(finishCols[0])
                 } else {
                     updateCol("w")
                 }
             }
-            if (allEqual(positions)) {
+            if (allEqual(positions, listEq)) {
                 alert("Win")
                 doneCallback(col)
             }
