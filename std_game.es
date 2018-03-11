@@ -72,3 +72,5 @@ function gameStandard(iface, m, doneCallback, progress) {
         hex.callback = hexFunc(hex)
     }
 }
+
+mazeModes.std = gameStandard

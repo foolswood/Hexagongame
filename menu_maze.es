@@ -1,4 +1,4 @@
-function loadSet(iface, ms, onComplete, progress) {
+function loadStdMenu(iface, ms, onComplete, progress) {
     var ensureSubObject = function(obj, attr, defaultSub) {
         if (defaultSub === undefined) {
             defaultSub = {}
@@ -50,7 +50,7 @@ function loadSet(iface, ms, onComplete, progress) {
     var playMazeFunc = function(i) {
         return function() {
             iface.clear()
-            gameStandard(iface, ms.mazes[i], show, getProgressFor(mazeHexes[i]))
+            playMaze(iface, ms.mazes[i], show, getProgressFor(mazeHexes[i]))
         }
     }
     var finishMarkerCb = function(hex, loc, finIdx, hexes) {
@@ -83,9 +83,11 @@ function loadSet(iface, ms, onComplete, progress) {
             gameStandard(iface, ms, onComplete, progress)
         }
         markers = iface.addFinishMarkers(ms.end, ms.nEnds, true)
-        for (j=0; j<progress.finishCols.length; j++) {
-            markers[j].colour = progress.finishCols[j]
+        for (j=0; j<ms.nEnds; j++) {
+            markers[j].colour = colView(progress.finishCols, j)
         }
     }
     show()
 }
+
+mazeModes.menu = loadStdMenu
