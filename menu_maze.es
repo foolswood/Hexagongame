@@ -1,4 +1,4 @@
-function loadStdMenu(iface, ms, onComplete, progress) {
+function loadStdMenu(iface, ms, goUp, progress) {
     var ensureSubObject = function(obj, attr, defaultSub) {
         if (defaultSub === undefined) {
             defaultSub = {}
@@ -77,15 +77,11 @@ function loadStdMenu(iface, ms, onComplete, progress) {
                 markers[j].colour = getFinishCol(p, j)
             }
         }
-        hex = hexes[ms.end]
-        hex.callback = function () {
+        var playMeta = function () {
             iface.clear()
-            gameStandard(iface, ms, onComplete, progress)
+            gameStandard(iface, ms, show, progress)
         }
-        markers = iface.addFinishMarkers(ms.end, ms.nEnds, true)
-        for (j=0; j<ms.nEnds; j++) {
-            markers[j].colour = getFinishCol(progress, j)
-        }
+        iface.revealMetaMarkers(ms.end, goUp, playMeta)
     }
     show()
 }

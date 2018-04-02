@@ -71,6 +71,8 @@ function SVGInterface(element_id) {
     this.hexes = []
     this.playerMarker = new SVGUIElement(this, svg.getElementById("player"), true)
     this.endMarker = new SVGUIElement(this, svg.getElementById("end"), true)
+    this.upArrow = new SVGUIElement(this, svg.getElementById("upArrow"), true)
+    this.playMeta = new SVGUIElement(this, svg.getElementById("playMeta"), true)
 
     this.svgCoord = function(pos) {
         var x = ((0.75*pos[0])+0.5)*hexWidth
@@ -127,19 +129,12 @@ function SVGInterface(element_id) {
         return hex[0]
     }
 
-    this.addFinishMarkers = function(pos, n, meta) {
-        if (meta === undefined) {
-            meta = false
-        }
+    this.addFinishMarkers = function(pos, n) {
         var loc = this.svgCoord(pos)
         var elem, x, y
         var elems = []
-        var shape = "finishCircle"
-        if (meta) {
-            shape = "finishStar"
-        }
         for (var i=0; i<n; i++) {
-            elem = this.svgNewUse(shape, true)
+            elem = this.svgNewUse("finishCircle", true)
             x = loc[0] + finishPositions[i][0]
             y = loc[1] + finishPositions[i][1]
             elem[1].setAttribute("x", x)
@@ -151,6 +146,15 @@ function SVGInterface(element_id) {
             elems.push(elem[0])
         }
         return elems
+    }
+
+    this.revealMetaMarkers = function(pos, upCb, playCb) {
+        this.upArrow.position = pos
+        this.upArrow.visible = true
+        this.upArrow.callback = upCb
+        this.playMeta.position = pos
+        this.playMeta.visible = true
+        this.playMeta.callback = playCb
     }
 
     this.addRoute = function(route) {
@@ -186,6 +190,8 @@ function SVGInterface(element_id) {
         this.hexes = []
         this.playerMarker.visible = false
         this.endMarker.visible = false
+        this.upArrow.visible = false
+        this.playMeta.visible = false
     }
 
     this.hexBounds = function(hex) {
