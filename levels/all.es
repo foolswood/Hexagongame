@@ -1,4 +1,88 @@
-var level2 = {
+allMazes = {
+"mode": "menu",
+"mazeLayout" : [
+    "?w?bKgY"
+],
+"start": [0,0],
+"end": [3,0],
+"startColour": "w",
+"nEnds": 1,
+"mazes": [
+{"mode": "menu",
+"mazeLayout" : [
+	"  Rg?",
+	"   br",
+	"    ?",
+	"    b",
+	"    ?",
+	"    y",
+	"  ?b?kG"],
+"start" : [1,0],
+"end" : [3,3],
+"nEnds" : 1,
+
+"mazes" : [
+{"mode": "std",
+"maze" : [
+	"RyGrBgY",
+	"gbygybb",
+	"YgBgRyY"],
+"start" : [0,0],
+"end" : [3,0],
+"startColour" : "w",
+"nEnds" : 1
+},
+{"mode": "std",
+"maze" : [
+	"RyGrBgY",
+	"gbygybb",
+	"YgBgRyY"],
+"start" : [3,0],
+"end" : [0,0],
+"startColour" : "w",
+"nEnds" : 1
+},
+{"mode": "std",
+"maze" : [
+	"  R  ",
+	" bby ",
+	"YrBrG",
+	"  g",
+	"  K"],
+"start" : [1,1],
+"end" : [1,2],
+"startColour" : "b",
+"nEnds" : 1
+},
+{"mode": "std",
+"maze" : [
+	"GyBrY    ",
+	"brybr    ",
+	"YbGbRbRrY",
+	"gbkgbryr",
+	"RgBkGgk",
+	"yrbyrbyr",
+	"krYbBrGbR"],
+"start" : [1,0],
+"end" : [4,3],
+"startColour" : "w",
+"nEnds" : 1
+},
+{"mode": "std",
+"maze" : [
+	"  B  ",
+	" kyg ",
+	"YyGgR",
+	"brkbr",
+	"KyBgY"],
+"start" : [0,2],
+"end" : [2,1],
+"startColour" : "w",
+"nEnds" : 1
+}]
+}
+,
+{"mode": "menu",
 "mazeLayout" : [
 	"  Bk?b?",
 	"      r",
@@ -14,7 +98,8 @@ var level2 = {
 "nEnds" : 1,
 
 "mazes" : [
-{"maze" : [
+{"mode": "std",
+"maze" : [
 	"YgBbBrG  ",
 	"bygrgbbr ",
 	"GrBrRgRry",
@@ -27,7 +112,8 @@ var level2 = {
 "startColour" : "w",
 "nEnds" : "1"
 },
-{"maze" : [
+{"mode": "std",
+"maze" : [
 	"RbGbBgYgKrG",
 	"rkygkbybygk",
 	"BgGyRkYgKyG",
@@ -38,7 +124,8 @@ var level2 = {
 "startColour" : "w",
 "nEnds" : 1
 },
-{ "maze" : [
+{"mode": "std",
+"maze" : [
 	"  GbYgK  ",
 	" ybrrrby",
 	"BbRrBrRbB",
@@ -52,7 +139,8 @@ var level2 = {
 "end" : [2,2],
 "nEnds" : 1
 },
-{ "maze" : [
+{"mode": "std",
+"maze" : [
 	"RgGgBbYyR",
 	"gbrbggbrr",
 	"RrGyBbYyR",
@@ -66,7 +154,8 @@ var level2 = {
 "end" : [4,4],
 "nEnds" : 1
 },
-{"maze" : [
+{"mode": "std",
+"maze" : [
 	"          Y          ",
 	"         rkr         ",
 	"        ByGrK        ",
@@ -89,7 +178,8 @@ var level2 = {
 "startColour" : "w",
 "nEnds" : 2
 },
-{"maze" : [
+{"mode": "std",
+"maze" : [
 	"RbYrByYkB",
 	"ykybbygyy",
 	"BkYgKgBbB",
@@ -102,7 +192,8 @@ var level2 = {
 "startColour" : "w",
 "nEnds" : 4
 },
-{"maze" : [
+{"mode": "std",
+"maze" : [
 	"  BgRyw       RgYkG",
 	"  k    g     w    b",
 	"  G     RbRbG     K",
@@ -119,4 +210,6 @@ var level2 = {
 "startColour" : "w",
 "nEnds" : 1
 }]
+}
+]
 }

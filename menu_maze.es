@@ -1,20 +1,30 @@
-function loadSet(iface, ms, progress) {
-	if (progress === undefined) {
-		//Generate the progress 
-        var m, i, s;
-        progress = [];
-        for (m = 0; m < ms.mazes.length; m++) {
-            s = []
-            for (i = 0; i < ms.mazes[m].nEnds; i++)
-                s.push("n")
-            progress.push(s)
+function loadStdMenu(iface, ms, goUp, progress) {
+    var ensureSubObject = function(obj, attr, defaultSub) {
+        if (defaultSub === undefined) {
+            defaultSub = {}
         }
-        s = []
-        for (i = 0; i < ms.nEnds; i++) {
-            s.push("n")
+        if (obj[attr] === undefined) {
+            obj[attr] = defaultSub
         }
-        progress.push(s);
-	}
+        return obj[attr]
+    }
+    ensureSubObject(progress, "chosenFinishes")
+    ensureSubObject(progress, "sub")
+    ensureSubObject(progress, "finishCols", "")
+    var colView = function(obj, attr) {
+        var c = obj[attr]
+        if (c === undefined) {
+            return "n"
+        } else {
+            return c
+        }
+    }
+    var getFinishFor = function(loc) {
+        return colView(progress.chosenFinishes, loc)
+    }
+    var getProgressFor = function(loc) {
+        return ensureSubObject(progress.sub, loc)
+    }
     //Generate metaMaze
     var line, c, ml, x, y, cb, count = 0, mm = [], mazeHexes = []
     for (y = 0; y < ms.mazeLayout.length; y++) {
@@ -27,10 +37,8 @@ function loadSet(iface, ms, progress) {
         for (x = 0; x < line.length; x++) {
             c = line[x]
             if (c === "?") {
-                cb = function(col) {
-                    updateProgress(progress[count], col)
-                }
-                ml += progress[count++][0]
+                var loc = [x/2, y/2]
+                ml += getFinishFor(loc)
                 mazeHexes.push([x/2, y/2])
             } else {
                 ml += c
@@ -39,28 +47,17 @@ function loadSet(iface, ms, progress) {
         mm.push(ml)
     }
     ms.maze = mm  //This should pull data from there rather than pushing it in
-    var updateProgress = function(prog, col) {
-        if (col != null) {
-            for (var p=0; p<prog.length; p++) {
-                if (prog[p] === "n") {  // Finished in a new colour
-                    prog[p] = col
-                    break
-                } else if (prog[p] === col) {  // Finished a second time in the same colour
-                    break
-                }
-            }
-        }
-        show()
-    }
     var playMazeFunc = function(i) {
         return function() {
             iface.clear()
-            gameStandard(iface, ms.mazes[i], function(col) {updateProgress(progress[i], col)})
+            playMaze(iface, ms.mazes[i], show, getProgressFor(mazeHexes[i]))
         }
     }
-    var finishMarkerCb = function(hex, i, j, hexes) {
+    var finishMarkerCb = function(hex, loc, finIdx, hexes) {
         return function() {
-            hex.colour = progress[i][j]
+            var c = getFinishCol(getProgressFor(loc), finIdx)
+            hex.colour = c
+            ensureSubObject(progress, 'chosenFinishes')[loc] = c
             ms.maze = saveMaze(hexes)
         }
     }
@@ -72,21 +69,21 @@ function loadSet(iface, ms, progress) {
             pos = mazeHexes[i]
             hex = hexes[pos]
             hex.callback = playMazeFunc(i)
-            markers = iface.addFinishMarkers(pos, progress[i].length)
-            for (j=0; j<progress[i].length; j++) {
-                markers[j].callback = finishMarkerCb(hex, i, j, hexes)
-                markers[j].colour = progress[i][j]
+            var maze = ms.mazes[i]
+            var p = getProgressFor(pos)
+            markers = iface.addFinishMarkers(pos, maze.nEnds)
+            for (j=0; j<maze.nEnds; j++) {
+                markers[j].callback = finishMarkerCb(hex, pos, j, hexes)
+                markers[j].colour = getFinishCol(p, j)
             }
         }
-        hex = hexes[ms.end]
-        hex.callback = function () {
+        var playMeta = function () {
             iface.clear()
-            gameStandard(iface, ms, function (col) {updateProgress(progress[i], col)})
+            gameStandard(iface, ms, show, progress)
         }
-        markers = iface.addFinishMarkers(ms.end, progress[i].length, true)
-        for (j=0; j<progress[i].length; j++) {
-            markers[j].colour = progress[i][j]
-        }
+        iface.revealMetaMarkers(ms.end, goUp, playMeta)
     }
     show()
 }
+
+mazeModes.menu = loadStdMenu

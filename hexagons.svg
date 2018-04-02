@@ -42,7 +42,6 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 		<polyline id="center" points="250,433 -250,433" />
 		<polyline id="right" points="250,433 500,0" />
 		<circle id="finishCircle" r="60" /> <!-- NOT the endpoint -->
-		<polygon id="finishStar" points="0,30 -35.3,48.5 -28.5,9.3 -57.1,-18.5 -17.6,-24.3 -0,-60 17.6,-24.3 57.1,-18.5 28.5,9.3 35.3,48.5" />
 	</defs>
 	<g id="hexes">
 	</g>
@@ -51,6 +50,8 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 	<circle id="end" r="280" stroke="white" stroke-width="50" fill="none" display="none" />
 	<g id="finishMarkers" stroke="white" stroke-width="10">
 	</g>
+	<polygon id="upArrow" points="-360,0 -200,-160 -40,0 -120,0 -120,140 -280,140 -280,0" fill="url(#y)" stroke="white" stroke-width="10" display="none" />
+	<circle id="playMeta" r="160" fill="url(#w)" stroke="black" stroke-width="10" cx="200" display="none" />
 	<g id="route" stroke-width="20" stroke-linecap="round">
 	</g>
 	<circle id="player" r="200" stroke="white" stroke-width="30" display="none" />

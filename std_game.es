@@ -1,4 +1,5 @@
-function gameStandard(iface, m, doneCallback) {
+
+function gameStandard(iface, m, doneCallback, progress) {
     var hexes = loadMaze(m.maze, iface)
     var pos, col, nextCol
     //End marker
@@ -51,8 +52,9 @@ function gameStandard(iface, m, doneCallback) {
         if (hexPos.toString() === m.end.toString()) {
             return function() {
                 moveFunc()
+                addFinishCol(progress, col)
                 iface.addRoute(route)
-                iface.winModal(function() {doneCallback(col)})
+                iface.winModal(doneCallback)
             }
         } else {
             return moveFunc
@@ -63,3 +65,5 @@ function gameStandard(iface, m, doneCallback) {
         hex.callback = hexFunc(hex)
     }
 }
+
+mazeModes.std = gameStandard
