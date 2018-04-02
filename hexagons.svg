@@ -38,7 +38,6 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 		<polyline id="center" points="250,433 -250,433" />
 		<polyline id="right" points="250,433 500,0" />
 		<circle id="finishCircle" r="60" /> <!-- NOT the endpoint -->
-		<polygon id="finishStar" points="0,30 -35.3,48.5 -28.5,9.3 -57.1,-18.5 -17.6,-24.3 -0,-60 17.6,-24.3 57.1,-18.5 28.5,9.3 35.3,48.5" />
 	</defs>
 	<g id="hexes">
 	</g>
