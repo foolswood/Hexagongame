@@ -5,10 +5,7 @@ function SVGUIElement(svg_iface, dom_elem, colour_fill) {
 
     this.__defineSetter__("position", function(pos) {
         var loc = svg_iface.svgCoord(pos)
-        dom_elem.setAttribute("x", loc[0])
-        dom_elem.setAttribute("cx", loc[0])
-        dom_elem.setAttribute("y", loc[1])
-        dom_elem.setAttribute("cy", loc[1])
+        dom_elem.setAttribute("transform", "translate(" + loc[0] + "," + loc[1] + ")")
         position = pos
     })
 
