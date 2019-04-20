@@ -2,7 +2,8 @@ function gameShardAssemble(iface, m, doneCallback) {
     var hexes = loadMaze(m.maze, iface)
     var positions, col, nextCols
     // Player markers and initial conditions
-    markers = iface.getShardMarkers(m.starts.length)
+    shards = iface.getShardMarkers(m.starts.length)
+    markers = shards.shards
     var resetMaze = function() {
         positions = m.starts.slice()
         col = m.startColour
@@ -72,6 +73,7 @@ function gameShardAssemble(iface, m, doneCallback) {
             }
             if (allEqual(positions, listEq)) {
                 alert("Win")
+                shards.destroy()
                 doneCallback(col)
             }
         }

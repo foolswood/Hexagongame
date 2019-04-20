@@ -53,9 +53,15 @@ function loadSet(iface, ms, progress) {
         show()
     }
     var playMazeFunc = function(i) {
+        var gameMode;
+        if ("starts" in ms.mazes[i]) {
+            gameMode = gameShardAssemble;
+        } else {
+            gameMode = gameStandard;
+        }
         return function() {
             iface.clear()
-            gameStandard(iface, ms.mazes[i], function(col) {updateProgress(progress[i], col)})
+            gameMode(iface, ms.mazes[i], function(col) {updateProgress(progress[i], col)})
         }
     }
     var finishMarkerCb = function(hex, i, j, hexes) {

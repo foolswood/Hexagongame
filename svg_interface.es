@@ -83,7 +83,10 @@ function SVGInterface(element_id) {
         var gg = svg.getElementById("gameGrid")
         gg.appendChild(a[1])
         gg.appendChild(b[1])
-        return [a[0], b[0]]
+        return {
+            shards: [a[0], b[0]],
+            destroy: function() {gg.removeChild(a[1]); gg.removeChild(b[1])}
+        }
     }
 
     this.svgCoord = function(pos) {

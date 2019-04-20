@@ -1,14 +1,14 @@
 var level3 = {
 "mazeLayout" : [
-	"  Yg?y?",
+	"  ?g?y?",
 	"      r",
-	"      G",
+	"      ?",
 	"     yr",
-	"    RgB",
+	"    Rg?",
 	"      r",
-	"  Y   R",
-	"   r b",
-	"    G"],
+	"  ?   ?",
+	"   r b ",
+	"    ?  "],
 "start" : [1,0],
 "end" : [2,2],
 "nEnds" : 2,
@@ -62,7 +62,8 @@ var level3 = {
 	"gbygybb",
 	"YgBgRyY"],
 "starts" : [[0,0], [3,0]],
-"startColour" : "w"
+"startColour" : "w",
+"nEnds" : 6
 },
 {"maze" : [
 	"  R",
@@ -71,7 +72,8 @@ var level3 = {
 	"rgygr",
 	"RbKkK"],
 "starts" : [[0,1], [2,1]],
-"startColour" : "r"
+"startColour" : "r",
+"nEnds" : 6
 },
 {"maze" : [
 	"GkKkR",
@@ -80,7 +82,8 @@ var level3 = {
 	"kr gk",
 	"G   Y"],
 "starts" : [[0,1], [2,1]],
-"startColour" : "k"
+"startColour" : "k",
+"nEnds" : 6
 },
 {"maze" : [
 	"  KbRyK",
@@ -89,24 +92,27 @@ var level3 = {
 	"k       y",
 	"YrYkByYbr"],
 "starts" : [[2,0], [2,2]],
-"startColour" : "w"
+"startColour" : "w",
+"nEnds" : 6
 },
 {"maze" : [
-  "  R   R",
-  " ggk kby",
-  "YrByGbGrK"],
-    "starts" : [[1,1], [3,1]],
-    "startColour" : "b"
+    "  R   R",
+    " ggk kby",
+    "YrByGbGrK"],
+"starts" : [[1,1], [3,1]],
+"startColour" : "b",
+"nEnds" : 6
 },
 {"maze" : [
-  "BbY",
-  "   g",
-  "    RrY",
-  "      ry",
-  "RyB   GbrgY",
-  "   r B",
-  "    B"],
-    "starts" : [[2,3], [2,1]],
-    "startColour" : "w"
+    "BbY",
+    "   g",
+    "    RrY",
+    "      ry",
+    "RyB   GbrgY",
+    "   r B",
+    "    B"],
+"starts" : [[2,3], [2,1]],
+"startColour" : "w",
+"nEnds" : 6
 }]
 }

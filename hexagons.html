@@ -4,7 +4,6 @@
   <button onClick="playLevel(level1)">1</button>
   <button onClick="playLevel(level2)">2</button>
   <button onClick="playLevel(level3)">3</button>
-  <button onClick="testShardAssemble()">YY</button>
 </div>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"/>
 
@@ -24,20 +23,6 @@ playLevel = function(levelSet) {
     (chooserDiv.parentElement).removeChild(chooserDiv)
     var i = new SVGInterface("A")
     loadSet(i, levelSet)
-}
-
-yym = {
-    "maze" : [
-        "RyGrBgY",
-        "gbygybb",
-        "YgBgRyY"],
-    "starts" : [[0,0], [3,0]],
-    "startColour" : "w"
-}
-
-testShardAssemble = function() {
-    var i = new SVGInterface("A")
-    gameShardAssemble(i, yym, console.log)
 }
 </script>
 </html>
