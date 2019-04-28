@@ -2,16 +2,23 @@ function gameShardAssemble(iface, m, doneCallback) {
     var hexes = loadMaze(m.maze, iface)
     var positions, col, nextCols
     // Player markers and initial conditions
-    shards = iface.getShardMarkers(m.starts.length)
-    markers = shards.shards
+    var shards = iface.getShardMarkers(m.starts.length)
+    var markers = shards.shards
+    var n_steps
     var resetMaze = function() {
-        positions = m.starts.slice()
-        col = m.startColour
-        nextCols = positions.map(pos => hexes[pos].colour)
-        for (var i = 0; i < positions.length; i++) {
-            var marker = markers[i]
-            marker.position = positions[i]
-            marker.colour = col
+        if (n_steps === 0) {
+            shards.destroy()
+            doneCallback(null)
+        } else {
+            positions = m.starts.slice()
+            col = m.startColour
+            nextCols = positions.map(pos => hexes[pos].colour)
+            for (var i = 0; i < positions.length; i++) {
+                var marker = markers[i]
+                marker.position = positions[i]
+                marker.colour = col
+                n_steps = 0
+            }
         }
     }
     resetMaze()
@@ -71,6 +78,7 @@ function gameShardAssemble(iface, m, doneCallback) {
                     updateCol("w")
                 }
             }
+            n_steps++
             if (allEqual(positions, listEq)) {
                 alert("Win")
                 shards.destroy()
