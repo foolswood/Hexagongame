@@ -1,0 +1,98 @@
+\documentclass[10pt,twocolumn]{article}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage[a4paper,margin=20mm]{geometry}
+\begin{document}
+\title{How many colours does Chromagon need?}
+\author{David Honour}
+\maketitle
+
+\section{What is Chromagon?}
+See \url{http://foolswood.github.io/Hexagongame/} for an interactive version of
+the hexagonal case.
+\subsection{What is a necessary colour?}
+Mazes are equivalent if all their paths are the same.
+A trivial example of equivalent mazes would be if all the regions and lines
+(elements) of one colour were to swap colour with all the elements of another.
+\subsection{1D (straight line) mazes}
+The simplest maze type that the rules can be applied to is one where each
+region borders 2 others. These are equivalent to a single row maze of any
+other shape.
+
+\section{Proving a maze cannot be reduced}
+\label{irr3}
+\begin{figure}
+\caption{A 1D maze requiring 3 colours}
+\label{requires3}
+\centering
+\input{irreducible3.eps_tex}
+\end{figure}
+Consider the maze shown in figure \ref{requires3} where $S$ is the starting
+colour, $A$, $B$ and $C$ are the colours of the corresponding regions and $x$
+and $y$ are the colours of the dividers.
+
+This maze can be expressed in terms of the set of equalities and inequalities
+that are required to impose the required movement restrictions:
+\begin{equation}S = x\end{equation}
+\begin{equation}A \neq x \label{3neq}\end{equation}
+\begin{equation}A = y\end{equation}
+\begin{equation}B = y \label{3eq}\end{equation}
+\begin{equation}C \neq y \label{3cny}\end{equation}
+\begin{equation}C \neq x \label{3cnx}\end{equation}
+
+Substituting equation \ref{3eq} into \ref{3neq} yields:
+\begin{equation}y \neq x \label{3ynx}\end{equation}
+which when considered with equations \ref{3cny} and \ref{3cnx} can be seen to
+require at least 3 colours to solve.
+
+\section{The maximum number of colours required for any maze}
+The number of colours required by a given maze is determined by the set of
+inequalities that restrict the available paths.
+Any equalities will force colour reuse (and therefore cannot increase the total
+number of required colours).
+
+For instance to require 2 colours requires $a \neq b$, but to require 3 (as in
+section \ref{irr3}) requires a set of inequalities of the form:
+\begin{equation}
+a \neq b
+\quad \textrm{and} \quad
+b \neq c
+\quad \textrm{and} \quad
+c \neq a
+\end{equation}
+Note that in order to have a set of equations like this it is necessary to have
+2 things that are simultaneously $\neq a$.
+
+More generally, in order to require a $n$ colours a single element must be able
+to participate simultaneously in $n-1$ inequalities.
+
+\subsection{1D}
+\begin{figure}
+\caption{A section of a 1D maze showing every region that can interact with $y$}
+\centering
+\input{labelled4.eps_tex}
+\label{1dall}
+\end{figure}
+Consider the interactions of $y$ in figure \ref{1dall}.
+
+For $C$ and $D$ to have any effect at $y$ the path must turn around at $D$.
+In order for this to be possible:
+\begin{equation} B = C \end{equation}
+which implies that the possible inequalities $B \neq y$ and $C \neq y$ are
+redundant.
+
+If $A \neq y$ and $S \neq y$ then $y$ cannot be traversed and thus no
+inequalities referring to $B$, $C$ or $D$ can take effect.
+
+If $S \neq y$ then to traverse $y$ and bring the remaining potential
+inequalities ($B \neq y$ and $D \neq y$) into play requires the path to return
+to $B$ which requires $x = B = S$ making $B \neq y$ and $S \neq y$ redundant.
+
+In order to return to the line from $A$, and thus apply $A \neq y$ requires
+that $x = B = S$, again this makes the constraint redundant.
+
+Therefore the maximum number of simultaneous inequalities that can be affect
+$y$ in any maze is 2, and thus 3 colours is the maximum required to express
+any 1D maze.
+\end{document}
