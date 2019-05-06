@@ -9,10 +9,17 @@
 \maketitle
 
 \section{What is Chromagon?}
+A maze consists of some coloured regions separated by coloured dividers.
+A coloured player marker starts in one of the regions.
+The player marker may move to an adjacent region cross any line whose colour
+matches its own.
+When the marker moves it takes on the colour of the region that it was in at
+the start of the move.
+
 See \url{http://foolswood.github.io/Hexagongame/} for an interactive version of
-the hexagonal case.
+these rules applied to tiled hexagons.
 \subsection{What is a necessary colour?}
-Mazes are equivalent if all their paths are the same.
+Mazes are considered equivalent if all their spatial paths are the same.
 A trivial example of equivalent mazes would be if all the regions and lines
 (elements) of one colour were to swap colour with all the elements of another.
 \subsection{1D (straight line) mazes}
