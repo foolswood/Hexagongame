@@ -18,7 +18,7 @@ function gameStandard(iface, m, doneCallback, progress) {
     iface.playerMarker.callback = function() {
         //resets maze
         if (route.length === 1) { //maze at start
-            doneCallback(null)
+            doneCallback()
         } else { //reset
             pos = route[0][0]
             nextCol = hexes[m.start].colour
