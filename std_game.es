@@ -1,4 +1,3 @@
-
 function gameStandard(iface, m, doneCallback, progress) {
     var hexes = loadMaze(m.maze, iface)
     var pos, col, nextCol

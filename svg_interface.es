@@ -75,6 +75,20 @@ function SVGInterface(element_id) {
     this.upArrow = new SVGUIElement(this, svg.getElementById("upArrow"), true)
     this.playMeta = new SVGUIElement(this, svg.getElementById("playMeta"), true)
 
+    this.getShardMarkers = function(n_shards) {
+        if (n_shards != 2)
+            throw "Only 2 shards supported for rendering"
+        var a = this.svgNewUse("semiL", true)
+        var b = this.svgNewUse("semiR", true)
+        var gg = svg.getElementById("gameGrid")
+        gg.appendChild(a[1])
+        gg.appendChild(b[1])
+        return {
+            shards: [a[0], b[0]],
+            destroy: function() {gg.removeChild(a[1]); gg.removeChild(b[1])}
+        }
+    }
+
     this.svgCoord = function(pos) {
         var x = ((0.75*pos[0])+0.5)*hexWidth
         var y = ((pos[1]+((pos[0]%2)*0.5))+0.5)*hexHeight
