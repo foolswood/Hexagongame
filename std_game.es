@@ -1,13 +1,13 @@
-function gameStandard(iface, m, doneCallback) {
+function gameStandard(iface, m, doneCallback, progress) {
     var hexes = loadMaze(m.maze, iface)
     var pos, col, nextCol
     //End marker
     iface.endMarker.position = m.end
     iface.endMarker.visible = true
     //Player marker and initial conditions
-    if (m.startcolour === undefined)
-        m.startcolour = "w"
-    col = m.startcolour
+    if (m.startColour === undefined)
+        m.startColour = "w"
+    col = m.startColour
     pos = m.start
     nextCol = hexes[pos].colour
     iface.playerMarker.colour = col
@@ -22,7 +22,7 @@ function gameStandard(iface, m, doneCallback) {
         } else { //reset
             pos = route[0][0]
             nextCol = hexes[m.start].colour
-            col = m.startcolour
+            col = m.startColour
             route = [route[0]]
             iface.playerMarker.position = pos
             iface.playerMarker.colour = col
@@ -51,9 +51,9 @@ function gameStandard(iface, m, doneCallback) {
         if (hexPos.toString() === m.end.toString()) {
             return function() {
                 moveFunc()
+                addFinishCol(progress, col)
                 iface.addRoute(route)
-                alert("Complete")
-                doneCallback(col)
+                iface.winModal(doneCallback)
             }
         } else {
             return moveFunc
@@ -64,3 +64,5 @@ function gameStandard(iface, m, doneCallback) {
         hex.callback = hexFunc(hex)
     }
 }
+
+mazeModes.std = gameStandard

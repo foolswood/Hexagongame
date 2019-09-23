@@ -92,3 +92,5 @@ function gameShardAssemble(iface, m, doneCallback) {
         hex.callback = hexFunc(hex)
     }
 }
+
+mazeModes.shard = gameShardAssemble

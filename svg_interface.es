@@ -5,10 +5,7 @@ function SVGUIElement(svg_iface, dom_elem, colour_fill) {
 
     this.__defineSetter__("position", function(pos) {
         var loc = svg_iface.svgCoord(pos)
-        dom_elem.setAttribute("x", loc[0])
-        dom_elem.setAttribute("cx", loc[0])
-        dom_elem.setAttribute("y", loc[1])
-        dom_elem.setAttribute("cy", loc[1])
+        dom_elem.setAttribute("transform", "translate(" + loc[0] + "," + loc[1] + ")")
         position = pos
     })
 
@@ -58,11 +55,12 @@ function SVGInterface(element_id) {
     // Data that I would rather wasn't here
     this.strokeColourMap = { //Colours for dividing lines
         "w": "white",
-        "k": "black",
+        "k": "#252525",
         "r": "red",
         "g": "forestgreen",
         "b": "blue",
-        "y": "yellow"
+        "y": "yellow",
+        "p": "magenta"
     }
 
     var hexHeight = 866
@@ -74,6 +72,8 @@ function SVGInterface(element_id) {
     this.hexes = []
     this.playerMarker = new SVGUIElement(this, svg.getElementById("player"), true)
     this.endMarker = new SVGUIElement(this, svg.getElementById("end"), true)
+    this.upArrow = new SVGUIElement(this, svg.getElementById("upArrow"), true)
+    this.playMeta = new SVGUIElement(this, svg.getElementById("playMeta"), true)
 
     this.getShardMarkers = function(n_shards) {
         if (n_shards != 2)
@@ -144,19 +144,12 @@ function SVGInterface(element_id) {
         return hex[0]
     }
 
-    this.addFinishMarkers = function(pos, n, meta) {
-        if (meta === undefined) {
-            meta = false
-        }
+    this.addFinishMarkers = function(pos, n) {
         var loc = this.svgCoord(pos)
         var elem, x, y
         var elems = []
-        var shape = "finishCircle"
-        if (meta) {
-            shape = "finishStar"
-        }
         for (var i=0; i<n; i++) {
-            elem = this.svgNewUse(shape, true)
+            elem = this.svgNewUse("finishCircle", true)
             x = loc[0] + finishPositions[i][0]
             y = loc[1] + finishPositions[i][1]
             elem[1].setAttribute("x", x)
@@ -168,6 +161,15 @@ function SVGInterface(element_id) {
             elems.push(elem[0])
         }
         return elems
+    }
+
+    this.revealMetaMarkers = function(pos, upCb, playCb) {
+        this.upArrow.position = pos
+        this.upArrow.visible = true
+        this.upArrow.callback = upCb
+        this.playMeta.position = pos
+        this.playMeta.visible = true
+        this.playMeta.callback = playCb
     }
 
     this.addRoute = function(route) {
@@ -203,6 +205,8 @@ function SVGInterface(element_id) {
         this.hexes = []
         this.playerMarker.visible = false
         this.endMarker.visible = false
+        this.upArrow.visible = false
+        this.playMeta.visible = false
     }
 
     this.hexBounds = function(hex) {
@@ -210,16 +214,15 @@ function SVGInterface(element_id) {
         return [svgPos[0]-(hexWidth/2), svgPos[1]-(hexHeight/2), svgPos[0]+(hexWidth/2), svgPos[1]+(hexHeight/2)]
     }
 
-    this.maximise = function() {
+    this.mazeBounds = function() {
         if (this.hexes.length === 0) {
-            return
+            [0, 0, 1, 1]
         }
         var hex = this.hexes[0]
-        var hexbounds = this.hexBounds(hex)
-        var bounds = hexbounds
+        var bounds = this.hexBounds(hex)
         for (var h=1; h<this.hexes.length; h++) {
             hex = this.hexes[h]
-            hexbounds = this.hexBounds(hex)
+            var hexbounds = this.hexBounds(hex)
             if (hexbounds[0] < bounds[0]) {
                 bounds[0] = hexbounds[0]
             }
@@ -235,6 +238,25 @@ function SVGInterface(element_id) {
         }
         bounds[2] = bounds[2] - bounds[0]
         bounds[3] = bounds[3] - bounds[1]
-        svg.getElementById("gameGrid").setAttribute("viewBox", bounds.join(" "))
+        return bounds
+    }
+
+    this.maximise = function() {
+        svg.getElementById("gameGrid").setAttribute("viewBox", this.mazeBounds().join(" "))
+    }
+
+    this.winModal = function(cb) {
+        var greyBox = svg.getElementById("modalBg")
+        var bounds = this.mazeBounds()
+        greyBox.setAttribute("x", bounds[0])
+        greyBox.setAttribute("y", bounds[1])
+        greyBox.setAttribute("width", bounds[2] + bounds[0])
+        greyBox.setAttribute("height", bounds[3] + bounds[1])
+        greyBox.removeAttribute("display");
+        var modalClicked = function(evt) {
+            greyBox.setAttribute("display", "none");
+            cb();
+        }
+        greyBox.addEventListener('click', modalClicked)
     }
 }
