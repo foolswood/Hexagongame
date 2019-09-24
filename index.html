@@ -4,4 +4,36 @@
 <a href="game/hexagons.html">Play</a>
 <a href="game/editor.html">Edit</a>
 <a href="maths/hexagon_proof.pdf">Maths</a>
+<a id="save">Save</a>
+<input type="file" id="fileElem" accept="application/json" style="display:none">
+<label for="fileElem">Load</label>
 </html>
+<script>
+var dlUrl = null;
+
+function makeDownload() {
+    var jobj = window.localStorage.chromagonProgress
+    var b = new Blob([jobj], {"type": "application/json"})
+    if (dlUrl) {
+        URL.revokeObjectURL(dlUrl)
+    }
+    dlUrl = URL.createObjectURL(b)
+    var d = new Date()
+    sbtn.setAttribute("download", "chromagon-progress-" + d.toISOString().split('.')[0] + '.json')
+    sbtn.setAttribute("href", dlUrl)
+}
+
+var sbtn = document.getElementById("save")
+sbtn.addEventListener("click", makeDownload)
+
+function loadSaveGame() {
+    if (this.files.length) {
+        var f = new FileReader()
+        f.addEventListener("load", () => localStorage.chromagonProgress = f.result)
+        f.readAsText(this.files[0])
+    }
+}
+
+var lbtn = document.getElementById("fileElem")
+lbtn.addEventListener("change", loadSaveGame)
+</script>
