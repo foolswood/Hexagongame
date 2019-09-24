@@ -1,4 +1,4 @@
-function gameShardAssemble(iface, m, doneCallback, progress) {
+function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
     var returnToMenu = function() {
         shards.destroy()
         doneCallback()
@@ -85,6 +85,7 @@ function gameShardAssemble(iface, m, doneCallback, progress) {
             if (allEqual(positions, listEq)) {
                 addFinishCol(progress, col)
                 iface.winModal(returnToMenu)
+                saveProgressCb()
             }
         }
         return moveFunc

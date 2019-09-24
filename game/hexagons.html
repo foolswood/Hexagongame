@@ -17,10 +17,13 @@
 <script src="levels/all.es" type="text/ecmascript"></script>
 
 <script>
-var topComp = function(iface, mazes, progress) {
+var topComp = function(iface, mazes, progress, saveProgressCb) {
     iface.clear()
     var h = iface.addHex([0,0], "w")
-    h.callback = () => playMaze(iface, mazes, () => topComp(iface, mazes, progress), progress)
+    h.callback = () => playMaze(
+        iface, mazes,
+        () => topComp(iface, mazes, progress, saveProgressCb),
+        progress, saveProgressCb)
     var fms = iface.addFinishMarkers([0,0], mazes.nEnds)
     for (var i = 0; i < mazes.nEnds; i++) {
         fms[i].colour = getFinishCol(progress, i)
@@ -30,7 +33,13 @@ var topComp = function(iface, mazes, progress) {
 
 window.onload = function() {
     var i = new SVGInterface("A")
-    topComp(i, allMazes, {})
+    var globalProgress = {}
+    if (window.localStorage.chromagonProgress) {
+        globalProgress = JSON.parse(window.localStorage.chromagonProgress)
+    }
+    topComp(
+        i, allMazes, globalProgress,
+        () => window.localStorage.chromagonProgress = JSON.stringify(globalProgress))
 }
 </script>
 </html>

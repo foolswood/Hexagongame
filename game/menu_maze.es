@@ -1,4 +1,4 @@
-function loadStdMenu(iface, ms, goUp, progress) {
+function loadStdMenu(iface, ms, goUp, progress, saveProgressCb) {
     var ensureSubObject = function(obj, attr, defaultSub) {
         if (defaultSub === undefined) {
             defaultSub = {}
@@ -50,7 +50,9 @@ function loadStdMenu(iface, ms, goUp, progress) {
     var playMazeFunc = function(i) {
         return function() {
             iface.clear()
-            playMaze(iface, ms.mazes[i], show, getProgressFor(mazeHexes[i]))
+            playMaze(
+                iface, ms.mazes[i], show, getProgressFor(mazeHexes[i]),
+                saveProgressCb)
         }
     }
     var finishMarkerCb = function(hex, loc, finIdx, hexes) {
@@ -58,6 +60,7 @@ function loadStdMenu(iface, ms, goUp, progress) {
             var c = getFinishCol(getProgressFor(loc), finIdx)
             hex.colour = c
             ensureSubObject(progress, 'chosenFinishes')[loc] = c
+            saveProgressCb()
             ms.maze = saveMaze(hexes)
         }
     }
