@@ -90,9 +90,9 @@ var show_solutions = function(solns) {
         soln = solns[s]
         sol_li = document.createElement("li")
         for (var t=0; t<soln.length; t++) {
-            sol = document.createTextNode(JSON.stringify(soln[t][0]))
+            sol = document.createTextNode(JSON.stringify(soln[t].pos))
             sol_span = document.createElement("span")
-            sol_span.style.backgroundColor = solver_bg_colours[soln[t][1]]
+            sol_span.style.backgroundColor = solver_bg_colours[soln[t].col]
             sol_span.appendChild(sol)
             sol_li.appendChild(sol_span)
             sol_li.onclick = route_draw(soln)
@@ -118,7 +118,7 @@ function analyse() {
     if (startCol === undefined) {
         startCol = "w"
     }
-    solutions = solver([level.start, startCol], get_std_moves_func(iface))
+    solutions = solver({"pos": level.start, "col": startCol}, get_std_moves_func(iface))
     var state_dropdown = document.getElementById("hex_select")
     var state_text, state_option
     clearChildren(state_dropdown)

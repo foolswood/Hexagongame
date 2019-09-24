@@ -1,4 +1,4 @@
-var solver = function(start_state, moves_func) {
+function solver(start_state, moves_func) {
     ways_to = {}
     var traverse = function(state, route) {
         var moves = moves_func(state)
@@ -20,7 +20,7 @@ var solver = function(start_state, moves_func) {
     return ways_to
 }
 
-get_std_moves_func = function(iface) {
+function get_std_moves_func(iface) {
     var hexes = {}
     var hex
     for (var h=0; h<iface.hexes.length; h++) {
@@ -28,14 +28,14 @@ get_std_moves_func = function(iface) {
         hexes[hex.position] = hex
     }
     return function(state) {
-        var divs = hexes[state[0]].dividers
-        var col = hexes[state[0]].colour
+        var divs = hexes[state.pos].dividers
+        var col = hexes[state.pos].colour
         var valid = []
         var divCol
         for (var d=0; d<divs.length; d++) {
             divCol = divs[d][1].colour
-            if (state[1] == "w" || divCol == "w" || divCol == state[1]) {
-                valid.push([divs[d][0], col])
+            if (state.col == "w" || divCol == "w" || divCol == state.col) {
+                valid.push({"pos": divs[d][0], "col": col})
             }
         }
         return valid
