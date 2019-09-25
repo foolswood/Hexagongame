@@ -51,6 +51,8 @@ function SVGInterface(element_id) {
 	var dividerGroup = svg.getElementById("dividers")
     var routeGroup = svg.getElementById("route")
     var finishMarkers = svg.getElementById("finishMarkers")
+    var playerMarkers = svg.getElementById("playerMarkers")
+    var defs = svg.getElementsByTagName("defs")[0]
 
     // Data that I would rather wasn't here
     this.strokeColourMap = { //Colours for dividing lines
@@ -65,6 +67,7 @@ function SVGInterface(element_id) {
 
     var hexHeight = 866
     var hexWidth = 1001
+    var shardClipRadius = 250 // Bigger than player circle
 
     var finishPositions = [[370, 0], [185, 320], [-185, 320], [-370, 0], [-185, -320], [185, -320]];
     // End of data that should be in the svg file really
@@ -75,18 +78,37 @@ function SVGInterface(element_id) {
     this.upArrow = new SVGUIElement(this, svg.getElementById("upArrow"), true)
     this.playMeta = new SVGUIElement(this, svg.getElementById("playMeta"), true)
 
-    this.getShardMarkers = function(n_shards) {
-        if (n_shards != 2)
-            throw "Only 2 shards supported for rendering"
-        var a = this.svgNewUse("semiL", true)
-        var b = this.svgNewUse("semiR", true)
-        var gg = svg.getElementById("gameGrid")
-        gg.appendChild(a[1])
-        gg.appendChild(b[1])
-        return {
-            shards: [a[0], b[0]],
-            destroy: function() {gg.removeChild(a[1]); gg.removeChild(b[1])}
+    function shardPointStr(angle) {
+        return Math.sin(angle) * shardClipRadius + "," + Math.cos(angle) * shardClipRadius
+    }
+
+    this.getShardMarkers = function(nShards) {
+        var degPerShard = 2 * Math.PI / nShards
+        var rmElems = []
+        var shards = []
+        for (var s=0; s<nShards; s++) {
+            var shardStart = shardPointStr(degPerShard * s)
+            var shardEnd = shardPointStr(degPerShard * (s + 1))
+            var path = svg.createElementNS(svgNS, "path")
+            path.setAttribute(
+                "d",
+                "M 0 0 " +
+                "L " + shardStart +
+                " A " + shardClipRadius + " " + shardClipRadius + " 0 0 0 " + shardEnd +
+                " Z")
+            var clipPath = svg.createElementNS(svgNS, "clipPath")
+            var clipPathId = "playerMarkerClip" + s
+            clipPath.setAttribute("id", clipPathId)
+            clipPath.appendChild(path)
+            defs.appendChild(clipPath)
+            rmElems.push(clipPath)
+            var playerMarkerUse = this.svgNewUse("playerMarker", true)
+            playerMarkerUse[1].setAttribute("clip-path", "url(#" + clipPathId + ")")
+            playerMarkers.appendChild(playerMarkerUse[1])
+            rmElems.push(playerMarkerUse[1])
+            shards.push(playerMarkerUse[0])
         }
+        return {shards: shards, destroy: () => rmElems.map((n) => n.remove())}
     }
 
     this.svgCoord = function(pos) {
