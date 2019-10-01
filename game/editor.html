@@ -73,12 +73,13 @@ var clearChildren = function(thing) {
 var prev_route_li
 var route_draw = function(soln) {
     var drawer = function() {
-        var routes = soln[0].pos.map((p) => [[p, soln[0].col]])
+        var routes = soln[0].pos.map((p) => [[p, "n"]])
         for (var sIdx = 1; sIdx < soln.length; sIdx++) {
             for (var mIdx = 0; mIdx < soln[sIdx].pos.length; mIdx++) {
                 var mPos = soln[sIdx].pos[mIdx]
                 if (mPos.toString() !== soln[sIdx-1].pos[mIdx].toString()) {
-                    routes[mIdx].push([mPos, soln[sIdx].col])
+                    routes[mIdx][routes[mIdx].length-1][1] = soln[sIdx-1].col
+                    routes[mIdx].push([mPos, "n"])
                 }
             }
         }
