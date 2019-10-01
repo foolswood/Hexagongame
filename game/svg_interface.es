@@ -73,7 +73,6 @@ function SVGInterface(element_id) {
     // End of data that should be in the svg file really
 
     this.hexes = []
-    this.playerMarker = new SVGUIElement(this, svg.getElementById("player"), true)
     this.endMarker = new SVGUIElement(this, svg.getElementById("end"), true)
     this.upArrow = new SVGUIElement(this, svg.getElementById("upArrow"), true)
     this.playMeta = new SVGUIElement(this, svg.getElementById("playMeta"), true)
@@ -83,6 +82,13 @@ function SVGInterface(element_id) {
     }
 
     this.getShardMarkers = function(nShards) {
+        if (nShards === 1) {
+            var playerMarkerUse = this.svgNewUse("playerMarker", true)
+            playerMarkers.appendChild(playerMarkerUse[1])
+            return {
+                shards: [playerMarkerUse[0]],
+                destroy: () => playerMarkerUse[1].remove()}
+        }
         var degPerShard = 2 * Math.PI / nShards
         var rmElems = []
         var shards = []
@@ -195,7 +201,6 @@ function SVGInterface(element_id) {
     }
 
     this.addRoute = function(route) {
-        clearChildren(routeGroup)
 		var end, start = this.svgCoord(route[0][0])
 		var elem, i, c = route[0][1]
 		for (i = 1; i < route.length; i++) {
@@ -225,7 +230,6 @@ function SVGInterface(element_id) {
         clearChildren(routeGroup)
         clearChildren(finishMarkers)
         this.hexes = []
-        this.playerMarker.visible = false
         this.endMarker.visible = false
         this.upArrow.visible = false
         this.playMeta.visible = false
