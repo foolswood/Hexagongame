@@ -126,11 +126,9 @@ function filter_solutions() {
 }
 
 function analyse() {
-    var startCol = level.startColour
-    if (startCol === undefined) {
-        startCol = "w"
-    }
-    solutions = solver({"pos": level.starts, "col": startCol}, get_shard_moves_func(iface))
+    solutions = solver(
+        {"pos": level.starts, "col": level.startColour},
+        get_shard_moves_func(iface))
     var state_dropdown = document.getElementById("hex_select")
     var state_text, state_option
     clearChildren(state_dropdown)
