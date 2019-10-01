@@ -83,6 +83,13 @@ function SVGInterface(element_id) {
     }
 
     this.getShardMarkers = function(nShards) {
+        if (nShards === 1) {
+            var playerMarkerUse = this.svgNewUse("playerMarker", true)
+            playerMarkers.appendChild(playerMarkerUse[1])
+            return {
+                shards: [playerMarkerUse[0]],
+                destroy: () => playerMarkerUse[1].remove()}
+        }
         var degPerShard = 2 * Math.PI / nShards
         var rmElems = []
         var shards = []

@@ -4,6 +4,10 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
         doneCallback()
     }
     var hexes = loadMaze(m.maze, iface)
+    if (m.end !== undefined) {
+        iface.endMarker.position = m.end
+        iface.endMarker.visible = true
+    }
     var positions, col, nextCols
     // Player markers and initial conditions
     var shards = iface.getShardMarkers(m.starts.length)
@@ -53,6 +57,16 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
         }
         return false
     }
+    var finished = function(positions) {
+        if (allEqual(positions, listEq)) {
+            if (m.end === undefined) {
+                return true
+            } else {
+                return m.end.toString() === positions[0].toString()
+            }
+        }
+        return false
+    }
     updateCol(m.startColour)
     var hexFunc = function (hex) {
         var entryPoints = hex.dividers.map(x => x[0].toString())
@@ -82,7 +96,7 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
                 }
             }
             n_steps++
-            if (allEqual(positions, listEq)) {
+            if (finished(positions)) {
                 addFinishCol(progress, col)
                 iface.winModal(returnToMenu)
                 saveProgressCb()
