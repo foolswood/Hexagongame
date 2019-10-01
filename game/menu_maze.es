@@ -82,7 +82,7 @@ function loadStdMenu(iface, ms, goUp, progress, saveProgressCb) {
         }
         var playMeta = function () {
             iface.clear()
-            gameStandard(iface, ms, show, progress)
+            gameStandard(iface, ms, show, progress, saveProgressCb)
         }
         iface.revealMetaMarkers(ms.end, goUp, playMeta)
     }
