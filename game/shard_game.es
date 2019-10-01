@@ -4,27 +4,27 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
         iface.endMarker.position = m.end
         iface.endMarker.visible = true
     }
-    var col, nextCols
-    // Player markers and initial conditions
     var shards = iface.getShardMarkers(m.starts.length)
     var returnToMenu = function() {
         shards.destroy()
         doneCallback()
     }
     var markers = shards.shards
+    var col
     var updateCol = function(c) {
         col = c
         for (var m in markers) {
             markers[m].colour = col
         }
     }
-    var n_steps
+    var n_steps, nextCols, routes
     var resetMaze = function() {
         if (n_steps === 0) {
             returnToMenu()
         } else {
             updateCol(m.startColour)
             nextCols = m.starts.map(pos => hexes[pos].colour)
+            routes = m.starts.map(pos => [[pos, col]])
             for (var i = 0; i < m.starts.length; i++) {
                 markers[i].position = m.starts[i]
             }
@@ -61,6 +61,7 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
         var hexPos = hex.position
         var moveFunc =  function() {
             var finishCols = []
+            var moved = []
             for (var mIdx = 0; mIdx < markers.length; mIdx++) {
                 var divIdx = entryPoints.indexOf(
                     markers[mIdx].position.toString())
@@ -68,6 +69,7 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
                     var dcol = hex.dividers[divIdx][1].colour
                     if (col === "w" || dcol === "w" || col === dcol) {
                         finishCols.push(nextCols[mIdx])
+                        moved.push(mIdx)
                         markers[mIdx].position = hexPos
                         nextCols[mIdx] = hexCol
                     }
@@ -81,9 +83,12 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
             } else {
                 updateCol("w")
             }
+            moved.forEach(
+                (mIdx) => routes[mIdx].push([markers[mIdx].position, col]))
             n_steps++
             if (finished(markers.map(m => m.position))) {
                 addFinishCol(progress, col)
+                routes.forEach((route) => iface.addRoute(route))
                 iface.winModal(returnToMenu)
                 saveProgressCb()
             }

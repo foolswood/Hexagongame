@@ -202,7 +202,6 @@ function SVGInterface(element_id) {
     }
 
     this.addRoute = function(route) {
-        clearChildren(routeGroup)
 		var end, start = this.svgCoord(route[0][0])
 		var elem, i, c = route[0][1]
 		for (i = 1; i < route.length; i++) {
