@@ -20,14 +20,14 @@ function solver(start_state, moves_func) {
     return ways_to
 }
 
-function get_std_moves_func(iface) {
+function get_shard_moves_func(iface) {
     var hexes = {}
     var hex
     for (var h=0; h<iface.hexes.length; h++) {
         hex = iface.hexes[h]
         hexes[hex.position] = hex
     }
-    return function(state) {
+    var moves_from = function(state) {
         var divs = hexes[state.pos].dividers
         var col = hexes[state.pos].colour
         var valid = []
@@ -40,10 +40,6 @@ function get_std_moves_func(iface) {
         }
         return valid
     }
-}
-
-function get_shard_moves_func(iface) {
-    var moves_from = get_std_moves_func(iface)
     return function(state) {
         var perShardSolutions = []
         for (var shardIdx=0; shardIdx<state.pos.length; shardIdx++) {
