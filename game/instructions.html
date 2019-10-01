@@ -25,29 +25,29 @@ window.onload = function() {
     encircled = ['  R  ', '  g  ', 'BrGbB', ' gbr ', 'R B R']
     var i = new SVGInterface("A")
     loadMaze(encircled, i)
-    i.playerMarker.position = [1,1]
-    i.playerMarker.visible = true
-    i.playerMarker.colour = "r"
+    var ipm = i.getShardMarkers(1).shards[0]
+    ipm.position = [1,1]
+    ipm.colour = "r"
 
     var j = new SVGInterface("B")
     loadMaze(encircled, j)
-    j.playerMarker.position = [1,1]
-    j.playerMarker.visible = true
-    j.playerMarker.colour = "w"
+    var jpm = j.getShardMarkers(1).shards[0]
+    jpm.position = [1,1]
+    jpm.colour = "w"
 
     var k = new SVGInterface("C")
     loadMaze(['RgB'], k)
-    k.playerMarker.position = [0,0]
-    k.playerMarker.visible = true
-    k.playerMarker.colour = "w"
+    var kpm = k.getShardMarkers(1).shards[0]
+    kpm.position = [0,0]
+    kpm.colour = "w"
     k.endMarker.position = [1,0]
     k.endMarker.visible = true
 
     var l = new SVGInterface("D")
     loadMaze(['RgB'], l)
-    l.playerMarker.position = [1,0]
-    l.playerMarker.visible = true
-    l.playerMarker.colour = "r"
+    var lpm = l.getShardMarkers(1).shards[0]
+    lpm.position = [1,0]
+    lpm.colour = "r"
 
     var menu_example = new SVGInterface("menu_example")
     loadMaze(['NgR'], menu_example)
