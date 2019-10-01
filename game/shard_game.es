@@ -17,9 +17,9 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
             markers[m].colour = col
         }
     }
-    var n_steps, nextCols, routes
+    var nextCols, routes = [[]]
     var resetMaze = function() {
-        if (n_steps === 0) {
+        if (routes.every((route) => route.length === 1)) {
             returnToMenu()
         } else {
             updateCol(m.startColour)
@@ -28,7 +28,6 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
             for (var i = 0; i < m.starts.length; i++) {
                 markers[i].position = m.starts[i]
             }
-            n_steps = 0
         }
     }
     resetMaze()
@@ -85,7 +84,6 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
             }
             moved.forEach(
                 (mIdx) => routes[mIdx].push([markers[mIdx].position, col]))
-            n_steps++
             if (finished(markers.map(m => m.position))) {
                 addFinishCol(progress, col)
                 routes.forEach((route) => iface.addRoute(route))
