@@ -224,6 +224,10 @@ function SVGInterface(element_id) {
         }
     }
 
+    this.clearRoutes = function() {
+        clearChildren(routeGroup)
+    }
+
     this.clear = function() {
         clearChildren(hexGroup)
         clearChildren(dividerGroup)
