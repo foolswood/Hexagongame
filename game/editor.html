@@ -17,7 +17,7 @@ ul {list-style-type: circle}
         <button type="button" onclick="apply()">Apply</button>
     </div>
     <div class="pile">
-        <textarea id="json" class="thing">{"maze":["RgB"],"start":[0,0],"end":[1,0],"startcolour":"w"}</textarea>
+        <textarea id="json" class="thing">{"maze":["RgB"],"starts":[[0,0]],"end":[1,0],"startColour":"w"}</textarea>
         <textarea id="plain" class="thing">RgB</textarea>
     </div>
 </div>
@@ -36,8 +36,8 @@ ul {list-style-type: circle}
 <script src="maze_launcher.es" type="text/ecmascript"></script>
 <script src="svg_interface.es" type="text/ecmascript"></script>
 <script src="serialiser.es" type="text/ecmascript"></script>
+<script src="progress.es" type="text/ecmascript"></script>
 <script src="shard_game.es" type="text/ecmascript"></script>
-<script src="std_game.es" type="text/ecmascript"></script>
 <script src="menu_maze.es" type="text/ecmascript"></script>
 <script src="solver.es" type="text/ecmascript"></script>
 
@@ -73,7 +73,18 @@ var clearChildren = function(thing) {
 var prev_route_li
 var route_draw = function(soln) {
     var drawer = function() {
-        iface.addRoute(soln)
+        var routes = soln[0].pos.map((p) => [[p, "n"]])
+        for (var sIdx = 1; sIdx < soln.length; sIdx++) {
+            for (var mIdx = 0; mIdx < soln[sIdx].pos.length; mIdx++) {
+                var mPos = soln[sIdx].pos[mIdx]
+                if (mPos.toString() !== soln[sIdx-1].pos[mIdx].toString()) {
+                    routes[mIdx][routes[mIdx].length-1][1] = soln[sIdx-1].col
+                    routes[mIdx].push([mPos, "n"])
+                }
+            }
+        }
+        iface.clearRoutes()
+        routes.forEach((route) => iface.addRoute(route))
         if (prev_route_li != undefined) {
             prev_route_li.style.listStyleType = "circle"
         }
@@ -91,9 +102,9 @@ var show_solutions = function(solns) {
         soln = solns[s]
         sol_li = document.createElement("li")
         for (var t=0; t<soln.length; t++) {
-            sol = document.createTextNode(JSON.stringify(soln[t][0]))
+            sol = document.createTextNode(JSON.stringify(soln[t].pos))
             sol_span = document.createElement("span")
-            sol_span.style.backgroundColor = solver_bg_colours[soln[t][1]]
+            sol_span.style.backgroundColor = solver_bg_colours[soln[t].col]
             sol_span.appendChild(sol)
             sol_li.appendChild(sol_span)
             sol_li.onclick = route_draw(soln)
@@ -115,7 +126,9 @@ function filter_solutions() {
 }
 
 function analyse() {
-    solutions = solver([level.start, "w"], get_std_moves_func(iface))
+    solutions = solver(
+        {"pos": level.starts, "col": level.startColour},
+        get_shard_moves_func(iface))
     var state_dropdown = document.getElementById("hex_select")
     var state_text, state_option
     clearChildren(state_dropdown)
@@ -128,8 +141,12 @@ function analyse() {
     filter_solutions()
 }
 
+var activePreview
 function preview() {
-    gameStandard(iface, level, preview)
+    if (activePreview !== undefined) {
+        activePreview.abort()
+    }
+    activePreview = new gameShardAssemble(iface, level, preview, {}, () => null)
 }
 
 function apply() {

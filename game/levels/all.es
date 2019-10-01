@@ -18,6 +18,7 @@ allMazes = {
 	"    y",
 	"  ?b?kG"],
 "start" : [1,0],
+"startColour": "w",
 "end" : [3,3],
 "nEnds" : 1,
 
@@ -96,6 +97,7 @@ allMazes = {
 "start" : [1,0],
 "end" : [2,4],
 "nEnds" : 1,
+"startColour" : "w",
 
 "mazes" : [
 {"mode": "std",
@@ -137,6 +139,7 @@ allMazes = {
 	"    B"],
 "start" : [2,2],
 "end" : [2,2],
+"startColour" : "w",
 "nEnds" : 1
 },
 {"mode": "std",
@@ -152,6 +155,7 @@ allMazes = {
 	"RrGrByYgR"],
 "start" : [0,0],
 "end" : [4,4],
+"startColour" : "w",
 "nEnds" : 1
 },
 {"mode": "std",
@@ -213,6 +217,7 @@ allMazes = {
 "start" : [1,0],
 "end" : [2,2],
 "nEnds" : 2,
+"startColour" : "w",
 
 "mazes" : [
 {"mode": "std",
@@ -254,7 +259,6 @@ allMazes = {
 	"        KbYbG        ",
 	"        rrbky        ",
 	"        GbRyB        "],
-
 "start" : [4,4],
 "end" : [6,5],
 "startColour" : "w",

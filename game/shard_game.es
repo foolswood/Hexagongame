@@ -9,6 +9,7 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
         shards.destroy()
         doneCallback()
     }
+    this.abort = () => shards.destroy()  // Used by editor
     var markers = shards.shards
     var col
     var updateCol = function(c) {
