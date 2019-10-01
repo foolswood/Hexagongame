@@ -73,7 +73,6 @@ function SVGInterface(element_id) {
     // End of data that should be in the svg file really
 
     this.hexes = []
-    this.playerMarker = new SVGUIElement(this, svg.getElementById("player"), true)
     this.endMarker = new SVGUIElement(this, svg.getElementById("end"), true)
     this.upArrow = new SVGUIElement(this, svg.getElementById("upArrow"), true)
     this.playMeta = new SVGUIElement(this, svg.getElementById("playMeta"), true)
@@ -231,7 +230,6 @@ function SVGInterface(element_id) {
         clearChildren(routeGroup)
         clearChildren(finishMarkers)
         this.hexes = []
-        this.playerMarker.visible = false
         this.endMarker.visible = false
         this.upArrow.visible = false
         this.playMeta.visible = false
