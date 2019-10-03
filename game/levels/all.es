@@ -271,7 +271,7 @@ allMazes = {
 	"YgBgRyY"],
 "starts" : [[0,0], [3,0]],
 "startColour" : "w",
-"nEnds" : 6
+"nEnds" : 5
 },
 {"mode": "shard",
 "maze" : [
@@ -282,7 +282,7 @@ allMazes = {
 	"RbKkK"],
 "starts" : [[0,1], [2,1]],
 "startColour" : "r",
-"nEnds" : 6
+"nEnds" : 2
 },
 {"mode": "shard",
 "maze" : [
@@ -293,7 +293,7 @@ allMazes = {
 	"G   Y"],
 "starts" : [[0,1], [2,1]],
 "startColour" : "k",
-"nEnds" : 6
+"nEnds" : 2
 },
 {"mode": "shard",
 "maze" : [
@@ -304,7 +304,7 @@ allMazes = {
 	"YrYkByYbr"],
 "starts" : [[2,0], [2,2]],
 "startColour" : "w",
-"nEnds" : 6
+"nEnds" : 3
 },
 {"mode": "shard",
 "maze" : [
@@ -313,7 +313,7 @@ allMazes = {
     "YrByGbGrK"],
 "starts" : [[1,1], [3,1]],
 "startColour" : "b",
-"nEnds" : 6
+"nEnds" : 4
 },
 {"mode": "shard",
 "maze" : [
@@ -326,7 +326,7 @@ allMazes = {
     "    B"],
 "starts" : [[2,3], [2,1]],
 "startColour" : "w",
-"nEnds" : 6
+"nEnds" : 2
 }]
 }
 ]
