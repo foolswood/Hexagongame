@@ -1,23 +1,29 @@
 <html>
 <body>
-<h1>How to play</h1>
-<object id="A" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
-<p>The player marker may move through sides that match its colour. In this case it may move through the red sides.</p>
-<p>The player marker changes colour to that of the hexagon which was just exited.</p>
-<object id="B" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
-<p>If the player marker is white it may move through sides of any colour. Any marker colour may move through a white side.</p>
-<object id="C" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
-<p>The aim is to get the player marker to the finish ring.</p>
-<object id="D" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
-<p>If you get stuck click on the player marker to return to the begining of a maze. If you are already at the start of a maze clicking on the player marker returns you to the menu.</p>
-<h2>Choosing a maze</h2>
-<p>Hexagons with small circles on them are the level selectors, click on them to play the mazes inside (they can, and do, nest).</p>
-<object id="menu_example" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
-<p>Colours that you completed the inner maze with will appear in the small circles, which can then be used to "colour in" that hexagon in the containing maze.</p>
-<p>Click the medium white circle to play the menu maze. Click the yellow house to go up a menu level.</p>
+<h2>Goal</h2>
+<p>Get the circular player marker into the finish ring.</p>
+<object id="simple_maze" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
+<h2>Movement rules</h2>
+<p>The player marker may move through sides of the hexagon it is currently in that match its colour.<br>
+The player marker changes colour to that of the hexagon which was just exited.</p>
+<object id="movement_example" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
+<p>In this example the player marker may move through the red sides, and will end up green after moving.</p>
+e.g.
+<object id="movement_solution" type="image/svg+xml" data="hexagons.svg" width="100" height="100"></object>
+or
+<object id="movement_solution2" type="image/svg+xml" data="hexagons.svg" width="100" height="100"></object>
+<p>A white player marker may move through sides of any colour and any marker colour may move through a white side.</p>
+
+<h2>Menus and navigation</h2>
+<p>Hexagons with small circles on them have mazes inside them, click on them to play those mazes (they can, and do, nest).</p>
+<object id="menu_example" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
+<p>Colours that you completed the inner maze with will appear in the small circles, which can then be used to "colour in" that hexagon in the containing maze.<br>
+Click the medium white circle to play the current colouring of the menu maze. Click the yellow up arrow to go to out a maze nesting level.</p>
+<p>If you make a mistake or get stuck in a maze click on the player marker to restart the current maze.<br>
+If you are already at the start of a maze clicking on the player marker will return you to the menu.</p>
 <h2>Shard collect mode</h2>
 <p>In some mazes the player marker is "sharded" and must be reassembled. When moving in shard mode the colour of the shards are linked.</p>
-<object id="shard_example" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
+<object id="shard_example" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
 <p>When 2 shards move together from different coloured hexagons the resulting player colour will be white.</p>
 </body>
 
@@ -27,31 +33,33 @@
 <script>
 window.onload = function() {
     encircled = ['  Y  ', '  g  ', 'BrGbB', ' gbr ', 'Y B Y']
-    var i = new SVGInterface("A")
+    var i = new SVGInterface("movement_example")
     loadMaze(encircled, i)
     var ipm = i.getShardMarkers(1).shards[0]
     ipm.position = [1,1]
     ipm.colour = "r"
 
-    var j = new SVGInterface("B")
+    var j = new SVGInterface("movement_solution")
     loadMaze(encircled, j)
     var jpm = j.getShardMarkers(1).shards[0]
-    jpm.position = [1,1]
-    jpm.colour = "w"
+    jpm.position = [0,1]
+    jpm.colour = "g"
+    j.addRoute([[[1,1], "r"], [[0,1], "g"]])
 
-    var k = new SVGInterface("C")
+    var j = new SVGInterface("movement_solution2")
+    loadMaze(encircled, j)
+    var jpm = j.getShardMarkers(1).shards[0]
+    jpm.position = [2,2]
+    jpm.colour = "g"
+    j.addRoute([[[1,1], "r"], [[2,2], "g"]])
+
+    var k = new SVGInterface("simple_maze")
     loadMaze(['RgB'], k)
     var kpm = k.getShardMarkers(1).shards[0]
     kpm.position = [0,0]
     kpm.colour = "w"
     k.endMarker.position = [1,0]
     k.endMarker.visible = true
-
-    var l = new SVGInterface("D")
-    loadMaze(['RgB'], l)
-    var lpm = l.getShardMarkers(1).shards[0]
-    lpm.position = [1,0]
-    lpm.colour = "r"
 
     var menu_example = new SVGInterface("menu_example")
     loadMaze(['NgR'], menu_example)
