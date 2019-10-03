@@ -24,10 +24,9 @@ ul {list-style-type: circle}
 </div>
 <div style="float: left; width:29%; height: 100%; border: thin solid black">
     <div>
-        <button type="button" onclick="analyse()">Analyse</button>
+        <input id="winners_only" type="checkbox" checked>Only winners</input>
         <select id="hex_select", onchange="filter_solutions()">
         </select>
-        <input id="winners_only" type="checkbox" checked>Only winners</input>
     </div>
     <ul id="solution_list">
     </ul>
@@ -116,7 +115,9 @@ var show_solutions = function(solns) {
 
 function filter_solutions() {
     var select_value = document.getElementById("hex_select").value
-    // Handle the special case where value is ""
+    if (select_value === "") {
+        return
+    }
     var solns = solutions[select_value]
     var ep = JSON.parse(select_value)
     var solns_with_end = []
@@ -153,6 +154,7 @@ function preview() {
         activePreview.abort()
     }
     activePreview = new gameShardAssemble(iface, level, preview, {}, () => null)
+    analyse()
 }
 
 function apply() {
