@@ -54,7 +54,7 @@ function get_shard_moves_func(iface) {
                 for (var otherShardIdx=shardIdx+1; otherShardIdx<perShardSolutions.length; otherShardIdx++) {
                     var possibleMatches = perShardSolutions[otherShardIdx]
                     for (var j=0; j<possibleMatches.length; j++) {
-                        if (solution.pos[i].toString() === possibleMatches[j].pos.toString()) {
+                        if (solution.pos[shardIdx].toString() === possibleMatches[j].pos.toString()) {
                             if (solution.col !== possibleMatches[j].col) {
                                 solution.col = "w"
                             }
