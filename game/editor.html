@@ -131,7 +131,8 @@ var winners_only = document.getElementById("winners_only")
 function analyse() {
     solutions = solver(
         {"pos": level.starts, "col": level.startColour},
-        get_shard_moves_func(iface))
+        get_shard_moves_func(iface),
+        level.end)
     var state_dropdown = document.getElementById("hex_select")
     var state_text, state_option
     clearChildren(state_dropdown)

@@ -1,4 +1,4 @@
-function solver(start_state, moves_func) {
+function solver(start_state, moves_func, end) {
     ways_to = {}
     var traverse = function(state, route) {
         var moves = moves_func(state)
@@ -10,7 +10,9 @@ function solver(start_state, moves_func) {
                 ways_to[next_json] = [route]
                 var new_route = route.slice(0)
                 new_route.push(next)
-                traverse(next, new_route)
+                if (!is_win_state(next, end)) {
+                    traverse(next, new_route)
+                }
             } else {
                 ways_to[next_json].push(route)
             }
