@@ -69,3 +69,15 @@ function get_shard_moves_func(iface) {
         return fullSolutions
     }
 }
+
+function is_win_state(state, end) {
+    for (var i=1; i<state.pos.length; i++) {
+        if (state.pos[i].toString() !== state.pos[0].toString()) {
+            return false
+        }
+    }
+    if (end !== undefined) {
+        return state.pos[0].toString() === end.toString()
+    }
+    return true
+}

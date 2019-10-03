@@ -27,6 +27,7 @@ ul {list-style-type: circle}
         <button type="button" onclick="analyse()">Analyse</button>
         <select id="hex_select", onchange="filter_solutions()">
         </select>
+        <input id="winners_only" type="checkbox" checked>Only winners</input>
     </div>
     <ul id="solution_list">
     </ul>
@@ -125,6 +126,7 @@ function filter_solutions() {
     show_solutions(solns_with_end)
 }
 
+var winners_only = document.getElementById("winners_only")
 function analyse() {
     solutions = solver(
         {"pos": level.starts, "col": level.startColour},
@@ -133,6 +135,9 @@ function analyse() {
     var state_text, state_option
     clearChildren(state_dropdown)
     for (var s in solutions) {
+        if (winners_only.checked && !is_win_state(JSON.parse(s), level.end)) {
+            continue
+        }
         state_text = document.createTextNode(s)
         state_option = document.createElement("option", value=s)
         state_option.appendChild(state_text)
@@ -140,6 +145,7 @@ function analyse() {
     }
     filter_solutions()
 }
+winners_only.addEventListener("change", analyse)
 
 var activePreview
 function preview() {
