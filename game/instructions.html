@@ -15,6 +15,10 @@
 <object id="menu_example" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
 <p>Colours that you completed the inner maze with will appear in the small circles, which can then be used to "colour in" that hexagon in the containing maze.</p>
 <p>Click the medium white circle to play the menu maze. Click the yellow house to go up a menu level.</p>
+<h2>Shard collect mode</h2>
+<p>In some mazes the player marker is "sharded" and must be reassembled. When moving in shard mode the colour of the shards are linked.</p>
+<object id="shard_example" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
+<p>When 2 shards move together from different coloured hexagons the resulting player colour will be white.</p>
 </body>
 
 <script src="svg_interface.es" type="text/ecmascript"></script>
@@ -55,6 +59,13 @@ window.onload = function() {
     endMarkers[0].colour = "g"
     endMarkers[1].colour = "n"
     menu_example.revealMetaMarkers([1,0])
+
+    var sharded = new SVGInterface("shard_example")
+    loadMaze(encircled, sharded)
+    var shard_pms = sharded.getShardMarkers(2)
+    shard_pms.shards[0].position = [0,1]
+    shard_pms.shards[1].position = [2,2]
+    shard_pms.shards.forEach((s) => s.colour = "r")
 }
 </script>
 </html>
