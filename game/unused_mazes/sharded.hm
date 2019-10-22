@@ -1,0 +1,16 @@
+# Some langbenjf shardy mazes:
+{"maze":["RggrB","gbrgg","GyBbY","  k","  R"],"starts":[[0,0],[1,2],[2,0]],"startColour":"g","nEnds":1}
+# Harder:
+{"maze":[
+"    B",
+"    r",
+"RgBbKyGkY",
+"  y   r",
+"  R   G",
+" y k r g",
+"B   Y   K",
+"    g",
+"    B"],
+"starts":[[0,1],[2,0],[4,1],[0,3],[4,3],[2,4]],
+"startColour":"w",
+"nEnds": 2}
