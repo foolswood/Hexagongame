@@ -1,7 +1,7 @@
 function getFinishCol(progress, idx) {
-    var fc = progress.finishCols
+    let fc = progress.finishCols
     if (fc !== undefined) {
-        var c = fc[idx]
+        let c = fc[idx]
         if (c !== undefined) {
             return c
         }
@@ -10,7 +10,7 @@ function getFinishCol(progress, idx) {
 }
 
 function addFinishCol(progress, c) {
-    var fc = progress.finishCols
+    let fc = progress.finishCols
     if (fc === undefined) {
         progress.finishCols = c
     } else {

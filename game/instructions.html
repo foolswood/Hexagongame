@@ -32,45 +32,45 @@ If you are already at the start of a maze clicking on the player marker will ret
 
 <script>
 window.onload = function() {
-    encircled = ['  Y  ', '  g  ', 'BrGbB', ' gbr ', 'Y B Y']
-    var i = new SVGInterface("movement_example")
+    let encircled = ['  Y  ', '  g  ', 'BrGbB', ' gbr ', 'Y B Y']
+    let i = new SVGInterface("movement_example")
     loadMaze(encircled, i)
-    var ipm = i.getShardMarkers(1).shards[0]
+    let ipm = i.getShardMarkers(1).shards[0]
     ipm.position = [1,1]
     ipm.colour = "r"
 
-    var j = new SVGInterface("movement_solution")
-    loadMaze(encircled, j)
-    var jpm = j.getShardMarkers(1).shards[0]
-    jpm.position = [0,1]
-    jpm.colour = "g"
-    j.addRoute([[[1,1], "r"], [[0,1], "g"]])
+    let j0 = new SVGInterface("movement_solution")
+    loadMaze(encircled, j0)
+    let jpm0 = j0.getShardMarkers(1).shards[0]
+    jpm0.position = [0,1]
+    jpm0.colour = "g"
+    j0.addRoute([[[1,1], "r"], [[0,1], "g"]])
 
-    var j = new SVGInterface("movement_solution2")
-    loadMaze(encircled, j)
-    var jpm = j.getShardMarkers(1).shards[0]
-    jpm.position = [2,2]
-    jpm.colour = "g"
-    j.addRoute([[[1,1], "r"], [[2,2], "g"]])
+    let j1 = new SVGInterface("movement_solution2")
+    loadMaze(encircled, j1)
+    let jpm1 = j1.getShardMarkers(1).shards[0]
+    jpm1.position = [2,2]
+    jpm1.colour = "g"
+    j1.addRoute([[[1,1], "r"], [[2,2], "g"]])
 
-    var k = new SVGInterface("simple_maze")
+    let k = new SVGInterface("simple_maze")
     loadMaze(['RgB'], k)
-    var kpm = k.getShardMarkers(1).shards[0]
+    let kpm = k.getShardMarkers(1).shards[0]
     kpm.position = [0,0]
     kpm.colour = "w"
     k.endMarker.position = [1,0]
     k.endMarker.visible = true
 
-    var menu_example = new SVGInterface("menu_example")
+    let menu_example = new SVGInterface("menu_example")
     loadMaze(['NgR'], menu_example)
     let endMarkers = menu_example.addFinishMarkers([0,0], 2);
     endMarkers[0].colour = "g"
     endMarkers[1].colour = "n"
     menu_example.revealMetaMarkers([1,0])
 
-    var sharded = new SVGInterface("shard_example")
+    let sharded = new SVGInterface("shard_example")
     loadMaze(encircled, sharded)
-    var shard_pms = sharded.getShardMarkers(2)
+    let shard_pms = sharded.getShardMarkers(2)
     shard_pms.shards[0].position = [0,1]
     shard_pms.shards[1].position = [2,2]
     shard_pms.shards.forEach((s) => s.colour = "r")

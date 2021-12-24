@@ -1,20 +1,20 @@
 function linkId(a, b) {
-	//Get the identifier linking these points.
-	if (a < b) {
-		return a+"-"+b;
-	} else {
-		return b+"-"+a;
-	}
+    //Get the identifier linking these points.
+    if (a < b) {
+        return a+"-"+b;
+    } else {
+        return b+"-"+a;
+    }
 }
 
 function loadMaze(m, iface) {
-	var i, j, c
-	var dividers = {}
-    var hexes = {}
-	//Setup
+    let i, j, c
+    let dividers = {}
+    let hexes = {}
+    //Setup
     iface.clear()
-    var newDivider = function(a, b, c) {
-        var div = iface.addDivider(a, b, c)
+    let newDivider = function(a, b, c) {
+        let div = iface.addDivider(a, b, c)
         if (dividers[a] === undefined) {
             dividers[a] = [[b, div]]
         } else {
@@ -26,49 +26,49 @@ function loadMaze(m, iface) {
             dividers[b].push([a, div])
         }
     }
-	//Draw
-	for (i=0; i<m.length; i++) {
-		l = m[i].toLowerCase()
-		if ((i+1)%2) { //Hexagon Line
-			for (j=0; j<l.length; j++) {
-				c = l[j]
+    //Draw
+    for (i=0; i<m.length; i++) {
+        l = m[i].toLowerCase()
+        if ((i+1)%2) { //Hexagon Line
+            for (j=0; j<l.length; j++) {
+                c = l[j]
                 if (c === " ") { //Gaps and impasses
                     continue
                 }
-				if ((j+1)%2) { //Odd :. Hexagon
+                if ((j+1)%2) { //Odd :. Hexagon
                     hexes[[j/2, i/2]] = iface.addHex([j/2, i/2], c)
-				} else { //Even :. Divider
+                } else { //Even :. Divider
                     newDivider([(j-1)/2, i/2], [(j+1)/2, i/2], c)
-				}
-			}
-		} else { //Divider Line
-			for (j=0; j<l.length; j++) {
-				c = l[j]
-				if (c === " ") {
-					continue
-				}
-				if ((j+1)%2) { //Odd
-					newDivider([j/2, (i-1)/2], [j/2, (i+1)/2], c)
-				} else { //Even
-					if ((j+1)%4) { //Not divisible by 4
-						newDivider([(j+1)/2, (i-1)/2], [(j-1)/2, (i+1)/2], c)
-					} else {
-						newDivider([(j-1)/2, (i-1)/2], [(j+1)/2, (i+1)/2], c)
-					}
-				}
-			}
-		}
-	}
+                }
+            }
+        } else { //Divider Line
+            for (j=0; j<l.length; j++) {
+                c = l[j]
+                if (c === " ") {
+                    continue
+                }
+                if ((j+1)%2) { //Odd
+                    newDivider([j/2, (i-1)/2], [j/2, (i+1)/2], c)
+                } else { //Even
+                    if ((j+1)%4) { //Not divisible by 4
+                        newDivider([(j+1)/2, (i-1)/2], [(j-1)/2, (i+1)/2], c)
+                    } else {
+                        newDivider([(j-1)/2, (i-1)/2], [(j+1)/2, (i+1)/2], c)
+                    }
+                }
+            }
+        }
+    }
     iface.maximise()
-    for (var hex in hexes) {
+    for (let hex in hexes) {
         hexes[hex].dividers = dividers[hex]
     }
     return hexes
 }
 
 function saveMaze(hexes) {
-    var height = 0, width = 0
-    var h, pos
+    let height = 0, width = 0
+    let h, pos
     for (h in hexes) {
         pos = hexes[h].position
         if (pos[0] > width) {
@@ -80,8 +80,8 @@ function saveMaze(hexes) {
     }
     width++
     height++
-    var r, c
-    var ms = []
+    let r, c
+    let ms = []
     for (r = 0; r < (height*2)-1; r++) {
         h = []
         for (c = 0; c < (width*2)-1; c++) {
@@ -89,7 +89,7 @@ function saveMaze(hexes) {
         }
         ms.push(h)
     }
-    var hex, divider, d
+    let hex, divider, d
     for (h in hexes) {
         hex = hexes[h]
         pos = hex.position

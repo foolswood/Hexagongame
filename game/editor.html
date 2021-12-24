@@ -42,11 +42,11 @@ ul {list-style-type: circle}
 <script src="solver.es" type="text/ecmascript"></script>
 
 <script>
-var iface, active_tool
-var level = JSON.parse(document.getElementById("json").value)
-var game, solutions
+let iface, active_tool
+let level = JSON.parse(document.getElementById("json").value)
+let game, solutions
 
-var solver_bg_colours = {
+let solver_bg_colours = {
     "r": "mistyrose",
     "b": "lavender",
     "g": "lightgreen",
@@ -55,7 +55,7 @@ var solver_bg_colours = {
     "k": "gainsboro"}
 
 function tool_select(val) {
-    var prev = active_tool
+    let prev = active_tool
     active_tool = document.getElementById(val)
     active_tool.setup()
     active_tool.style.display = "block"
@@ -64,19 +64,19 @@ function tool_select(val) {
     }
 }
 
-var clearChildren = function(thing) {
+let clearChildren = function(thing) {
     while (thing.childNodes.length >= 1) {
         thing.removeChild(thing.firstChild)
     }
 }
 
-var prev_route_li
-var route_draw = function(soln) {
-    var drawer = function() {
-        var routes = soln[0].pos.map((p) => [[p, "n"]])
-        for (var sIdx = 1; sIdx < soln.length; sIdx++) {
-            for (var mIdx = 0; mIdx < soln[sIdx].pos.length; mIdx++) {
-                var mPos = soln[sIdx].pos[mIdx]
+let prev_route_li
+let route_draw = function(soln) {
+    let drawer = function() {
+        let routes = soln[0].pos.map((p) => [[p, "n"]])
+        for (let sIdx = 1; sIdx < soln.length; sIdx++) {
+            for (let mIdx = 0; mIdx < soln[sIdx].pos.length; mIdx++) {
+                let mPos = soln[sIdx].pos[mIdx]
                 if (mPos.toString() !== soln[sIdx-1].pos[mIdx].toString()) {
                     routes[mIdx][routes[mIdx].length-1][1] = soln[sIdx-1].col
                     routes[mIdx].push([mPos, "n"])
@@ -94,14 +94,14 @@ var route_draw = function(soln) {
     return drawer
 }
 
-var show_solutions = function(solns) {
-    var sol_list = document.getElementById("solution_list")
+let show_solutions = function(solns) {
+    let sol_list = document.getElementById("solution_list")
     clearChildren(sol_list)
-    var sol, sol_li, sol_span, soln
-    for (var s=0; s<solns.length; s++) {
+    let sol, sol_li, sol_span, soln
+    for (let s=0; s<solns.length; s++) {
         soln = solns[s]
         sol_li = document.createElement("li")
-        for (var t=0; t<soln.length; t++) {
+        for (let t=0; t<soln.length; t++) {
             sol = document.createTextNode(JSON.stringify(soln[t].pos))
             sol_span = document.createElement("span")
             sol_span.style.backgroundColor = solver_bg_colours[soln[t].col]
@@ -114,29 +114,29 @@ var show_solutions = function(solns) {
 }
 
 function filter_solutions() {
-    var select_value = document.getElementById("hex_select").value
+    let select_value = document.getElementById("hex_select").value
     if (select_value === "") {
         return
     }
-    var solns = solutions[select_value]
-    var ep = JSON.parse(select_value)
-    var solns_with_end = []
-    for (var s=0; s<solns.length; s++) {
+    let solns = solutions[select_value]
+    let ep = JSON.parse(select_value)
+    let solns_with_end = []
+    for (let s=0; s<solns.length; s++) {
         solns_with_end.push(solns[s].concat([ep]))
     }
     show_solutions(solns_with_end)
 }
 
-var winners_only = document.getElementById("winners_only")
+let winners_only = document.getElementById("winners_only")
 function analyse() {
     solutions = solver(
         {"pos": level.starts, "col": level.startColour},
         get_shard_moves_func(iface),
         level.end)
-    var state_dropdown = document.getElementById("hex_select")
-    var state_text, state_option
+    let state_dropdown = document.getElementById("hex_select")
+    let state_text, state_option
     clearChildren(state_dropdown)
-    for (var s in solutions) {
+    for (let s in solutions) {
         if (winners_only.checked && !is_win_state(JSON.parse(s), level.end)) {
             continue
         }
@@ -149,7 +149,7 @@ function analyse() {
 }
 winners_only.addEventListener("change", analyse)
 
-var activePreview
+let activePreview
 function preview() {
     if (activePreview !== undefined) {
         activePreview.abort()

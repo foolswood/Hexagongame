@@ -249,32 +249,32 @@
 </body>
 </html>
 <script>
-var dlUrl = null;
+let dlUrl = null;
 
 function makeDownload() {
-    var jobj = window.localStorage.chromagonProgress
-    var b = new Blob([jobj], {"type": "application/json"})
+    let jobj = window.localStorage.chromagonProgress
+    let b = new Blob([jobj], {"type": "application/json"})
     if (dlUrl) {
         URL.revokeObjectURL(dlUrl)
     }
     dlUrl = URL.createObjectURL(b)
-    var d = new Date()
+    let d = new Date()
     sbtn.setAttribute("download", "chromagon-progress-" + d.toISOString().split('.')[0] + '.json')
     sbtn.setAttribute("href", dlUrl)
 }
 
-var sbtn = document.getElementById("saveLink")
+let sbtn = document.getElementById("saveLink")
 sbtn.addEventListener("click", makeDownload)
 
 function loadSaveGame() {
     if (this.files.length) {
-        var f = new FileReader()
+        let f = new FileReader()
         f.addEventListener("load", () => localStorage.chromagonProgress = f.result)
         f.readAsText(this.files[0])
     }
 }
 
-var fileChooser = document.getElementById("fileChooserElem")
+let fileChooser = document.getElementById("fileChooserElem")
 fileChooser.addEventListener("change", loadSaveGame)
 
 function triggerFileChooser(evt) {
@@ -282,6 +282,6 @@ function triggerFileChooser(evt) {
     evt.stopPropagation()
 }
 
-var load = document.getElementById("load")
+let load = document.getElementById("load")
 load.addEventListener("click", triggerFileChooser)
 </script>
