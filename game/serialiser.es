@@ -1,12 +1,3 @@
-function linkId(a, b) {
-    //Get the identifier linking these points.
-    if (a < b) {
-        return a+"-"+b;
-    } else {
-        return b+"-"+a;
-    }
-}
-
 function loadMaze(m, iface) {
     let i, j, c
     let dividers = {}
