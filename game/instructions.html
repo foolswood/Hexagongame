@@ -32,7 +32,7 @@ If you are already at the start of a maze clicking on the player marker will ret
 
 <script>
 window.onload = function() {
-    let encircled = ['  Y  ', '  g  ', 'BrGbB', ' gbr ', 'Y B Y']
+    const encircled = ['  Y  ', '  g  ', 'BrGbB', ' gbr ', 'Y B Y']
     let i = new SVGInterface("movement_example")
     loadMaze(encircled, i)
     let ipm = i.getShardMarkers(1).shards[0]
