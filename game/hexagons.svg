@@ -57,5 +57,7 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 	</g>
 	<g id="playerMarkers">
 	</g>
+	<g id="routeReplay">
+	</g>
 	<rect id="modalBg" color="grey" fill-opacity="0.3" stroke="none" display="none" />
 </svg>

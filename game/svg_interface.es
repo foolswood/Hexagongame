@@ -51,6 +51,7 @@ function SVGInterface(element_id) {
     let hexGroup = svg.getElementById("hexes")
     let dividerGroup = svg.getElementById("dividers")
     let routeGroup = svg.getElementById("route")
+    let routeReplayGroup = svg.getElementById("routeReplay")
     let finishMarkers = svg.getElementById("finishMarkers")
     let playerMarkers = svg.getElementById("playerMarkers")
     let defs = svg.getElementsByTagName("defs")[0]
@@ -264,7 +265,7 @@ function SVGInterface(element_id) {
         replayMarker.setAttribute("r", "9mm")
         replayMarker.appendChild(replayMovePath)
         replayMarker.appendChild(replayColAnim)
-        routeGroup.appendChild(replayMarker)
+        routeReplayGroup.appendChild(replayMarker)
     }
 
     let clearChildren = function(p) {
@@ -282,6 +283,7 @@ function SVGInterface(element_id) {
         clearChildren(hexGroup)
         clearChildren(dividerGroup)
         clearChildren(routeGroup)
+        clearChildren(routeReplayGroup)
         clearChildren(finishMarkers)
         this.hexes = []
         this.endMarker.visible = false
