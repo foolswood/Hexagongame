@@ -1,4 +1,15 @@
-let xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
+const xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
+
+// Data that I would rather wasn't here
+const strokeColourMap = { //Colours for dividing lines
+    "w": "white",
+    "k": "#252525",
+    "r": "red",
+    "g": "forestgreen",
+    "b": "blue",
+    "y": "yellow",
+    "p": "magenta"
+}
 
 function SVGUIElement(svg_iface, dom_elem, colour_fill) {
     let colour, position, _current_cb
@@ -20,7 +31,7 @@ function SVGUIElement(svg_iface, dom_elem, colour_fill) {
         })
     } else {
         this.__defineSetter__("colour", function(col) {
-            dom_elem.setAttribute("stroke", svg_iface.strokeColourMap[col])
+            dom_elem.setAttribute("stroke", strokeColourMap[col])
             colour = col
         })
     }
@@ -56,17 +67,7 @@ function SVGInterface(element_id) {
     let playerMarkers = svg.getElementById("playerMarkers")
     let defs = svg.getElementsByTagName("defs")[0]
 
-    // Data that I would rather wasn't here
-    this.strokeColourMap = { //Colours for dividing lines
-        "w": "white",
-        "k": "#252525",
-        "r": "red",
-        "g": "forestgreen",
-        "b": "blue",
-        "y": "yellow",
-        "p": "magenta"
-    }
-
+    // More data that I would rather wasn't here
     let hexHeight = 866
     let hexWidth = 1001
     let shardClipRadius = 250 // Bigger than player circle
@@ -202,69 +203,61 @@ function SVGInterface(element_id) {
         this.playMeta.callback = playCb
     }
 
+    const addRouteRailStep = function(c, start, end)
+    {
+        let elem = svg.createElementNS(svgNS, "line")
+        elem.setAttribute("stroke", strokeColourMap[c])
+        elem.setAttribute("x1", start[0])
+        elem.setAttribute("y1", start[1])
+        elem.setAttribute("x2", end[0])
+        elem.setAttribute("y2", end[1])
+        routeGroup.appendChild(elem)
+    }
+
     this.addRoute = function(route) {
+        const totalChanges = route.reduce((c, r) => (r[0] !== null) ? c + 1 : c, 0) - 1
         let end, start = this.svgCoord(route[0][0])
         let c = route[0][1]
-        //Draw route "rails"
-        for (let i = 1; i < route.length; i++) {
-            if (route[i][0] === null)
-                continue
-            end = this.svgCoord(route[i][0])
-            let elem = svg.createElementNS(svgNS, "line")
-            elem.setAttribute("stroke", this.strokeColourMap[c])
-            elem.setAttribute("x1", start[0])
-            elem.setAttribute("y1", start[1])
-            elem.setAttribute("x2", end[0])
-            elem.setAttribute("y2", end[1])
-            routeGroup.appendChild(elem)
-            c = route[i][1]
-            start = end
-        }
-        //Draw route "train"
-        start = this.svgCoord(route[0][0])
-        c = route[0][1]
-        let pathstr = "M " + start[0] + "," + start[1]
-        let colstr = ""
-        let kps = "0"
-        let kts = "0"
-        const totalChanges = route.reduce((c, r) => (r[0] !== null) ? c + 1 : c, 0) - 1
+        let path = "M " + start[0] + "," + start[1]
+        let colourValues = ""
+        let keyPoints = "0"
+        let keyTimes = "0"
         let changeCount = 0
         for (let i = 1; i < route.length; i++) {
-            colstr += this.strokeColourMap[c] + ";"
+            colourValues += strokeColourMap[c] + ";"
             if (route[i][0] !== null)
             {
                 end = this.svgCoord(route[i][0])
-                pathstr += " L" + end[0] + "," + end[1]
+                addRouteRailStep(c, start, end)
+                path += " L" + end[0] + "," + end[1]
                 start = end
                 changeCount++
             }
+            keyPoints += ";" + (changeCount / totalChanges)
+            keyTimes += ";" + (i / (route.length - 1))
             c = route[i][1]
-            kps += ";" + (changeCount / totalChanges)
-            kts += ";" + (i / (route.length - 1))
         }
-        console.log(totalChanges, changeCount, kts, kps)
-        colstr = colstr.slice(0, colstr.length - 1) //cut final ; off
-        const durstr = route.length + "s"
-        const beginstr = ((performance.now() - animEpoch) / 1000.0) + "s"
-        let replayMovePath = svg.createElementNS(svgNS, "animateMotion")
+        colourValues = colourValues.slice(0, colourValues.length - 1) //cut final ; off
+        const replayMovePath = svg.createElementNS(svgNS, "animateMotion")
         replayMovePath.setAttribute("calcMode", "linear")
-        replayMovePath.setAttribute("dur", durstr)
-        replayMovePath.setAttribute("begin", beginstr)
-        replayMovePath.setAttribute("repeatCount", "indefinite")
-        replayMovePath.setAttribute("keyPoints", kps)
-        replayMovePath.setAttribute("keyTimes", kts)
-        replayMovePath.setAttribute("path", pathstr)
-        let replayColAnim = svg.createElementNS(svgNS, "animate")
-        replayColAnim.setAttribute("attributeName", "fill")
-        replayColAnim.setAttribute("values", colstr)
+        replayMovePath.setAttribute("keyPoints", keyPoints)
+        replayMovePath.setAttribute("keyTimes", keyTimes)
+        replayMovePath.setAttribute("path", path)
+        const replayColAnim = svg.createElementNS(svgNS, "animate")
         replayColAnim.setAttribute("calcMode", "discrete")
-        replayColAnim.setAttribute("dur", durstr)
-        replayColAnim.setAttribute("begin", beginstr)
-        replayColAnim.setAttribute("repeatCount", "indefinite")
-        let replayMarker = svg.createElementNS(svgNS, "circle")
+        replayColAnim.setAttribute("attributeName", "fill")
+        replayColAnim.setAttribute("values", colourValues)
+        const dur = route.length + "s"
+        const begin = ((performance.now() - animEpoch) / 1000.0) + "s"
+        const replayMarker = svg.createElementNS(svgNS, "circle")
         replayMarker.setAttribute("r", "9mm")
-        replayMarker.appendChild(replayMovePath)
-        replayMarker.appendChild(replayColAnim)
+        const animElems = [replayMovePath, replayColAnim]
+        animElems.forEach((e) => {
+            e.setAttribute("begin", begin)
+            e.setAttribute("dur", dur)
+            e.setAttribute("repeatCount", "indefinite")
+            replayMarker.appendChild(e)
+        })
         routeReplayGroup.appendChild(replayMarker)
     }
 
