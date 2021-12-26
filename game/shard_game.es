@@ -83,8 +83,13 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
             } else {
                 updateCol("w")
             }
-            moved.forEach(
-                (mIdx) => routes[mIdx].push([markers[mIdx].position, col]))
+            for (let mIdx = 0; mIdx < routes.length; mIdx++)
+            {
+                if (moved.includes(mIdx))
+                    routes[mIdx].push([markers[mIdx].position, col])
+                else
+                    routes[mIdx].push([null, col])
+            }
             if (finished(markers.map(m => m.position))) {
                 addFinishCol(progress, col)
                 routes.forEach((route) => iface.addRoute(route))

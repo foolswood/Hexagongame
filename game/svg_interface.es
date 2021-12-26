@@ -46,6 +46,7 @@ function SVGUIElement(svg_iface, dom_elem, colour_fill) {
 }
 
 function SVGInterface(element_id) {
+    const animEpoch = performance.now()
     let svg = document.getElementById(element_id).getSVGDocument()
     let hexGroup = svg.getElementById("hexes")
     let dividerGroup = svg.getElementById("dividers")
@@ -202,10 +203,13 @@ function SVGInterface(element_id) {
 
     this.addRoute = function(route) {
         let end, start = this.svgCoord(route[0][0])
-        let elem, i, c = route[0][1]
-        for (i = 1; i < route.length; i++) {
+        let c = route[0][1]
+        //Draw route "rails"
+        for (let i = 1; i < route.length; i++) {
+            if (route[i][0] === null)
+                continue
             end = this.svgCoord(route[i][0])
-            elem = svg.createElementNS(svgNS, "line")
+            let elem = svg.createElementNS(svgNS, "line")
             elem.setAttribute("stroke", this.strokeColourMap[c])
             elem.setAttribute("x1", start[0])
             elem.setAttribute("y1", start[1])
@@ -215,6 +219,52 @@ function SVGInterface(element_id) {
             c = route[i][1]
             start = end
         }
+        //Draw route "train"
+        start = this.svgCoord(route[0][0])
+        c = route[0][1]
+        let pathstr = "M " + start[0] + "," + start[1]
+        let colstr = ""
+        let kps = "0"
+        let kts = "0"
+        const totalChanges = route.reduce((c, r) => (r[0] !== null) ? c + 1 : c, 0) - 1
+        let changeCount = 0
+        for (let i = 1; i < route.length; i++) {
+            colstr += this.strokeColourMap[c] + ";"
+            if (route[i][0] !== null)
+            {
+                end = this.svgCoord(route[i][0])
+                pathstr += " L" + end[0] + "," + end[1]
+                start = end
+                changeCount++
+            }
+            c = route[i][1]
+            kps += ";" + (changeCount / totalChanges)
+            kts += ";" + (i / (route.length - 1))
+        }
+        console.log(totalChanges, changeCount, kts, kps)
+        colstr = colstr.slice(0, colstr.length - 1) //cut final ; off
+        const durstr = route.length + "s"
+        const beginstr = ((performance.now() - animEpoch) / 1000.0) + "s"
+        let replayMovePath = svg.createElementNS(svgNS, "animateMotion")
+        replayMovePath.setAttribute("calcMode", "linear")
+        replayMovePath.setAttribute("dur", durstr)
+        replayMovePath.setAttribute("begin", beginstr)
+        replayMovePath.setAttribute("repeatCount", "indefinite")
+        replayMovePath.setAttribute("keyPoints", kps)
+        replayMovePath.setAttribute("keyTimes", kts)
+        replayMovePath.setAttribute("path", pathstr)
+        let replayColAnim = svg.createElementNS(svgNS, "animate")
+        replayColAnim.setAttribute("attributeName", "fill")
+        replayColAnim.setAttribute("values", colstr)
+        replayColAnim.setAttribute("calcMode", "discrete")
+        replayColAnim.setAttribute("dur", durstr)
+        replayColAnim.setAttribute("begin", beginstr)
+        replayColAnim.setAttribute("repeatCount", "indefinite")
+        let replayMarker = svg.createElementNS(svgNS, "circle")
+        replayMarker.setAttribute("r", "9mm")
+        replayMarker.appendChild(replayMovePath)
+        replayMarker.appendChild(replayColAnim)
+        routeGroup.appendChild(replayMarker)
     }
 
     let clearChildren = function(p) {
