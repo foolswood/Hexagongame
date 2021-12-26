@@ -1,0 +1,30 @@
+#q {
+    position: absolute;
+    right: 1mm;
+    top: 1mm;
+    animation-duration: 3s;
+    animation-name: wobble;
+    animation-iteration-count: 2;
+    animation-direction: alternate;
+    animation-play-state: paused;
+}
+
+@keyframes wobble {
+    from {
+        margin-top: 0mm;
+        margin-right: 0mm;
+        width: 4mm;
+        transform: rotate(0deg);
+    }
+
+    40% {
+        transform: rotate(12deg);
+    }
+
+    to {
+        margin-top: 4mm;
+        margin-right: 4mm;
+        width: 30mm;
+        transform: rotate(0deg);
+    }
+}

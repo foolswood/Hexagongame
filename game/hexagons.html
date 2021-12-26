@@ -1,8 +1,11 @@
 <html>
+<head>
+    <link rel="stylesheet" type="text/css" href="hexagons.css">
+</head>
 <body>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"></object>
 <a href="instructions.html" target="_blank"/>
-    <img src="qmark.svg" style="position: absolute; right: 1mm; top: 1mm"/>
+    <img id="q" src="qmark.svg"/>
 </a>
 </body>
 
@@ -17,13 +20,23 @@
 <script src="levels/all.es" type="text/ecmascript"></script>
 
 <script>
-let topComp = function(iface, mazes, progress, saveProgressCb) {
+let wiggleQmark = function() {
+    let q = document.getElementById("q")
+    q.style.animationPlayState = "running"
+}
+
+let topComp = function(iface, mazes, progress, saveProgressCb, doWiggle=false) {
+    let qmarkWiggle = doWiggle ? window.setTimeout(wiggleQmark, 3500) : null
     iface.clear()
     let h = iface.addHex([0,0], "w")
-    h.callback = () => playMaze(
-        iface, mazes,
-        () => topComp(iface, mazes, progress, saveProgressCb),
-        progress, saveProgressCb)
+    h.callback = () => {
+        if (qmarkWiggle !== null)
+            window.clearTimeout(qmarkWiggle)
+        playMaze(
+            iface, mazes,
+            () => topComp(iface, mazes, progress, saveProgressCb),
+            progress, saveProgressCb)
+    }
     let fms = iface.addFinishMarkers([0,0], mazes.nEnds)
     for (let i = 0; i < mazes.nEnds; i++) {
         fms[i].colour = getFinishCol(progress, i)
@@ -39,7 +52,9 @@ window.onload = function() {
     }
     topComp(
         i, allMazes, globalProgress,
-        () => window.localStorage.chromagonProgress = JSON.stringify(globalProgress))
+        () => window.localStorage.chromagonProgress = JSON.stringify(globalProgress),
+        true)
 }
+
 </script>
 </html>
