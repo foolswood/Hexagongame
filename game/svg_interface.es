@@ -321,17 +321,17 @@ function SVGInterface(element_id) {
     }
 
     this.winModal = function(cb) {
-        let greyBox = svg.getElementById("modalBg")
-        let bounds = this.mazeBounds()
-        greyBox.setAttribute("x", bounds[0])
-        greyBox.setAttribute("y", bounds[1])
-        greyBox.setAttribute("width", bounds[2] + bounds[0])
-        greyBox.setAttribute("height", bounds[3] + bounds[1])
-        greyBox.removeAttribute("display");
-        let modalClicked = function(evt) {
-            greyBox.setAttribute("display", "none");
+        const modalBg = svg.getElementById("modalBg")
+        const bounds = this.mazeBounds()
+        modalBg.setAttribute("x", bounds[0])
+        modalBg.setAttribute("y", bounds[1])
+        modalBg.setAttribute("width", bounds[2] + bounds[0])
+        modalBg.setAttribute("height", bounds[3] + bounds[1])
+        modalBg.removeAttribute("display");
+        const modalClicked = function(evt) {
+            modalBg.setAttribute("display", "none");
             cb();
         }
-        greyBox.addEventListener('click', modalClicked)
+        modalBg.addEventListener('click', modalClicked)
     }
 }
