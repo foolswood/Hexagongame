@@ -278,13 +278,13 @@ function SVGInterface(element_id) {
 
     this.clearRoutes = function() {
         clearChildren(routeGroup)
+        clearChildren(routeReplayGroup)
     }
 
     this.clear = function() {
         clearChildren(hexGroup)
         clearChildren(dividerGroup)
-        clearChildren(routeGroup)
-        clearChildren(routeReplayGroup)
+        this.clearRoutes()
         clearChildren(finishMarkers)
         this.hexes = []
         this.endMarker.visible = false
