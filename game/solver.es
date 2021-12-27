@@ -1,22 +1,19 @@
 function solver(start_state, moves_func, end) {
     ways_to = {}
-    let traverse = function(state, route) {
-        let moves = moves_func(state)
-        let next, next_json
-        for (let m=0; m<moves.length; m++) {
-            next = moves[m]
-            next_json = JSON.stringify(next)
-            if (ways_to[next_json] === undefined) {
-                ways_to[next_json] = [route]
-                let new_route = route.slice(0)
-                new_route.push(next)
-                if (!is_win_state(next, end)) {
-                    traverse(next, new_route)
-                }
-            } else {
-                ways_to[next_json].push(route)
-            }
+    const traverse = function(state, route) {
+        const state_json = JSON.stringify(state)
+        if (ways_to[state_json] !== undefined)
+        {
+            ways_to[state_json].push(route)
+            return
         }
+        ways_to[state_json] = [route]
+        const moves = moves_func(state)
+        moves.forEach((next) => {
+            const new_route = route.slice(0)
+            new_route.push(next)
+            traverse(next, new_route)
+        })
     }
     traverse(start_state, [start_state])
     return ways_to

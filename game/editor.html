@@ -114,20 +114,13 @@ let show_solutions = function(solns) {
 }
 
 function filter_solutions() {
-    let select_value = document.getElementById("hex_select").value
-    if (select_value === "") {
-        return
+    const select_value = document.getElementById("hex_select").value
+    if (select_value !== "") {
+        show_solutions(solutions[select_value])
     }
-    let solns = solutions[select_value]
-    let ep = JSON.parse(select_value)
-    let solns_with_end = []
-    for (let s=0; s<solns.length; s++) {
-        solns_with_end.push(solns[s].concat([ep]))
-    }
-    show_solutions(solns_with_end)
 }
 
-let winners_only = document.getElementById("winners_only")
+const winners_only = document.getElementById("winners_only")
 function analyse() {
     solutions = solver(
         {"pos": level.starts, "col": level.startColour},
