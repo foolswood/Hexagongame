@@ -95,15 +95,14 @@ let route_draw = function(soln) {
 }
 
 let show_solutions = function(solns) {
-    let sol_list = document.getElementById("solution_list")
+    const sol_list = document.getElementById("solution_list")
     clearChildren(sol_list)
-    let sol, sol_li, sol_span, soln
     for (let s=0; s<solns.length; s++) {
-        soln = solns[s]
-        sol_li = document.createElement("li")
+        const soln = solns[s]
+        const sol_li = document.createElement("li")
         for (let t=0; t<soln.length; t++) {
-            sol = document.createTextNode(JSON.stringify(soln[t].pos))
-            sol_span = document.createElement("span")
+            const sol = document.createTextNode(JSON.stringify(soln[t].pos))
+            const sol_span = document.createElement("span")
             sol_span.style.backgroundColor = solver_bg_colours[soln[t].col]
             sol_span.appendChild(sol)
             sol_li.appendChild(sol_span)
