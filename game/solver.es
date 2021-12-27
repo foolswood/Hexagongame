@@ -1,39 +1,46 @@
 function solver(start_state, moves_func, end) {
     ways_to = {}
-    const traverse = function(state, route) {
+    const seen = function(state, route) {
         const state_json = JSON.stringify(state)
         if (ways_to[state_json] !== undefined)
         {
             ways_to[state_json].push(route)
-            return
+            return true
         }
         ways_to[state_json] = [route]
-        const moves = moves_func(state)
-        moves.forEach((next) => {
-            const new_route = route.slice(0)
-            new_route.push(next)
-            traverse(next, new_route)
-        })
+        return false
     }
-    traverse(start_state, [start_state])
+    seen(start_state, [start_state])
+    let unexplored = [[start_state, [start_state]]]
+    while (unexplored.length) {
+        const exploring = unexplored
+        unexplored = []
+        for (const x of exploring) {
+            for (const next of moves_func(x[0])) {
+                const next_route = x[1].slice(0)
+                next_route.push(next)
+                if (!seen(next, next_route)) {
+                    unexplored.push([next, next_route])
+                }
+            }
+        }
+    }
     return ways_to
 }
 
 function get_shard_moves_func(iface) {
     let hexes = {}
-    let hex
     for (let h=0; h<iface.hexes.length; h++) {
-        hex = iface.hexes[h]
+        const hex = iface.hexes[h]
         hexes[hex.position] = hex
     }
-    let moves_from = function(state) {
-        let divs = hexes[state.pos].dividers
-        let col = hexes[state.pos].colour
+    const moves_from = function(state) {
+        const divs = hexes[state.pos].dividers
+        const col = hexes[state.pos].colour
         let valid = []
-        let divCol
         for (let d=0; d<divs.length; d++) {
-            divCol = divs[d][1].colour
-            if (state.col == "w" || divCol == "w" || divCol == state.col) {
+            const divCol = divs[d][1].colour
+            if (state.col === "w" || divCol === "w" || divCol === state.col) {
                 valid.push({"pos": divs[d][0], "col": col})
             }
         }
