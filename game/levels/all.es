@@ -1,12 +1,14 @@
 allMazes = {
 "mode": "menu",
 "mazeLayout" : [
-    "?w?b?gY"
+    "?w?b?gY",
+    "gr",
+    "?"
 ],
 "start": [0,0],
 "end": [3,0],
 "startColour": "w",
-"nEnds": 1,
+"nEnds": 2,
 "mazes": [
 {"mode": "menu",
 "mazeLayout" : [
@@ -328,6 +330,27 @@ allMazes = {
 "startColour" : "w",
 "nEnds" : 2
 }]
+},
+{"mode": "menu",
+"mazeLayout" : [
+    "          R",
+    "         r",
+    "      RrR",
+    "     r",
+    "  RrR",
+    " rr",
+    "RrR   R",
+    "  rr rr",
+    "  RrRrR",
+    " r     r",
+    "R       R"
+	],
+"start" : [5,0],
+"startColour": "w",
+"end" : [3,3],
+"nEnds" : 2,
+"mazes" : [
+]
 }
 ]
 }
