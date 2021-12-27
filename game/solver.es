@@ -34,13 +34,15 @@ function get_shard_moves_func(iface) {
         hexes[hex.position] = hex
     }
     const moves_from = function(state) {
-        const divs = hexes[state.pos].dividers
-        const col = hexes[state.pos].colour
+        const hex = hexes[state.pos]
+        if (hex === undefined)
+            return []
+        const divs = hex.dividers
         let valid = []
         for (let d=0; d<divs.length; d++) {
             const divCol = divs[d][1].colour
             if (state.col === "w" || divCol === "w" || divCol === state.col) {
-                valid.push({"pos": divs[d][0], "col": col})
+                valid.push({"pos": divs[d][0], "col": hex.colour})
             }
         }
         return valid
