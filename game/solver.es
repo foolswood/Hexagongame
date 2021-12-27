@@ -10,7 +10,6 @@ function solver(start_state, moves_func, end) {
         ways_to[state_json] = [route]
         return false
     }
-    seen(start_state, [start_state])
     let unexplored = [[start_state, [start_state]]]
     while (unexplored.length) {
         const exploring = unexplored
