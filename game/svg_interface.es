@@ -66,6 +66,9 @@ function SVGInterface(element_id) {
     let finishMarkers = svg.getElementById("finishMarkers")
     let playerMarkers = svg.getElementById("playerMarkers")
     let defs = svg.getElementsByTagName("defs")[0]
+    const modalSplash = svg.getElementById("modalSplash")
+    const modalBg = svg.getElementById("modalBg")
+    const modalSplashAnims = [0, 1].map((i) => svg.getElementById("modalSplashAnim" + i))
 
     // More data that I would rather wasn't here
     let hexHeight = 866
@@ -214,6 +217,11 @@ function SVGInterface(element_id) {
         routeGroup.appendChild(elem)
     }
 
+    const beginNow = function()
+    {
+        return ((performance.now() - animEpoch) / 1000.0) + "s"
+    }
+
     this.addRoute = function(route) {
         const totalChanges = route.reduce((c, r) => (r[0] !== null) ? c + 1 : c, 0) - 1
         let end, start = this.svgCoord(route[0][0])
@@ -248,7 +256,7 @@ function SVGInterface(element_id) {
         replayColAnim.setAttribute("attributeName", "fill")
         replayColAnim.setAttribute("values", colourValues)
         const dur = route.length + "s"
-        const begin = ((performance.now() - animEpoch) / 1000.0) + "s"
+        const begin = beginNow()
         const replayMarker = svg.createElementNS(svgNS, "circle")
         replayMarker.setAttribute("r", "9mm")
         const animElems = [replayMovePath, replayColAnim]
@@ -320,8 +328,12 @@ function SVGInterface(element_id) {
         svg.getElementById("gameGrid").setAttribute("viewBox", this.mazeBounds().join(" "))
     }
 
-    this.winModal = function(cb) {
-        const modalBg = svg.getElementById("modalBg")
+    this.winModal = function(cb, splashCentre) {
+        const splashLoc = this.svgCoord(splashCentre)
+        modalSplash.setAttribute("cx", splashLoc[0])
+        modalSplash.setAttribute("cy", splashLoc[1])
+        const begin = beginNow()
+        modalSplashAnims.forEach((a) => a.setAttribute("begin", begin))
         const bounds = this.mazeBounds()
         modalBg.setAttribute("x", bounds[0])
         modalBg.setAttribute("y", bounds[1])

@@ -37,6 +37,14 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 			<!-- Replace this when solidColor is common -->
 			<stop stop-color="grey"/>
 		</linearGradient>
+		<radialGradient id="modalSplash" r="150%" gradientUnits="userSpaceOnUse">
+			<stop stop-color="white" stop-opacity="0.35">
+				<animate id="modalSplashAnim0" attributeName="offset" dur="350ms" from="0" to="0.6" repeatCount="1" fill="freeze"/>
+			</stop>
+			<stop stop-color="white" stop-opacity="0.001">
+				<animate id="modalSplashAnim1" attributeName="offset" dur="350ms" from="0.1" to="1" repeatCount="1" fill="freeze"/>
+			</stop>
+		</radialGradient>
 		<polygon id="hex" points="500,0 250,433 -250,433 -500,0 -250,-433 250,-433" />
 		<polyline id="left" points="-500,0 -250,433" />
 		<polyline id="center" points="250,433 -250,433" />
@@ -59,5 +67,5 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 	</g>
 	<g id="routeReplay">
 	</g>
-	<rect id="modalBg" fill="white" fill-opacity="0.4" stroke="none" display="none" />
+	<rect id="modalBg" fill="url(#modalSplash)" stroke="none" display="none" />
 </svg>

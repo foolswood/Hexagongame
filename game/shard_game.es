@@ -93,7 +93,7 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
             if (finished(markers.map(m => m.position))) {
                 addFinishCol(progress, col)
                 routes.forEach((route) => iface.addRoute(route))
-                iface.winModal(returnToMenu)
+                iface.winModal(returnToMenu, markers[0].position)
                 saveProgressCb()
             }
         }
