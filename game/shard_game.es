@@ -61,7 +61,6 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
         let hexPos = hex.position
         let moveFunc =  function() {
             let finishCols = []
-            let moved = []
             for (let mIdx = 0; mIdx < markers.length; mIdx++) {
                 let divIdx = entryPoints.indexOf(
                     markers[mIdx].position.toString())
@@ -69,7 +68,6 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
                     let dcol = hex.dividers[divIdx][1].colour
                     if (col === "w" || dcol === "w" || col === dcol) {
                         finishCols.push(nextCols[mIdx])
-                        moved.push(mIdx)
                         markers[mIdx].position = hexPos
                         nextCols[mIdx] = hexCol
                     }
@@ -85,10 +83,7 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
             }
             for (let mIdx = 0; mIdx < routes.length; mIdx++)
             {
-                if (moved.includes(mIdx))
-                    routes[mIdx].push([markers[mIdx].position, col])
-                else
-                    routes[mIdx].push([null, col])
+                routes[mIdx].push([markers[mIdx].position, col])
             }
             if (finished(markers.map(m => m.position))) {
                 addFinishCol(progress, col)

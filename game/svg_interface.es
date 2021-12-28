@@ -222,9 +222,24 @@ function SVGInterface(element_id) {
         return ((performance.now() - animEpoch) / 1000.0) + "s"
     }
 
+    const countChanges = function(route)
+    {
+        let changes = 0
+        let prev = route[0][0]
+        for (const r of route)
+        {
+            if (r[0].toString !== prev.toString())
+            {
+                changes += 1
+                prev = r[0]
+            }
+        }
+        return changes
+    }
+
     this.addRoute = function(route) {
-        const totalChanges = route.reduce((c, r) => (r[0] !== null) ? c + 1 : c, 0) - 1
-        let end, start = this.svgCoord(route[0][0])
+        const totalChanges = countChanges(route)
+        let start = this.svgCoord(route[0][0])
         let c = route[0][1]
         let path = "M " + start[0] + "," + start[1]
         let colourValues = ""
@@ -233,14 +248,16 @@ function SVGInterface(element_id) {
         let changeCount = 0
         for (let i = 1; i < route.length; i++) {
             colourValues += strokeColourMap[c] + ";"
-            if (route[i][0] !== null)
+            const end = this.svgCoord(route[i][0])
+            if (start.toString() !== end.toString())
             {
-                end = this.svgCoord(route[i][0])
                 addRouteRailStep(c, start, end)
                 path += " L" + end[0] + "," + end[1]
                 start = end
                 changeCount++
             }
+            else
+                console.log("something stayed still")
             keyPoints += ";" + (changeCount / totalChanges)
             keyTimes += ";" + (i / (route.length - 1))
             c = route[i][1]

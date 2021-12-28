@@ -72,15 +72,11 @@ let clearChildren = function(thing) {
 
 let prev_route_li
 let route_draw = function(soln) {
-    let drawer = function() {
-        let routes = soln[0].pos.map((p) => [[p, "n"]])
-        for (let sIdx = 1; sIdx < soln.length; sIdx++) {
-            for (let mIdx = 0; mIdx < soln[sIdx].pos.length; mIdx++) {
-                let mPos = soln[sIdx].pos[mIdx]
-                if (mPos.toString() !== soln[sIdx-1].pos[mIdx].toString()) {
-                    routes[mIdx][routes[mIdx].length-1][1] = soln[sIdx-1].col
-                    routes[mIdx].push([mPos, "n"])
-                }
+    const drawer = function() {
+        let routes = soln[0].pos.map((_) => [])
+        for (const s of soln) {
+            for (let mIdx = 0; mIdx < s.pos.length; mIdx++) {
+                routes[mIdx].push([s.pos[mIdx], s.col])
             }
         }
         iface.clearRoutes()
