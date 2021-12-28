@@ -3,7 +3,7 @@
 <h2>Goal</h2>
 <p>Get the circular player marker into the finish ring.</p>
 <object id="simple_maze" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
-<h2>Movement rules</h2>
+<a id="std"><h2>Movement rules</h2></a>
 <p>The player marker may move through sides of the hexagon it is currently in that match its colour.<br>
 The player marker changes colour to that of the hexagon which was just exited.</p>
 <object id="movement_example" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
@@ -14,17 +14,20 @@ or
 <object id="movement_solution2" type="image/svg+xml" data="hexagons.svg" width="100" height="100"></object>
 <p>A white player marker may move through sides of any colour and any marker colour may move through a white side.</p>
 
-<h2>Menus and navigation</h2>
-<p>Hexagons with small circles on them have mazes inside them, click on them to play those mazes (they can, and do, nest).</p>
+<a id="menu"><h2>Menus and navigation</h2></a>
+<p>Hexagons with small circles on them (like the one on the left below) have mazes inside them, click on them to play those mazes.</p>
 <object id="menu_example" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
-<p>Colours that you completed the inner maze with will appear in the small circles, which can then be used to "colour in" that hexagon in the containing maze.<br>
-Click the medium white circle to play the current colouring of the menu maze. Click the yellow up arrow to go to out a maze nesting level.</p>
+<p>Colours that you complete the inner maze with will appear in the small circles, which can be clicked to "colour in" that hexagon in the outer maze.
+In this example the inner maze has 2 possible colours it can be solved in, hence the 2 small circles, but it has only been completed in one (green).<br>
+Once you have coloured the maze in you can click the medium sized white circle to play the menu maze with whatever colours you chose. The yellow up arrow takes you out a maze nesting level.</p>
 <p>If you make a mistake or get stuck in a maze click on the player marker to restart the current maze.<br>
 If you are already at the start of a maze clicking on the player marker will return you to the menu.</p>
-<h2>Shard collect mode</h2>
+
+<a id="shard"><h2>Shard collect mode</h2></a>
 <p>In some mazes the player marker is "sharded" and must be reassembled. When moving in shard mode the colour of the shards are linked.</p>
 <object id="shard_example" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
 <p>When 2 shards move together from different coloured hexagons the resulting player colour will be white.</p>
+
 </body>
 
 <script src="svg_interface.es" type="text/ecmascript"></script>
