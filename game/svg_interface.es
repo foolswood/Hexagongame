@@ -228,7 +228,7 @@ function SVGInterface(element_id) {
         let prev = route[0][0]
         for (const r of route)
         {
-            if (r[0].toString !== prev.toString())
+            if (r[0].toString() !== prev.toString())
             {
                 changes += 1
                 prev = r[0]
@@ -256,8 +256,6 @@ function SVGInterface(element_id) {
                 start = end
                 changeCount++
             }
-            else
-                console.log("something stayed still")
             keyPoints += ";" + (changeCount / totalChanges)
             keyTimes += ";" + (i / (route.length - 1))
             c = route[i][1]
