@@ -343,7 +343,7 @@ allMazes = {
     "  yg rr",
     "  ?r?r?",
     " r     w",
-    "R       R"
+    "?       R"
 	],
 "start" : [5,0],
 "startColour": "w",
@@ -493,6 +493,25 @@ allMazes = {
 "start": [0,1],
 "end": [3,0],
 "startColour": "w",
+"nEnds": 1},
+{"mode": "shard",  // solves in k
+"maze":[
+    "      K",
+    "     gbw",
+    "  KyKbWbKwK",
+    " yyyybpyyyyw",
+    "KgRyRyByGbGyK",
+    "yybyy g kybyb",
+    "KyRkRrPbG GyK",
+    "by y ryb rrbg",
+    "K YpG B RpWyK",
+    "pgby  p    bb",
+    "KpKyBgByByK K",
+    "    yyyyyy",
+    "    KyKyK"],
+"starts": [[0,2],[3,4],[4,5]],
+"startColour": "w",
+"end":[2,5],
 "nEnds": 1}
 ]
 }
