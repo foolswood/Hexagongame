@@ -18,7 +18,7 @@ function solver(start_state, moves_func, end) {
             for (const next of moves_func(x[0])) {
                 const next_route = x[1].slice(0)
                 next_route.push(next)
-                if (!seen(next, next_route) && !is_win_state(next)) {
+                if (!seen(next, next_route) && !is_win_state(next, end)) {
                     unexplored.push([next, next_route])
                 }
             }
