@@ -66,23 +66,22 @@ function loadStdMenu(iface, ms, goUp, progress, saveProgressCb) {
     }
     const show = function(col, highlightIdx) {
         //Cache the callbacks?
-        let hexes = loadMaze(ms.maze, iface)
-        let i, j, hex, pos, markers
-        for (i=0; i<mazeHexes.length; i++) {
-            pos = mazeHexes[i]
-            hex = hexes[pos]
+        const hexes = loadMaze(ms.maze, iface)
+        for (let i=0; i<mazeHexes.length; i++) {
+            const pos = mazeHexes[i]
+            const hex = hexes[pos]
             hex.callback = playMazeFunc(i)
             const maze = ms.mazes[i]
             const p = getProgressFor(pos)
-            markers = iface.addFinishMarkers(pos, maze.nEnds)
-            for (j=0; j<maze.nEnds; j++) {
+            const markers = iface.addFinishMarkers(pos, maze.nEnds)
+            for (let j=0; j<maze.nEnds; j++) {
                 markers[j].callback = finishMarkerCb(hex, pos, j, hexes)
                 markers[j].colour = getFinishCol(p, j)
                 if (col === markers[j].colour && i === highlightIdx)
                     markers[j].flash()
             }
         }
-        let playMeta = function () {
+        const playMeta = function () {
             iface.clear()
             gameStandard(iface, ms, show, progress, saveProgressCb)
         }
