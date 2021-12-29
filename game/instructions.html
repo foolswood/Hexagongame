@@ -1,25 +1,34 @@
 <html>
+<head>
+<style type="text/css">
+body {max-width: 40em; margin-left: auto; margin-right: auto}
+p {text-align: justify}
+div {align-items: center; justify-content: center; display: flex; font-size: 60px}
+</style>
+</head>
 <body>
 <h2>Goal</h2>
-<p>Get the circular player marker into the finish ring.</p>
+<p>Get your circular player marker into the finish ring.</p>
 <object id="simple_maze" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
 <a id="std"><h2>Movement rules</h2></a>
-<p>The player marker may move through sides of the hexagon it is currently in that match its colour.<br>
-The player marker changes colour to that of the hexagon which was just exited.</p>
+<p>You may move through sides of the hexagon you are in that match your current colour.<br>
+After moving you change colour to that of the hexagon which you just left.</p>
+<div>
 <object id="movement_example" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
-<p>In this example the player marker may move through the red sides, and will end up green after moving.</p>
-e.g.
-<object id="movement_solution" type="image/svg+xml" data="hexagons.svg" width="100" height="100"></object>
-or
-<object id="movement_solution2" type="image/svg+xml" data="hexagons.svg" width="100" height="100"></object>
-<p>A white player marker may move through sides of any colour and any marker colour may move through a white side.</p>
+&rarr;
+<object id="movement_solution" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
+/
+<object id="movement_solution2" type="image/svg+xml" data="hexagons.svg" width="150" height="150"></object>
+</div>
+<p>In this example you can move through the red sides, and will end up green after moving.</p>
+<p>White is a special colour and allows you through sides of any colour. Similarly you can pass through a white side in any colour.</p>
 
 <a id="menu"><h2>Menus and navigation</h2></a>
 <p>Hexagons with small circles on them (like the one on the left below) have mazes inside them, click on them to play those mazes.</p>
 <object id="menu_example" type="image/svg+xml" data="hexagons.svg" width="200" height="200"></object>
-<p>Colours that you complete the inner maze with will appear in the small circles, which can be clicked to "colour in" that hexagon in the outer maze.
-In this example the inner maze has 2 possible colours it can be solved in, hence the 2 small circles, but it has only been completed in one (green).<br>
-Once you have coloured the maze in you can click the medium sized white circle to play the menu maze with whatever colours you chose. The yellow up arrow takes you out a maze nesting level.</p>
+<p>Colours that you complete the inner maze with will appear in the small circles, which can be clicked to "colour in" that hexagon in the outer maze.</p>
+<p>In this example the inner maze has 2 possible colours it can be solved in, hence the 2 small circles, but it has only been completed in one (green).</p>
+<p>Once you have coloured the maze in you can click the medium sized white circle to play the menu maze with whatever colours you chose. The yellow up arrow takes you out a maze nesting level.</p>
 <p>If you make a mistake or get stuck in a maze click on the player marker to restart the current maze.<br>
 If you are already at the start of a maze clicking on the player marker will return you to the menu.</p>
 
