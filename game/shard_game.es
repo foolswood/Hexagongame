@@ -5,9 +5,9 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
         iface.endMarker.visible = true
     }
     let shards = iface.getShardMarkers(m.starts.length)
-    let returnToMenu = function() {
+    const returnToMenu = function(col) {
         shards.destroy()
-        doneCallback()
+        doneCallback(col)
     }
     this.abort = () => shards.destroy()  // Used by editor
     let markers = shards.shards
@@ -21,7 +21,7 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
     let nextCols, routes = [[]]
     let resetMaze = function() {
         if (routes.every((route) => route.length === 1)) {
-            returnToMenu()
+            returnToMenu(null)
         } else {
             updateCol(m.startColour)
             nextCols = m.starts.map(pos => hexes[pos].colour)
@@ -50,7 +50,7 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
         }
         return false
     }
-    let finished = function(positions) {
+    const finished = function(positions) {
         return (allEqual(positions, listEq) && (
             m.end === undefined ||
             m.end.toString() === positions[0].toString()))
@@ -87,9 +87,9 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
             }
             if (finished(markers.map(m => m.position))) {
                 addFinishCol(progress, col)
-                routes.forEach((route) => iface.addRoute(route))
-                iface.winModal(returnToMenu, markers[0].position)
                 saveProgressCb()
+                routes.forEach((route) => iface.addRoute(route))
+                iface.winModal(() => returnToMenu(col), markers[0].position)
             }
         }
         return moveFunc

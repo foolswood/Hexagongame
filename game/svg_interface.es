@@ -1,61 +1,5 @@
 const xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
 
-// Data that I would rather wasn't here
-const strokeColourMap = { //Colours for dividing lines
-    "w": "white",
-    "k": "#252525",
-    "r": "red",
-    "g": "forestgreen",
-    "b": "blue",
-    "y": "yellow",
-    "p": "magenta"
-}
-
-function SVGUIElement(svg_iface, dom_elem, colour_fill) {
-    let colour, position, _current_cb
-
-    this.__defineSetter__("position", function(pos) {
-        let loc = svg_iface.svgCoord(pos)
-        dom_elem.setAttribute("transform", "translate(" + loc[0] + "," + loc[1] + ")")
-        position = pos
-    })
-
-    this.__defineGetter__("position", function() {
-        return position
-    })
-
-    if (colour_fill) {
-        this.__defineSetter__("colour", function(col) {
-            dom_elem.setAttribute("fill", "url(#"+col+")")
-            colour = col
-        })
-    } else {
-        this.__defineSetter__("colour", function(col) {
-            dom_elem.setAttribute("stroke", strokeColourMap[col])
-            colour = col
-        })
-    }
-    this.__defineGetter__("colour", function() {
-        return colour
-    })
-
-    this.__defineSetter__("visible", function(bool) {
-        if (bool) {
-            dom_elem.removeAttribute("display")
-        } else {
-            dom_elem.setAttribute("display", "none")
-        }
-    })
-
-    this.__defineSetter__("callback", function(func) {
-        if (_current_cb !== undefined) {
-            dom_elem.removeEventListener('click', _current_cb)
-        }
-        dom_elem.addEventListener('click', func)
-        _current_cb = func
-    })
-}
-
 function SVGInterface(element_id) {
     const animEpoch = performance.now()
     let svg = document.getElementById(element_id).getSVGDocument()
@@ -70,20 +14,96 @@ function SVGInterface(element_id) {
     const modalBg = svg.getElementById("modalBg")
     const modalSplashAnims = [0, 1].map((i) => svg.getElementById("modalSplashAnim" + i))
 
-    // More data that I would rather wasn't here
-    let hexHeight = 866
-    let hexWidth = 1001
-    let shardClipRadius = 250 // Bigger than player circle
+    // Data that I would rather wasn't here
+    const strokeColourMap = { //Colours for dividing lines
+        "w": "white",
+        "k": "#252525",
+        "r": "red",
+        "g": "forestgreen",
+        "b": "blue",
+        "y": "yellow",
+        "p": "magenta"
+    }
+    const hexHeight = 866
+    const hexWidth = 1001
+    const shardClipRadius = 250 // Bigger than player circle
 
     let finishPositions = [[370, 0], [185, 320], [-185, 320], [-370, 0], [-185, -320], [185, -320]];
     // End of data that should be in the svg file really
 
-    this.hexes = []
-    this.endMarker = new SVGUIElement(this, svg.getElementById("end"), true)
-    this.upArrow = new SVGUIElement(this, svg.getElementById("upArrow"), true)
-    this.playMeta = new SVGUIElement(this, svg.getElementById("playMeta"), true)
+    const svgCoord = function(pos) {
+        let x = ((0.75*pos[0])+0.5)*hexWidth
+        let y = ((pos[1]+((pos[0]%2)*0.5))+0.5)*hexHeight
+        return [x, y]
+    }
 
-    function shardPointStr(angle) {
+    const beginNow = function()
+    {
+        return ((performance.now() - animEpoch) / 1000.0) + "s"
+    }
+
+    const SVGUIElement = function(dom_elem, colour_fill) {
+        let colour, position, _current_cb
+
+        this.__defineSetter__("position", function(pos) {
+            const loc = svgCoord(pos)
+            dom_elem.setAttribute("transform", "translate(" + loc[0] + "," + loc[1] + ")")
+            position = pos
+        })
+
+        this.__defineGetter__("position", function() {
+            return position
+        })
+
+        if (colour_fill) {
+            this.__defineSetter__("colour", function(col) {
+                dom_elem.setAttribute("fill", "url(#"+col+")")
+                colour = col
+            })
+        } else {
+            this.__defineSetter__("colour", function(col) {
+                dom_elem.setAttribute("stroke", strokeColourMap[col])
+                colour = col
+            })
+        }
+        this.__defineGetter__("colour", function() {
+            return colour
+        })
+
+        this.__defineSetter__("visible", function(bool) {
+            if (bool) {
+                dom_elem.removeAttribute("display")
+            } else {
+                dom_elem.setAttribute("display", "none")
+            }
+        })
+
+        this.__defineSetter__("callback", function(func) {
+            if (_current_cb !== undefined) {
+                dom_elem.removeEventListener('click', _current_cb)
+            }
+            dom_elem.addEventListener('click', func)
+            _current_cb = func
+        })
+
+        // Only used on finish circles at the moment
+        this.flash = function() {
+            const flashAnim = svg.createElementNS(svgNS, "animate")
+            flashAnim.setAttribute("attributeName", "stroke-width")
+            flashAnim.setAttribute("begin", beginNow())
+            flashAnim.setAttribute("dur", "1.5s")
+            flashAnim.setAttribute("values", "10;18;10")
+            flashAnim.setAttribute("repeatCount", "3")
+            dom_elem.appendChild(flashAnim)
+        }
+    }
+
+    this.hexes = []
+    this.endMarker = new SVGUIElement(svg.getElementById("end"), true)
+    this.upArrow = new SVGUIElement(svg.getElementById("upArrow"), true)
+    this.playMeta = new SVGUIElement(svg.getElementById("playMeta"), true)
+
+    const shardPointStr = function(angle) {
         return Math.sin(angle) * shardClipRadius + "," + Math.cos(angle) * shardClipRadius
     }
 
@@ -123,12 +143,6 @@ function SVGInterface(element_id) {
         return {shards: shards, destroy: () => rmElems.map((n) => n.remove())}
     }
 
-    this.svgCoord = function(pos) {
-        let x = ((0.75*pos[0])+0.5)*hexWidth
-        let y = ((pos[1]+((pos[0]%2)*0.5))+0.5)*hexHeight
-        return [x, y]
-    }
-
     this.svgNewUse = function(type, colour_fill) {
         if (colour_fill === undefined) {
             colour_fill = false
@@ -136,7 +150,7 @@ function SVGInterface(element_id) {
         //Creates a new svgUse object
         let nu = svg.createElementNS(svgNS, "use")
         nu.setAttributeNS(xlinkNS, "href", "#"+type)
-        let uie = new SVGUIElement(this, nu, colour_fill)
+        let uie = new SVGUIElement(nu, colour_fill)
         return [uie, nu]
     }
 
@@ -179,7 +193,7 @@ function SVGInterface(element_id) {
     }
 
     this.addFinishMarkers = function(pos, n) {
-        let loc = this.svgCoord(pos)
+        const loc = svgCoord(pos)
         let elem, x, y
         let elems = []
         for (let i=0; i<n; i++) {
@@ -217,11 +231,6 @@ function SVGInterface(element_id) {
         routeGroup.appendChild(elem)
     }
 
-    const beginNow = function()
-    {
-        return ((performance.now() - animEpoch) / 1000.0) + "s"
-    }
-
     const countChanges = function(route)
     {
         let changes = 0
@@ -239,7 +248,7 @@ function SVGInterface(element_id) {
 
     this.addRoute = function(route) {
         const totalChanges = countChanges(route)
-        let start = this.svgCoord(route[0][0])
+        let start = svgCoord(route[0][0])
         let c = route[0][1]
         let path = "M " + start[0] + "," + start[1]
         let colourValues = ""
@@ -248,7 +257,7 @@ function SVGInterface(element_id) {
         let changeCount = 0
         for (let i = 1; i < route.length; i++) {
             colourValues += strokeColourMap[c] + ";"
-            const end = this.svgCoord(route[i][0])
+            const end = svgCoord(route[i][0])
             if (start.toString() !== end.toString())
             {
                 addRouteRailStep(c, start, end)
@@ -308,7 +317,7 @@ function SVGInterface(element_id) {
     }
 
     this.hexBounds = function(hex) {
-        let svgPos = this.svgCoord(hex.position)
+        const svgPos = svgCoord(hex.position)
         return [svgPos[0]-(hexWidth/2), svgPos[1]-(hexHeight/2), svgPos[0]+(hexWidth/2), svgPos[1]+(hexHeight/2)]
     }
 
@@ -344,7 +353,7 @@ function SVGInterface(element_id) {
     }
 
     this.winModal = function(cb, splashCentre) {
-        const splashLoc = this.svgCoord(splashCentre)
+        const splashLoc = svgCoord(splashCentre)
         modalSplash.setAttribute("cx", splashLoc[0])
         modalSplash.setAttribute("cy", splashLoc[1])
         const begin = beginNow()
