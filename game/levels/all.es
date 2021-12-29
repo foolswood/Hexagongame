@@ -94,7 +94,7 @@ allMazes = {
 	"  ?r?",
 	" ry",
 	"?r?",
-	"   r",
+	"   b",
 	"    K"],
 "start" : [1,0],
 "end" : [2,4],
@@ -158,7 +158,7 @@ allMazes = {
 "start" : [0,0],
 "end" : [4,4],
 "startColour" : "w",
-"nEnds" : 1
+"nEnds" : 2
 },
 {"mode": "std",
 "maze" : [
