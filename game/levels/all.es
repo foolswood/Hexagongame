@@ -340,10 +340,10 @@ allMazes = {
     "  ?r?",
     " bk",
     "?y?   R",
-    "  yg rr",
-    "  ?r?r?",
+    "  yg yk",
+    "  ?p?r?",
     " r     w",
-    "?       R"
+    "?       ?"
 	],
 "start" : [5,0],
 "startColour": "w",
@@ -390,7 +390,7 @@ allMazes = {
 "end": [4,2],
 "startColour" : "w",
 "nEnds": 1},
-{"mode": "std",  // solves in y
+{"mode": "std",
 "maze" : [
 	"GyBrY",
 	"brybr",
@@ -404,7 +404,7 @@ allMazes = {
 "startColour": "w",
 "nEnds": 1},
 {"mode": "shard",  // langbenjf - this one's hard
-"maze":[  // solves in b or k
+"maze":[
 "    B",
 "    r",
 "RgBbKyGkY",
@@ -417,14 +417,14 @@ allMazes = {
 "starts":[[0,1],[2,0],[4,1],[0,3],[4,3],[2,4]],
 "startColour":"w",
 "nEnds": 2},
-{"mode": "std",  // solves in g
+{"mode": "std",
 "maze": [
     "W G","r b","BbG"],
 "start": [0,0],
 "end": [1,0],
 "startColour": "r",
 "nEnds": 1},
-{"mode": "std",  // solves in y, r, g
+{"mode": "std",
 "maze" : [
 	"YgByYyGbByRgY",
 	"gyyrrbbrggrbb",
@@ -447,7 +447,7 @@ allMazes = {
 "end" : [2,8],
 "startColour" : "w",
 "nEnds": 3},
-{"mode": "std",  // solves in b, r, g
+{"mode": "std",
 "maze" : [
 	"BrBbGrBbGbR",
 	"ygrgrbgbrrg",
@@ -468,7 +468,7 @@ allMazes = {
 "end": [4,1],
 "startColour": "w",
 "nEnds": 3},
-{"mode": "std",  // solves in y
+{"mode": "std",
 "maze" : [
 	"GyGrYgRyYrB",
 	"gyrgyggrrbg",
@@ -483,18 +483,7 @@ allMazes = {
 "end" : [4,4],
 "startColour" : "w",
 "nEnds": 1},
-{"mode": "std",  // solves in p
-"maze": [
-    "RbWpPyY",
-    "gbrpr",
-    "BbG P",
-    "rgrpr",
-    "RgRgR"],
-"start": [0,1],
-"end": [3,0],
-"startColour": "w",
-"nEnds": 1},
-{"mode": "shard",  // solves in k
+{"mode": "shard",
 "maze":[
     "      K",
     "     gbw",
@@ -512,7 +501,30 @@ allMazes = {
 "starts": [[0,2],[3,4],[4,5]],
 "startColour": "w",
 "end":[2,5],
-"nEnds": 1}
+"nEnds": 1},
+{"mode": "std",
+"maze": [
+    "RbWpPyY",
+    "gbrpr",
+    "BbG P",
+    "rgrpr",
+    "RgRgR"],
+"start": [0,1],
+"end": [3,0],
+"startColour": "w",
+"nEnds": 1},
+{"mode": "shard",
+"maze": [
+    "K       G",
+    "y       g",
+    "RkByYgRrB",
+    "gr bgy bk",
+    "G   R   Y",
+    "b       r",
+    "K       K"],
+"starts": [[0,1],[4,3]],
+"startColour" :"w",
+"nEnds": 3}
 ]
 }
 ]
