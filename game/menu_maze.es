@@ -55,13 +55,20 @@ function loadStdMenu(iface, ms, goUp, progress, saveProgressCb) {
                 saveProgressCb)
         }
     }
+    const isColoured = function(hex)
+    {
+        return hex.colour !== 'n'
+    }
     let finishMarkerCb = function(hex, loc, finIdx, hexes) {
         return function() {
-            let c = getFinishCol(getProgressFor(loc), finIdx)
+            const c = getFinishCol(getProgressFor(loc), finIdx)
+            const wasUncoloured = !isColoured(hex)
             hex.colour = c
             ensureSubObject(progress, 'chosenFinishes')[loc] = c
             saveProgressCb()
             ms.maze = saveMaze(hexes)
+            if (wasUncoloured && Object.values(hexes).every(isColoured))
+                iface.playMeta.flash()
         }
     }
     const show = function(col, highlightIdx) {
@@ -85,7 +92,9 @@ function loadStdMenu(iface, ms, goUp, progress, saveProgressCb) {
             iface.clear()
             gameStandard(iface, ms, (col) => show(col, -1), progress, saveProgressCb)
         }
-        iface.revealMetaMarkers(ms.end, goUp, playMeta, highlightIdx === -1)
+        iface.revealMetaMarkers(ms.end, goUp, playMeta)
+        if (highlightIdx === -1)
+            iface.upArrow.flash()
     }
     show(null, null)
 }

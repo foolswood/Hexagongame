@@ -211,12 +211,10 @@ function SVGInterface(element_id) {
         return elems
     }
 
-    this.revealMetaMarkers = function(pos, upCb, playCb, upFlash) {
+    this.revealMetaMarkers = function(pos, upCb, playCb) {
         this.upArrow.position = pos
         this.upArrow.visible = true
         this.upArrow.callback = upCb
-        if (upFlash)
-            this.upArrow.flash()
         this.playMeta.position = pos
         this.playMeta.visible = true
         this.playMeta.callback = playCb
