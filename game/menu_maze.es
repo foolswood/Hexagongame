@@ -83,9 +83,9 @@ function loadStdMenu(iface, ms, goUp, progress, saveProgressCb) {
         }
         const playMeta = function () {
             iface.clear()
-            gameStandard(iface, ms, show, progress, saveProgressCb)
+            gameStandard(iface, ms, (col) => show(col, -1), progress, saveProgressCb)
         }
-        iface.revealMetaMarkers(ms.end, goUp, playMeta)
+        iface.revealMetaMarkers(ms.end, goUp, playMeta, highlightIdx === -1)
     }
     show(null, null)
 }

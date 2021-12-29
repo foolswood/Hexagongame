@@ -92,8 +92,8 @@ function SVGInterface(element_id) {
             flashAnim.setAttribute("attributeName", "stroke-width")
             flashAnim.setAttribute("begin", beginNow())
             flashAnim.setAttribute("dur", "1.5s")
-            flashAnim.setAttribute("values", "10;18;10")
-            flashAnim.setAttribute("repeatCount", "3")
+            flashAnim.setAttribute("values", "10;22;10")
+            flashAnim.setAttribute("repeatCount", "5")
             dom_elem.appendChild(flashAnim)
         }
     }
@@ -211,10 +211,12 @@ function SVGInterface(element_id) {
         return elems
     }
 
-    this.revealMetaMarkers = function(pos, upCb, playCb) {
+    this.revealMetaMarkers = function(pos, upCb, playCb, upFlash) {
         this.upArrow.position = pos
         this.upArrow.visible = true
         this.upArrow.callback = upCb
+        if (upFlash)
+            this.upArrow.flash()
         this.playMeta.position = pos
         this.playMeta.visible = true
         this.playMeta.callback = playCb
