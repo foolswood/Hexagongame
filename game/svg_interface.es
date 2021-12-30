@@ -78,6 +78,8 @@ function SVGInterface(element_id) {
             }
         })
 
+        this.__defineGetter__("callback", () => _current_cb)
+
         this.__defineSetter__("callback", function(func) {
             if (_current_cb !== undefined) {
                 dom_elem.removeEventListener('click', _current_cb)

@@ -1,10 +1,6 @@
 function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
-    let hexes = loadMaze(m.maze, iface)
-    if (m.end !== undefined) {
-        iface.endMarker.position = m.end
-        iface.endMarker.visible = true
-    }
-    let shards = iface.getShardMarkers(m.starts.length)
+    const hexes = loadMaze(m.maze, iface)
+    const shards = iface.getShardMarkers(m.starts.length)
     const returnToMenu = function(col) {
         shards.destroy()
         doneCallback(col)
@@ -95,8 +91,13 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
         return moveFunc
     }
     for (let h in hexes) {
-        let hex = hexes[h]
+        const hex = hexes[h]
         hex.callback = hexFunc(hex)
+    }
+    if (m.end !== undefined) {
+        iface.endMarker.position = m.end
+        iface.endMarker.visible = true
+        iface.endMarker.callback = hexes[m.end].callback
     }
 }
 
