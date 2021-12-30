@@ -72,7 +72,7 @@ function loadStdMenu(iface, ms, goUp, progress, saveProgressCb) {
         }
     }
     const show = function(col, highlightIdx) {
-        if (setHelp !== undefined)
+        if (typeof setHelp !== 'undefined')
             setHelp("menu")
         //Cache the callbacks?
         const hexes = loadMaze(ms.maze, iface)

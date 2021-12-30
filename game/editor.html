@@ -21,7 +21,7 @@ ul {list-style-type: circle}
         <button type="button" onclick="apply()">Apply</button>
     </div>
     <div class="pile">
-        <textarea id="json" class="thing">{"maze":["RgB"],"starts":[[0,0]],"end":[1,0],"startColour":"w"}</textarea>
+        <textarea id="json" class="thing">{"mode":"std","maze":["RgB"],"start":[0,0],"end":[1,0],"startColour":"w"}</textarea>
         <textarea id="plain" class="thing">RgB</textarea>
     </div>
 </div>
@@ -42,8 +42,8 @@ ul {list-style-type: circle}
 <script src="svg_interface.es" type="text/ecmascript"></script>
 <script src="serialiser.es" type="text/ecmascript"></script>
 <script src="progress.es" type="text/ecmascript"></script>
+<script src="std_game.es" type="text/ecmascript"></script>
 <script src="shard_game.es" type="text/ecmascript"></script>
-<script src="menu_maze.es" type="text/ecmascript"></script>
 <script src="solver.es" type="text/ecmascript"></script>
 
 <script>
@@ -147,7 +147,7 @@ function preview() {
     if (activePreview !== undefined) {
         activePreview.abort()
     }
-    activePreview = new gameShardAssemble(iface, level, preview, {}, () => null)
+    activePreview = playMaze(iface, level, preview, {}, () => null)
     analyse()
 }
 

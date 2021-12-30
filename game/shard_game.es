@@ -101,4 +101,4 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
     }
 }
 
-mazeModes.shard = gameShardAssemble
+mazeModes.shard = (i, m, c, p, s) => new gameShardAssemble(i, m, c, p, s)
