@@ -49,7 +49,7 @@ xmlns:xlink="http://www.w3.org/1999/xlink">
 		<polyline id="left" points="-500,0 -250,433" />
 		<polyline id="center" points="250,433 -250,433" />
 		<polyline id="right" points="250,433 500,0" />
-		<circle id="finishCircle" r="60" /> <!-- NOT the endpoint -->
+		<circle id="finishCircle" r="70" /> <!-- NOT the endpoint -->
 		<circle id="playerMarker" r="200" stroke="white" stroke-width="30" />
 	</defs>
 	<g id="hexes">

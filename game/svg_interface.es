@@ -28,7 +28,7 @@ function SVGInterface(element_id) {
     const hexWidth = 1001
     const shardClipRadius = 250 // Bigger than player circle
 
-    let finishPositions = [[370, 0], [185, 320], [-185, 320], [-370, 0], [-185, -320], [185, -320]];
+    let finishPositions = [[350, 0], [175, 303], [-175, 303], [-350, 0], [-175, -303], [175, -303]];
     // End of data that should be in the svg file really
 
     const svgCoord = function(pos) {
