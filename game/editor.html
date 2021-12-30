@@ -93,7 +93,6 @@ let route_draw = function(soln) {
 
 const sol_list = document.getElementById("solution_list")
 let show_solutions = function(solns) {
-    clearChildren(sol_list)
     for (let s=0; s<solns.length; s++) {
         const soln = solns[s]
         const sol_li = document.createElement("li")
@@ -111,6 +110,7 @@ let show_solutions = function(solns) {
 
 function filter_solutions() {
     const select_value = document.getElementById("hex_select").value
+    clearChildren(sol_list)
     if (select_value !== "") {
         show_solutions(solutions[select_value])
     }
