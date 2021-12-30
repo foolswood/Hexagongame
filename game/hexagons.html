@@ -6,7 +6,7 @@
 </head>
 <body>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"></object>
-<a href="instructions.html" target="_blank"/>
+<a id="qLink" href="instructions.html" target="_blank"/>
     <img id="q" src="qmark.svg"/>
 </a>
 </body>
@@ -22,12 +22,17 @@
 <script src="levels/all.es" type="text/ecmascript"></script>
 
 <script>
-let wiggleQmark = function() {
+const wiggleQmark = function() {
     const q = document.getElementById("q")
     q.style.animationPlayState = "running"
 }
 
-let topComp = function(iface, mazes, progress, saveProgressCb, doWiggle=false) {
+const setHelp = function(mode) {
+    const l = document.getElementById("qLink")
+    l.setAttribute("href", "instructions.html#" + mode)
+}
+
+const topComp = function(iface, mazes, progress, saveProgressCb, doWiggle=false) {
     const qmarkWiggle = doWiggle ? window.setTimeout(wiggleQmark, 3500) : null
     iface.clear()
     const h = iface.addHex([0,0], "w")
