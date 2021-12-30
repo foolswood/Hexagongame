@@ -30,6 +30,7 @@ ul {list-style-type: circle}
     </div>
     <ul id="solution_list">
     </ul>
+    <p id="errors"></p>
 </div>
 </body>
 
@@ -90,8 +91,8 @@ let route_draw = function(soln) {
     return drawer
 }
 
+const sol_list = document.getElementById("solution_list")
 let show_solutions = function(solns) {
-    const sol_list = document.getElementById("solution_list")
     clearChildren(sol_list)
     for (let s=0; s<solns.length; s++) {
         const soln = solns[s]
@@ -116,12 +117,12 @@ function filter_solutions() {
 }
 
 const winners_only = document.getElementById("winners_only")
+const state_dropdown = document.getElementById("hex_select")
 function analyse() {
     solutions = solver(
         {"pos": level.starts, "col": level.startColour},
         get_shard_moves_func(iface),
         level.end)
-    let state_dropdown = document.getElementById("hex_select")
     let state_text, state_option
     clearChildren(state_dropdown)
     for (let s in solutions) {
@@ -146,9 +147,20 @@ function preview() {
     analyse()
 }
 
+const errors = document.getElementById("errors")
 function apply() {
-    active_tool.apply()
-    preview()
+    try
+    {
+        active_tool.apply()
+        preview()
+        errors.innerHTML = ""
+    }
+    catch (err)
+    {
+        clearChildren(sol_list)
+        clearChildren(state_dropdown)
+        errors.innerHTML = err.message
+    }
 }
 
 document.getElementById("json").setup = function() {
