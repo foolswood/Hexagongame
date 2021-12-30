@@ -88,13 +88,12 @@ function SVGInterface(element_id) {
             _current_cb = func
         })
 
-        // Only used on finish circles at the moment
         this.flash = function() {
             const flashAnim = svg.createElementNS(svgNS, "animate")
             flashAnim.setAttribute("attributeName", "stroke-width")
             flashAnim.setAttribute("begin", beginNow())
             flashAnim.setAttribute("dur", "1.5s")
-            flashAnim.setAttribute("values", "10;22;10")
+            flashAnim.setAttribute("values", "10;20;5;10")
             flashAnim.setAttribute("repeatCount", "5")
             dom_elem.appendChild(flashAnim)
         }
