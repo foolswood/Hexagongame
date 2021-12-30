@@ -23,14 +23,14 @@
 
 <script>
 let wiggleQmark = function() {
-    let q = document.getElementById("q")
+    const q = document.getElementById("q")
     q.style.animationPlayState = "running"
 }
 
 let topComp = function(iface, mazes, progress, saveProgressCb, doWiggle=false) {
-    let qmarkWiggle = doWiggle ? window.setTimeout(wiggleQmark, 3500) : null
+    const qmarkWiggle = doWiggle ? window.setTimeout(wiggleQmark, 3500) : null
     iface.clear()
-    let h = iface.addHex([0,0], "w")
+    const h = iface.addHex([0,0], "w")
     h.callback = () => {
         if (qmarkWiggle !== null)
             window.clearTimeout(qmarkWiggle)
@@ -39,7 +39,7 @@ let topComp = function(iface, mazes, progress, saveProgressCb, doWiggle=false) {
             () => topComp(iface, mazes, progress, saveProgressCb),
             progress, saveProgressCb)
     }
-    let fms = iface.addFinishMarkers([0,0], mazes.nEnds)
+    const fms = iface.addFinishMarkers([0,0], mazes.nEnds)
     for (let i = 0; i < mazes.nEnds; i++) {
         fms[i].colour = getFinishCol(progress, i)
     }
@@ -47,7 +47,7 @@ let topComp = function(iface, mazes, progress, saveProgressCb, doWiggle=false) {
 }
 
 window.onload = function() {
-    let i = new SVGInterface("A")
+    const i = new SVGInterface("A")
     let globalProgress = {}
     if (window.localStorage.chromagonProgress) {
         globalProgress = JSON.parse(window.localStorage.chromagonProgress)
