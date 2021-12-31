@@ -2,14 +2,14 @@ const xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg"
 
 function SVGInterface(element_id) {
     const animEpoch = performance.now()
-    let svg = document.getElementById(element_id).getSVGDocument()
-    let hexGroup = svg.getElementById("hexes")
-    let dividerGroup = svg.getElementById("dividers")
-    let routeGroup = svg.getElementById("route")
-    let routeReplayGroup = svg.getElementById("routeReplay")
-    let finishMarkers = svg.getElementById("finishMarkers")
-    let playerMarkers = svg.getElementById("playerMarkers")
-    let defs = svg.getElementsByTagName("defs")[0]
+    const svg = document.getElementById(element_id).getSVGDocument()
+    const hexGroup = svg.getElementById("hexes")
+    const dividerGroup = svg.getElementById("dividers")
+    const routeGroup = svg.getElementById("route")
+    const routeReplayGroup = svg.getElementById("routeReplay")
+    const finishMarkers = svg.getElementById("finishMarkers")
+    const playerMarkers = svg.getElementById("playerMarkers")
+    const defs = svg.getElementsByTagName("defs")[0]
     const modalSplash = svg.getElementById("modalSplash")
     const modalBg = svg.getElementById("modalBg")
     const modalSplashAnims = [0, 1].map((i) => svg.getElementById("modalSplashAnim" + i))
@@ -279,26 +279,33 @@ function SVGInterface(element_id) {
             c = route[i][1]
         }
         colourValues = colourValues.slice(0, colourValues.length - 1) //cut final ; off
-        const replayMovePath = svg.createElementNS(svgNS, "animateMotion")
-        replayMovePath.setAttribute("calcMode", "linear")
-        replayMovePath.setAttribute("keyPoints", keyPoints)
-        replayMovePath.setAttribute("keyTimes", keyTimes)
-        replayMovePath.setAttribute("path", path)
         const replayColAnim = svg.createElementNS(svgNS, "animate")
         replayColAnim.setAttribute("calcMode", "discrete")
         replayColAnim.setAttribute("attributeName", "fill")
         replayColAnim.setAttribute("values", colourValues)
+        const animElems = [replayColAnim]
+        if (totalChanges) {
+            const replayMovePath = svg.createElementNS(svgNS, "animateMotion")
+            replayMovePath.setAttribute("calcMode", "linear")
+            replayMovePath.setAttribute("keyPoints", keyPoints)
+            replayMovePath.setAttribute("keyTimes", keyTimes)
+            replayMovePath.setAttribute("path", path)
+            animElems.push(replayMovePath)
+        }
         const dur = route.length + "s"
         const begin = beginNow()
         const replayMarker = svg.createElementNS(svgNS, "circle")
         replayMarker.setAttribute("r", "9mm")
-        const animElems = [replayMovePath, replayColAnim]
         animElems.forEach((e) => {
             e.setAttribute("begin", begin)
             e.setAttribute("dur", dur)
             e.setAttribute("repeatCount", "indefinite")
             replayMarker.appendChild(e)
         })
+        if (!totalChanges) {
+            replayMarker.setAttribute("cx", start[0])
+            replayMarker.setAttribute("cy", start[1])
+        }
         routeReplayGroup.appendChild(replayMarker)
     }
 
