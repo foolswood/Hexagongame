@@ -26,6 +26,7 @@ function SVGInterface(element_id) {
     }
     const hexHeight = 866
     const hexWidth = 1001
+    const pieDiameter = 200
     const shardClipRadius = 250 // Bigger than player circle
 
     let finishPositions = [[350, 0], [175, 303], [-175, 303], [-350, 0], [-175, -303], [175, -303]];
@@ -116,6 +117,23 @@ function SVGInterface(element_id) {
         return Math.sin(angle) * shardClipRadius + "," + Math.cos(angle) * shardClipRadius
     }
 
+    const circleClip = function(startAngle, angleSize, id) {
+        const shardStart = shardPointStr(startAngle)
+        const shardEnd = shardPointStr(startAngle + angleSize)
+        const path = svg.createElementNS(svgNS, "path")
+        const large = angleSize > Math.PI ? 1 : 0
+        path.setAttribute(
+            "d",
+            "M 0 0 " +
+            "L " + shardStart +
+            " A " + shardClipRadius + " " + shardClipRadius + " " + large + " " + large + " 0 " + shardEnd +
+            " Z")
+        const clipPath = svg.createElementNS(svgNS, "clipPath")
+        clipPath.setAttribute("id", id)
+        clipPath.appendChild(path)
+        return clipPath
+    }
+
     this.getShardMarkers = function(nShards) {
         if (nShards === 1) {
             let playerMarkerUse = this.svgNewUse("playerMarker", true)
@@ -124,32 +142,47 @@ function SVGInterface(element_id) {
                 shards: [playerMarkerUse[0]],
                 destroy: () => playerMarkerUse[1].remove()}
         }
-        let degPerShard = 2 * Math.PI / nShards
-        let rmElems = []
-        let shards = []
-        for (let s=0; s<nShards; s++) {
-            let shardStart = shardPointStr(degPerShard * s)
-            let shardEnd = shardPointStr(degPerShard * (s + 1))
-            let path = svg.createElementNS(svgNS, "path")
-            path.setAttribute(
-                "d",
-                "M 0 0 " +
-                "L " + shardStart +
-                " A " + shardClipRadius + " " + shardClipRadius + " 0 0 0 " + shardEnd +
-                " Z")
-            let clipPath = svg.createElementNS(svgNS, "clipPath")
-            let clipPathId = "playerMarkerClip" + s
-            clipPath.setAttribute("id", clipPathId)
-            clipPath.appendChild(path)
+        const radPerShard = 2 * Math.PI / nShards
+        const rmElems = []
+        const shards = []
+        for (let s=0; s < nShards; s++) {
+            const clipPathId = "playerMarkerClip" + s
+            const clipPath = circleClip(radPerShard * s, radPerShard, clipPathId)
             defs.appendChild(clipPath)
             rmElems.push(clipPath)
-            let playerMarkerUse = this.svgNewUse("playerMarker", true)
+            const playerMarkerUse = this.svgNewUse("playerMarker", true)
             playerMarkerUse[1].setAttribute("clip-path", "url(#" + clipPathId + ")")
             playerMarkers.appendChild(playerMarkerUse[1])
             rmElems.push(playerMarkerUse[1])
             shards.push(playerMarkerUse[0])
         }
         return {shards: shards, destroy: () => rmElems.map((n) => n.remove())}
+    }
+
+    this.addPie = function(pos, n, total) {
+        const c = svg.createElementNS(svgNS, "circle")
+        c.setAttribute("stroke", "white")
+        c.setAttribute("r", pieDiameter)
+        c.setAttribute("stroke-width", 10)
+        c.setAttribute("fill", "none")
+        const p = svg.createElementNS(svgNS, "circle")
+        p.setAttribute("r", pieDiameter)
+        p.setAttribute("fill", "white")
+        const g = svg.createElementNS(svgNS, "g")
+        const loc = svgCoord(pos)
+        g.setAttribute("transform", "translate(" + loc[0] + "," + loc[1] + ")")
+        g.setAttribute("opacity", 0.3)
+        g.appendChild(c)
+        g.appendChild(p)
+        hexGroup.appendChild(g)
+        if (n !== total) {
+            const clipPathId = "pieClip" + pos
+            const angle = n * 2 * Math.PI / total
+            const clipPath = circleClip(Math.PI - angle, angle, clipPathId)
+            g.appendChild(clipPath)
+            p.setAttribute("clip-path", "url(#" + clipPathId + ")")
+        }
+        return new SVGUIElement(g, undefined)
     }
 
     this.svgNewUse = function(type, colour_fill) {

@@ -79,8 +79,12 @@ function loadStdMenu(iface, ms, goUp, progress, saveProgressCb) {
         for (let i=0; i<mazeHexes.length; i++) {
             const pos = mazeHexes[i]
             const hex = hexes[pos]
-            hex.callback = playMazeFunc(i)
+            const cb = playMazeFunc(i)
+            hex.callback = cb
             const maze = ms.mazes[i]
+            const subCompletions = getSubCompletions(maze)
+            if (subCompletions)
+                iface.addPie(pos, getCompletedCount(getProgressFor(pos)), subCompletions).callback = cb
             const p = getProgressFor(pos)
             const markers = iface.addFinishMarkers(pos, maze.nEnds)
             for (let j=0; j<maze.nEnds; j++) {

@@ -35,8 +35,7 @@ const setHelp = function(mode) {
 const topComp = function(iface, mazes, progress, saveProgressCb, doWiggle=false) {
     const qmarkWiggle = doWiggle ? window.setTimeout(wiggleQmark, 3500) : null
     iface.clear()
-    const h = iface.addHex([0,0], "w")
-    h.callback = () => {
+    const cb = () => {
         if (qmarkWiggle !== null)
             window.clearTimeout(qmarkWiggle)
         playMaze(
@@ -44,6 +43,8 @@ const topComp = function(iface, mazes, progress, saveProgressCb, doWiggle=false)
             () => topComp(iface, mazes, progress, saveProgressCb),
             progress, saveProgressCb)
     }
+    iface.addHex([0,0], "n").callback = cb
+    iface.addPie([0,0], getCompletedCount(progress), getSubCompletions(mazes)).callback = cb
     const fms = iface.addFinishMarkers([0,0], mazes.nEnds)
     for (let i = 0; i < mazes.nEnds; i++) {
         fms[i].colour = getFinishCol(progress, i)

@@ -114,7 +114,7 @@ allMazes = {
 "start" : [1,0],
 "end" : [4,3],
 "startColour" : "w",
-"nEnds" : "1"
+"nEnds" : 1
 },
 {"mode": "std",
 "maze" : [
@@ -240,7 +240,7 @@ allMazes = {
 "start" : [2,1],
 "end" : [2,6],
 "startColour" : "w",
-"nEnds" : "1"
+"nEnds" : 1
 },
 {"mode": "std",
 "maze" : [
