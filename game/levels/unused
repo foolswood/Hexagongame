@@ -1,0 +1,13 @@
+{
+"mode":"std",
+"maze":[
+    "RgBgGykrgwr",
+    "rgrgrgrybyb",
+    "rbbgyrybbyg",
+    "ryyrgggwwww",
+    "ykwrgbyryrb"
+],
+"start":[0,0],
+"end":[3,0],
+"startColour":"w"
+}
