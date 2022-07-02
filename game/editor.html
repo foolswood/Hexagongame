@@ -19,6 +19,7 @@ ul {list-style-type: circle}
             <option value="plain">Plain</option>
         </select>
         <button type="button" onclick="apply()">Apply</button>
+        <button type="button" onclick="generate()">Generate</button>
     </div>
     <div class="pile">
         <textarea id="json" class="thing">{"mode":"std","maze":["RgB"],"start":[0,0],"end":[1,0],"startColour":"w"}</textarea>
@@ -44,6 +45,7 @@ ul {list-style-type: circle}
 <script src="progress.es" type="text/ecmascript"></script>
 <script src="std_game.es" type="text/ecmascript"></script>
 <script src="shard_game.es" type="text/ecmascript"></script>
+<script src="mazegen.es" type="text/ecmascript"></script>
 <script src="solver.es" type="text/ecmascript"></script>
 
 <script>
@@ -165,6 +167,14 @@ function apply() {
         clearChildren(state_dropdown)
         errors.innerHTML = err.message
     }
+}
+
+function generate() {
+    level = genMultiplayerMaze()
+    let jbox = document.getElementById("json")
+    jbox.setup()
+    preview()
+    errors.innerHTML = ""
 }
 
 document.getElementById("json").setup = function() {
