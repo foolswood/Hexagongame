@@ -30,8 +30,8 @@ function genMultiplayerMaze() {
     const nColours = 4
     return {
         "mode": "shard",
-        "maze": genMazeLayout(6, 6, nColours),
-        "starts": [[1,1], [4,4]],
+        "maze": genMazeLayout(5, 5, nColours),
+        "starts": [[1,1], [3,3]],
         "startColour": randCol(nColours, true)
     }
 }
