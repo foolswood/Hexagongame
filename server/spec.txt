@@ -1,0 +1,25 @@
+Client -> Server
+----------------
+
+<on connection a string for the player name>
+
+{"type": "move": "pos": <pos>}
+
+{"type": "impossible"}
+
+{"type": "over", "game_id": <game_id>}
+
+    For telling the server (which doesn't know the game rules) when a round is
+    over, the game ID is used to make this idempotent.
+
+
+Server -> Client
+----------------
+
+{"type": "start", "game_id": <token>, "players": [<names in turn order>], ...<maze data>}
+
+{"type": "left", "player": <player name>}
+
+{"type": "move", "pos": <pos>}
+
+{"type": "impossible", "player": <player name>}
