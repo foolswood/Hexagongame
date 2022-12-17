@@ -173,6 +173,10 @@ const getHandleMsg = function(ws) {
     return handleMsg
 }
 
+const waitingForOthers = function() {
+    iface.addRoute([[[1, 1], 'g'], [[0, 0], 'r'], [[2, 0], 'b'], [[1, 1], 'g']])
+}
+
 const connect = function(e) {
     e.preventDefault();
     const u = document.getElementById('url')
@@ -186,6 +190,7 @@ const connect = function(e) {
         disconnected()
     }
     const ws = new WebSocket(u.value)
+    ws.addEventListener('open', waitingForOthers)
     ws.addEventListener('error', reshowConnect)
     ws.addEventListener('close', reshowConnect)
     ws.addEventListener('message', getHandleMsg(ws))
