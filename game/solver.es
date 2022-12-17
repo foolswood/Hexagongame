@@ -88,3 +88,15 @@ function is_win_state(state, end) {
     }
     return true
 }
+
+function showSolution(iface, soln) {
+    console.log(soln)
+    let routes = soln[0].pos.map((_) => [])
+    for (const s of soln) {
+        for (let mIdx = 0; mIdx < s.pos.length; mIdx++) {
+            routes[mIdx].push([s.pos[mIdx], s.col])
+        }
+    }
+    iface.clearRoutes()
+    routes.forEach((route) => iface.addRoute(route))
+}

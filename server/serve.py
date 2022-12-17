@@ -51,7 +51,7 @@ class GameRoom:
         # TODO: Which move was this guess actually made at? (To avoid guesses
         # that were wrong being marked right, though that'd require some luck
         # to profit from.)
-        return self._relay(player, "impossible", guesser=player.name)
+        return self._relay(player, "impossible", player=player.name)
 
     async def _relay(self, originator, t, **extra):
         # TODO: I know *something* will happen on disconnection/timeout, but

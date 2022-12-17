@@ -40,8 +40,12 @@ const sendMsg = function(ws, type, extra) {
     ws.send(JSON.stringify(extra))
 }
 
-const multiplayerGame = function(ws, players, maze) {
+const multiplayerGame = function(ws, players, maze, gameId) {
     const sm = new shardMoves(iface, maze)
+    const gameOver = function() {
+        sm.cleanUp()
+        sendMsg(ws, 'over', {game_id: gameId})
+    }
     var turnIdx = 0
     var ourTurn
     const turnChanged = function() {
@@ -54,11 +58,16 @@ const multiplayerGame = function(ws, players, maze) {
         turnChanged()
     }
     turnChanged()
+    const win = function(player) {
+        alert("Player " + player + " won!")
+        setTimeout(gameOver, 5000)
+    }
     var shardHexMoves = {}
     const checkWin = function() {
-        if (sm.finished())
+        if (sm.finished()) {
+            sm.showWin(gameOver)
             win(players[turnIdx])
-        else
+        } else
             turnAdvance()
     }
     const getMoveFunc = function(hex) {
@@ -112,7 +121,7 @@ const multiplayerGame = function(ws, players, maze) {
                 // Show the solution briefly (if it was our guess)
                 eliminate(guessingPlayer)
                 if (guessingPlayer === ourName)
-                    showSolution(s)
+                    showSolution(iface, solutions[s][0])
                 return
             }
         }
@@ -147,7 +156,7 @@ const getHandleMsg = function(ws) {
             case 'start':
                 if (game !== undefined)
                     game.cleanUp()
-                game = new multiplayerGame(ws, m.players, m)
+                game = new multiplayerGame(ws, m.players, m, m.game_id)
                 break
             case 'left':
                 game.leave(m.player)
