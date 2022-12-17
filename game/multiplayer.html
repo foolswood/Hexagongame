@@ -1,0 +1,197 @@
+<html>
+<head>
+    <title>Chromagon - Multiplayer</title>
+    <link rel="icon" type="image/x-icon" href="favicon.svg"/>
+    <link rel="stylesheet" type="text/css" href="hexagons.css">
+    <link rel="stylesheet" type="text/css" href="multiplayer.css">
+</head>
+<body>
+<object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"></object>
+<div id="modal" class="modalshow">
+    <form id="connect">
+        <label>URL:</label><input id="url" type="url" required autofocus>
+        <label>Name:</label><input id="name" type="text" required maxlength="20">
+        <input id="go" type="submit" value="Connect">
+    </form>
+</div>
+<a href="instructions.html#multiplayer" target="_blank"/>
+    <img id="q" src="qmark.svg"/>
+</a>
+</body>
+
+<script>
+let mazeModes = {}  // dummy maze launcher (works slightly differently for multiplayer, refactor?)
+</script>
+
+<script src="svg_interface.es" type="text/ecmascript"></script>
+<script src="serialiser.es" type="text/ecmascript"></script>
+<script src="shard_common.es" type="text/ecmascript"></script>
+<script src="solver.es" type="text/ecmascript"></script>
+
+<script>
+var iface
+var ourName
+var game
+
+const sendMsg = function(ws, type, extra) {
+    if (extra === undefined)
+        extra = {}
+    extra['type'] = type
+    ws.send(JSON.stringify(extra))
+}
+
+const multiplayerGame = function(ws, players, maze) {
+    const sm = new shardMoves(iface, maze)
+    var turnIdx = 0
+    var ourTurn
+    const turnChanged = function() {
+        ourTurn = players[turnIdx] === ourName
+    }
+    const turnAdvance = function() {
+        turnIdx++
+        if (turnIdx === players.length)
+            turnIdx = 0
+        turnChanged()
+    }
+    turnChanged()
+    var shardHexMoves = {}
+    const checkWin = function() {
+        if (sm.finished())
+            win(players[turnIdx])
+        else
+            turnAdvance()
+    }
+    const getMoveFunc = function(hex) {
+        const pos = hex.position
+        const shardMoveFunc = sm.getHexFunc(hex)
+        shardHexMoves[pos.toString()] = shardMoveFunc
+        const moveFunc = function() { // hex click cb
+            if (ourTurn) {  // may want to do some kind of overlay instead of this
+                const c = shardMoveFunc()
+                if (c !== null) {
+                    sendMsg(ws, 'move', {pos: pos})
+                    checkWin()
+                }
+            }
+        }
+        return moveFunc
+    }
+    sm.hexFuncsSetup(getMoveFunc)
+    this.move = function(pos) {  // move from network
+        if (shardHexMoves[pos.toString()]() !== null) {
+            checkWin()
+        }
+    }
+    const arrayRemove = function(arr, item) {
+        for (var idx = 0; idx < arr.length; idx++) {
+            if (arr[idx] === item) {
+                arr.splice(idx, 1)
+                return
+            }
+        }
+    }
+    const eliminate = function(player) {
+        arrayRemove(players, player)
+        if (players.length === 1) {
+            win(players[0])
+            return
+        }
+        if (turnIdx === players.length) {
+            turnIdx = 0
+            turnChanged()
+        }
+    }
+    this.leave = function(player) {
+        eliminate(player)
+    }
+    const impossibleGuessed = function(guessingPlayer) {
+        // Run solver to determine if a win condition exists
+        var solutions = solver(sm.state(), get_shard_moves_func(iface), undefined)
+        for (let s in solutions) {
+            if (is_win_state(JSON.parse(s), undefined)) {
+                // Show the solution briefly (if it was our guess)
+                eliminate(guessingPlayer)
+                if (guessingPlayer === ourName)
+                    showSolution(s)
+                return
+            }
+        }
+        // No valid solutions, so a correct guess
+        win(guessingPlayer)
+    }
+    this.impossible = impossibleGuessed
+    const impossiblePressed = function() {
+        sendMsg(ws, 'impossible')
+        impossibleGuessed(ourName)
+    }
+    sm.setMarkerCb(impossiblePressed)
+    this.cleanUp = sm.cleanUp
+}
+
+const disconnected = function() {
+    iface.clear()
+    iface.addHex([0,0], 'b')
+    iface.addHex([2,0], 'g')
+    iface.addHex([1,1], 'r')
+    iface.maximise()
+    iface.winModal(() => {}, [1,0])
+    m = document.getElementById('modal')
+    m.setAttribute('class', 'modalshow')
+}
+
+const getHandleMsg = function(ws) {
+    const handleMsg = function(e) {
+        const m = JSON.parse(e.data)
+        console.log(m)
+        switch (m.type) {
+            case 'start':
+                if (game !== undefined)
+                    game.cleanUp()
+                game = new multiplayerGame(ws, m.players, m)
+                break
+            case 'left':
+                game.leave(m.player)
+                break
+            case 'move':
+                game.move(m.pos)
+                break
+            case 'impossible':
+                game.impossible(m.player)
+                break
+        }
+        console.log(e.data)
+    }
+    return handleMsg
+}
+
+const connect = function(e) {
+    e.preventDefault();
+    const u = document.getElementById('url')
+    const n = document.getElementById('name')
+    const g = document.getElementById('go')
+    u.disabled = n.disabled = g.disabled = true;
+    g.value = "Connecting..."
+    const reshowConnect = function() {
+        g.value = "Connect"
+        u.disabled = n.disabled = g.disabled = false;
+        disconnected()
+    }
+    const ws = new WebSocket(u.value)
+    ws.addEventListener('error', reshowConnect)
+    ws.addEventListener('close', reshowConnect)
+    ws.addEventListener('message', getHandleMsg(ws))
+    ws.onopen = function() {
+        document.getElementById('modal').setAttribute('class', 'hide')
+        ourName = n.value
+        ws.send(n.value)
+    }
+}
+
+window.onload = function() {
+    iface = new SVGInterface("A")
+    f = document.getElementById('connect')
+    f.addEventListener('submit', connect)
+    disconnected()
+}
+</script>
+</html>

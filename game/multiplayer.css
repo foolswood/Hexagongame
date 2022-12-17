@@ -1,0 +1,19 @@
+.modalshow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: block;
+    width: 20em;
+    background: #FFF9;
+    padding: 4em;
+    border-radius: 1em
+}
+
+.hide {
+    display: none;
+}
+
+input {
+    width: 100%;
+}

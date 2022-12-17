@@ -1,23 +1,24 @@
 #!/usr/bin/env python
 
 import asyncio
-from websockets import serve
+from websockets import serve, WebSocketException
 from json import loads, dumps
 from random import shuffle
 
 
 class Player:
-    def __init__(self, ws):
+    def __init__(self, ws, name):
         self.ws = ws
-        self.name = None
+        self.name = name
 
     def send(self, t, **extra):
         extra['type'] = t
-        return ws.send(json.dumps(extra))
+        print(f'sending {extra}')
+        return self.ws.send(dumps(extra))
 
     async def recv(self):
-        s = await ws.recv()
-        return json.loads(s)
+        s = await self.ws.recv()
+        return loads(s)
 
 
 class GameRoom:
@@ -29,13 +30,14 @@ class GameRoom:
     async def join(self, player):
         if player.name in (p.name for p in self._players):
             raise Exception("Implement name clash handling protocol")
-        self._players.add(player)
+        self._players.append(player)
         if not self._current_players:
             await self._start()
 
     async def leave(self, player):
         self._players.remove(player)
         if player in self._current_players:
+            self._current_players.remove(player)
             await self._relay(None, "left", player=player.name)
 
     async def over(self, game_id):
@@ -54,8 +56,9 @@ class GameRoom:
     async def _relay(self, originator, t, **extra):
         # TODO: I know *something* will happen on disconnection/timeout, but
         # come back to that.
-        await asyncio.gather(
-            p.send(t, **extra) for p in self._current_players if p is not originator)
+        print(f"cur {self._current_players}")
+        await asyncio.gather(*(
+            p.send(t, **extra) for p in self._current_players if p is not originator))
 
     async def _start(self):
         if len(self._players) < 2:
@@ -86,16 +89,20 @@ async def handle_player(ws):
     name = await ws.recv()
     p = Player(ws, name)
     await room.join(p)
-    while True:
-        msg = p.recv()
-        match msg['type']:
-            case 'move':
-                await room.move(p, msg['pos'])
-            case 'impossible':
-                await room.impossible(p)
-            case 'over':
-                await room.over(msg['game_id'])
-
+    try:
+        while True:
+            msg = await p.recv()
+            print(f'rxed {msg}')
+            match msg['type']:
+                case 'move':
+                    await room.move(p, msg['pos'])
+                case 'impossible':
+                    await room.impossible(p)
+                case 'over':
+                    await room.over(msg['game_id'])
+    except WebSocketException:
+        pass
+    await room.leave(p)
 
 async def main():
     async with serve(handle_player, 'localhost', 9000):

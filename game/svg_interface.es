@@ -363,6 +363,7 @@ function SVGInterface(element_id) {
         this.endMarker.visible = false
         this.upArrow.visible = false
         this.playMeta.visible = false
+        modalBg.setAttribute("display", "none");
     }
 
     this.hexBounds = function(hex) {
@@ -413,10 +414,6 @@ function SVGInterface(element_id) {
         modalBg.setAttribute("width", bounds[2] + bounds[0])
         modalBg.setAttribute("height", bounds[3] + bounds[1])
         modalBg.removeAttribute("display");
-        const modalClicked = function(evt) {
-            modalBg.setAttribute("display", "none");
-            cb();
-        }
-        modalBg.addEventListener('click', modalClicked)
+        modalBg.addEventListener('click', cb)
     }
 }
