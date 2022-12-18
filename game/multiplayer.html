@@ -7,7 +7,11 @@
 </head>
 <body>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"></object>
-<div id="modal" class="modalshow">
+<div id="turnIndicator">
+    <ol id="playerList" class="centered">
+    </ol>
+</div>
+<div id="modal" class="modalshow centered">
     <form id="connect">
         <label>URL:</label><input id="url" type="url" required autofocus>
         <label>Name:</label><input id="name" type="text" required maxlength="20">
@@ -40,24 +44,73 @@ const sendMsg = function(ws, type, extra) {
     ws.send(JSON.stringify(extra))
 }
 
-const multiplayerGame = function(ws, players, maze, gameId) {
-    const sm = new shardMoves(iface, maze)
-    const gameOver = function() {
-        sm.cleanUp()
-        sendMsg(ws, 'over', {game_id: gameId})
+const arrayRemove = function(arr, item) {
+    for (var idx = 0; idx < arr.length; idx++) {
+        if (arr[idx] === item) {
+            arr.splice(idx, 1)
+            return
+        }
     }
+}
+
+var playerListElem
+var turnIndicator, turnIndicatorCallback
+const turnLabeller = function(players) {
     var turnIdx = 0
-    var ourTurn
-    const turnChanged = function() {
-        ourTurn = players[turnIdx] === ourName
+    var turnLabels = {}
+    for (var player in players) {
+        const name = document.createTextNode(players[player])
+        const li = document.createElement('li')
+        li.appendChild(name)
+        playerListElem.appendChild(li)
+        turnLabels[players[player]] = li
     }
-    const turnAdvance = function() {
-        turnIdx++
+    var currentPlayer = players[0]
+    const turnChanged = function() {
+        turnLabels[currentPlayer].classList.remove('active')
+        currentPlayer = players[turnIdx]
+        if (currentPlayer === ourName)
+            turnIndicator.setAttribute('class', 'hide')
+        else
+            turnIndicator.setAttribute('class', '')
+        turnLabels[currentPlayer].setAttribute('class', 'active')
+    }
+    turnChanged()
+    this.advance = function() {
+        turnIdx++;
         if (turnIdx === players.length)
             turnIdx = 0
         turnChanged()
     }
-    turnChanged()
+    this.cleanUp = function() {
+        for (p in turnLabels) {
+            turnLabels[p].remove()
+        }
+    }
+    this.eliminate = function(player) {
+        arrayRemove(players, player)
+        if (turnIdx === players.length) {
+            turnIdx = 0
+            turnChanged()
+        }
+        turnLabels[player].setAttribute('class', 'out')
+    }
+    this.__defineGetter__('players', () => players)
+    this.__defineGetter__('currentPlayer', () => currentPlayer)
+}
+
+const multiplayerGame = function(ws, players, maze, gameId) {
+    const sm = new shardMoves(iface, maze)
+    const tl = new turnLabeller(players)
+    const cleanUp = function() {
+        sm.cleanUp()
+        tl.cleanUp()
+    }
+    this.cleanUp = cleanUp
+    const gameOver = function() {
+        sendMsg(ws, 'over', {game_id: gameId})
+        cleanUp()
+    }
     const win = function(player) {
         alert("Player " + player + " won!")
         setTimeout(gameOver, 5000)
@@ -66,21 +119,19 @@ const multiplayerGame = function(ws, players, maze, gameId) {
     const checkWin = function() {
         if (sm.finished()) {
             sm.showWin(gameOver)
-            win(players[turnIdx])
+            win(tl.currentPlayer)
         } else
-            turnAdvance()
+            tl.advance()
     }
     const getMoveFunc = function(hex) {
         const pos = hex.position
         const shardMoveFunc = sm.getHexFunc(hex)
         shardHexMoves[pos.toString()] = shardMoveFunc
         const moveFunc = function() { // hex click cb
-            if (ourTurn) {  // may want to do some kind of overlay instead of this
-                const c = shardMoveFunc()
-                if (c !== null) {
-                    sendMsg(ws, 'move', {pos: pos})
-                    checkWin()
-                }
+            const c = shardMoveFunc()
+            if (c !== null) {
+                sendMsg(ws, 'move', {pos: pos})
+                checkWin()
             }
         }
         return moveFunc
@@ -91,23 +142,11 @@ const multiplayerGame = function(ws, players, maze, gameId) {
             checkWin()
         }
     }
-    const arrayRemove = function(arr, item) {
-        for (var idx = 0; idx < arr.length; idx++) {
-            if (arr[idx] === item) {
-                arr.splice(idx, 1)
-                return
-            }
-        }
-    }
     const eliminate = function(player) {
-        arrayRemove(players, player)
-        if (players.length === 1) {
-            win(players[0])
+        tl.eliminate(player)
+        if (tl.players.length === 1) {
+            win(tl.currentPlayer)
             return
-        }
-        if (turnIdx === players.length) {
-            turnIdx = 0
-            turnChanged()
         }
     }
     this.leave = function(player) {
@@ -134,7 +173,7 @@ const multiplayerGame = function(ws, players, maze, gameId) {
         impossibleGuessed(ourName)
     }
     sm.setMarkerCb(impossiblePressed)
-    this.cleanUp = sm.cleanUp
+    turnIndicatorCallback.set(impossiblePressed)
 }
 
 const disconnected = function() {
@@ -143,9 +182,8 @@ const disconnected = function() {
     iface.addHex([2,0], 'g')
     iface.addHex([1,1], 'r')
     iface.maximise()
-    iface.winModal(() => {}, [1,0])
     m = document.getElementById('modal')
-    m.setAttribute('class', 'modalshow')
+    m.setAttribute('class', 'modalshow centered')
 }
 
 const getHandleMsg = function(ws) {
@@ -202,6 +240,9 @@ const connect = function(e) {
 }
 
 window.onload = function() {
+    playerListElem = document.getElementById('playerList')
+    turnIndicator = document.getElementById('turnIndicator')
+    turnIndicatorCallback = new Pressable(turnIndicator)
     iface = new SVGInterface("A")
     f = document.getElementById('connect')
     f.addEventListener('submit', connect)

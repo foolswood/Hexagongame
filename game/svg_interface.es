@@ -1,5 +1,27 @@
 const xlinkNS="http://www.w3.org/1999/xlink", svgNS="http://www.w3.org/2000/svg";
 
+function Pressable(domElem) {
+    var touchStartTime
+    var currentCb
+    domElem.addEventListener('touchstart', (evt) => touchStartTime = performance.now())
+    domElem.addEventListener('touchend', (evt) => {
+        if (currentCb !== undefined && touchStartTime !== undefined && performance.now() - touchStartTime < 50) {
+            evt.preventDefault()
+            currentCb()
+        }
+    })
+
+    this.get = () => currentCb
+
+    this.set = function(func) {
+        if (currentCb !== undefined) {
+            domElem.removeEventListener('click', currentCb)
+        }
+        domElem.addEventListener('click', func)
+        currentCb = func
+    }
+}
+
 function SVGInterface(element_id) {
     const animEpoch = performance.now()
     const svg = document.getElementById(element_id).getSVGDocument()
@@ -44,7 +66,7 @@ function SVGInterface(element_id) {
     }
 
     const SVGUIElement = function(dom_elem, colour_fill) {
-        let colour, position, current_cb, touchStartTime
+        let colour, position, current_cb
 
         this.__defineSetter__("position", function(pos) {
             const loc = svgCoord(pos)
@@ -79,23 +101,9 @@ function SVGInterface(element_id) {
             }
         })
 
-        dom_elem.addEventListener('touchstart', (evt) => touchStartTime = performance.now())
-        dom_elem.addEventListener('touchend', (evt) => {
-            if (current_cb !== undefined && touchStartTime !== undefined && performance.now() - touchStartTime < 50) {
-                evt.preventDefault()
-                current_cb()
-            }
-        })
-
-        this.__defineGetter__("callback", () => current_cb)
-
-        this.__defineSetter__("callback", function(func) {
-            if (current_cb !== undefined) {
-                dom_elem.removeEventListener('click', current_cb)
-            }
-            dom_elem.addEventListener('click', func)
-            current_cb = func
-        })
+        const p = new Pressable(dom_elem)
+        this.__defineGetter__("callback", p.get)
+        this.__defineSetter__("callback", p.set)
 
         this.flash = function() {
             const flashAnim = svg.createElementNS(svgNS, "animate")
