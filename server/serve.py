@@ -13,7 +13,6 @@ class Player:
 
     def send(self, t, **extra):
         extra['type'] = t
-        print(f'sending {extra}')
         return self.ws.send(dumps(extra))
 
     async def recv(self):
@@ -68,9 +67,9 @@ class GameRoom:
         return self._relay(player, "impossible", player=player.name)
 
     async def _relay(self, originator, t, **extra):
-        # TODO: I know *something* will happen on disconnection/timeout, but
-        # come back to that.
-        print(f"cur {self._current_players}")
+        # FIXME: because we're sending to other websockets, if they fail here
+        # we need to handle them appropriately instead of failing the
+        # initiator:
         await asyncio.gather(*(
             p.send(t, **extra) for p in self._current_players if p is not originator))
 
@@ -85,7 +84,6 @@ class GameRoom:
             game_id=self._game_id, **self._gen_maze())
 
     def _gen_maze(self):
-        # TODO: Actual generator, not just a single example I copied in
         return {
             "mode":"shard",
             "maze": generate_maze(5, 5),
@@ -103,7 +101,6 @@ async def handle_player(ws):
     try:
         while True:
             msg = await p.recv()
-            print(f'rxed {msg}')
             match msg['type']:
                 case 'move':
                     await room.move(p, msg['pos'])
