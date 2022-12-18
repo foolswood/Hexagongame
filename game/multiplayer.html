@@ -33,16 +33,7 @@ let mazeModes = {}  // dummy maze launcher (works slightly differently for multi
 <script src="solver.es" type="text/ecmascript"></script>
 
 <script>
-var iface
 var ourName
-var game
-
-const sendMsg = function(ws, type, extra) {
-    if (extra === undefined)
-        extra = {}
-    extra['type'] = type
-    ws.send(JSON.stringify(extra))
-}
 
 const arrayRemove = function(arr, item) {
     for (var idx = 0; idx < arr.length; idx++) {
@@ -53,62 +44,66 @@ const arrayRemove = function(arr, item) {
     }
 }
 
-var playerListElem
-var turnIndicator, turnIndicatorCallback
-const turnLabeller = function(players) {
-    var turnIdx = 0
-    var turnLabels = {}
-    for (var player in players) {
-        const name = document.createTextNode(players[player])
-        const li = document.createElement('li')
-        li.appendChild(name)
-        playerListElem.appendChild(li)
-        turnLabels[players[player]] = li
-    }
-    var currentPlayer = players[0]
-    const turnChanged = function() {
-        turnLabels[currentPlayer].classList.remove('active')
-        currentPlayer = players[turnIdx]
-        if (currentPlayer === ourName)
-            turnIndicator.setAttribute('class', 'hide')
-        else
-            turnIndicator.setAttribute('class', '')
-        turnLabels[currentPlayer].setAttribute('class', 'active')
-    }
-    turnChanged()
-    this.advance = function() {
-        turnIdx++;
-        if (turnIdx === players.length)
-            turnIdx = 0
-        turnChanged()
-    }
-    this.cleanUp = function() {
-        for (p in turnLabels) {
-            turnLabels[p].remove()
+
+const getTurnLabeller = function() {
+    const playerListElem = document.getElementById('playerList')
+    const turnIndicator = document.getElementById('turnIndicator')
+    const turnIndicatorCallback = new Pressable(turnIndicator)
+    return function(players) {
+        var turnIdx = 0
+        var turnLabels = {}
+        for (var player in players) {
+            const name = document.createTextNode(players[player])
+            const li = document.createElement('li')
+            li.appendChild(name)
+            playerListElem.appendChild(li)
+            turnLabels[players[player]] = li
         }
-    }
-    this.eliminate = function(player) {
-        arrayRemove(players, player)
-        if (turnIdx === players.length) {
-            turnIdx = 0
+        var currentPlayer = players[0]
+        const turnChanged = function() {
+            turnLabels[currentPlayer].classList.remove('active')
+            currentPlayer = players[turnIdx]
+            if (currentPlayer === ourName)
+                turnIndicator.setAttribute('class', 'hide')
+            else
+                turnIndicator.setAttribute('class', '')
+            turnLabels[currentPlayer].setAttribute('class', 'active')
+        }
+        turnChanged()
+        this.advance = function() {
+            turnIdx++;
+            if (turnIdx === players.length)
+                turnIdx = 0
             turnChanged()
         }
-        turnLabels[player].setAttribute('class', 'out')
+        this.cleanUp = function() {
+            for (p in turnLabels) {
+                turnLabels[p].remove()
+            }
+        }
+        this.eliminate = function(player) {
+            arrayRemove(players, player)
+            if (turnIdx === players.length) {
+                turnIdx = 0
+                turnChanged()
+            }
+            turnLabels[player].setAttribute('class', 'out')
+        }
+        this.__defineGetter__('players', () => players)
+        this.__defineGetter__('currentPlayer', () => currentPlayer)
+        this.__defineSetter__('callback', turnIndicatorCallback.set)
     }
-    this.__defineGetter__('players', () => players)
-    this.__defineGetter__('currentPlayer', () => currentPlayer)
 }
 
-const multiplayerGame = function(ws, players, maze, gameId) {
+const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
     const sm = new shardMoves(iface, maze)
-    const tl = new turnLabeller(players)
     const cleanUp = function() {
         sm.cleanUp()
         tl.cleanUp()
     }
     this.cleanUp = cleanUp
     const gameOver = function() {
-        sendMsg(ws, 'over', {game_id: gameId})
+        sendMsg('over', {game_id: gameId})
         cleanUp()
     }
     const win = function(player) {
@@ -130,7 +125,7 @@ const multiplayerGame = function(ws, players, maze, gameId) {
         const moveFunc = function() { // hex click cb
             const c = shardMoveFunc()
             if (c !== null) {
-                sendMsg(ws, 'move', {pos: pos})
+                sendMsg('move', {pos: pos})
                 checkWin()
             }
         }
@@ -169,32 +164,38 @@ const multiplayerGame = function(ws, players, maze, gameId) {
     }
     this.impossible = impossibleGuessed
     const impossiblePressed = function() {
-        sendMsg(ws, 'impossible')
+        sendMsg('impossible', {})
         impossibleGuessed(ourName)
     }
     sm.setMarkerCb(impossiblePressed)
-    turnIndicatorCallback.set(impossiblePressed)
+    tl.callback = impossiblePressed
 }
 
-const disconnected = function() {
-    iface.clear()
-    iface.addHex([0,0], 'b')
-    iface.addHex([2,0], 'g')
-    iface.addHex([1,1], 'r')
-    iface.maximise()
-    m = document.getElementById('modal')
-    m.setAttribute('class', 'modalshow centered')
-}
-
-const getHandleMsg = function(ws) {
+const serverConnector = function(iface) {
+    const disconnected = function() {
+        iface.clear()
+        iface.addHex([0,0], 'b')
+        iface.addHex([2,0], 'g')
+        iface.addHex([1,1], 'r')
+        iface.maximise()
+        m = document.getElementById('modal')
+        m.setAttribute('class', 'modalshow centered')
+    }
+    var ws
+    const sendMsg = function(type, extra) {
+        extra['type'] = type
+        ws.send(JSON.stringify(extra))
+    }
+    const turnLabeller = getTurnLabeller()
+    var game
     const handleMsg = function(e) {
         const m = JSON.parse(e.data)
-        console.log(m)
         switch (m.type) {
             case 'start':
                 if (game !== undefined)
                     game.cleanUp()
-                game = new multiplayerGame(ws, m.players, m, m.game_id)
+                game = new multiplayerGame(
+                    iface, sendMsg, new turnLabeller(m.players), m, m.game_id)
                 break
             case 'left':
                 game.leave(m.player)
@@ -206,47 +207,37 @@ const getHandleMsg = function(ws) {
                 game.impossible(m.player)
                 break
         }
-        console.log(e.data)
     }
-    return handleMsg
-}
-
-const waitingForOthers = function() {
-    iface.addRoute([[[1, 1], 'g'], [[0, 0], 'r'], [[2, 0], 'b'], [[1, 1], 'g']])
-}
-
-const connect = function(e) {
-    e.preventDefault();
+    const waitingForOthers = function() {
+        iface.addRoute([[[1, 1], 'g'], [[0, 0], 'r'], [[2, 0], 'b'], [[1, 1], 'g']])
+    }
     const u = document.getElementById('url')
     const n = document.getElementById('name')
     const g = document.getElementById('go')
-    u.disabled = n.disabled = g.disabled = true;
-    g.value = "Connecting..."
-    const reshowConnect = function() {
-        g.value = "Connect"
-        u.disabled = n.disabled = g.disabled = false;
-        disconnected()
+    const connect = function(e) {
+        e.preventDefault();
+        u.disabled = n.disabled = g.disabled = true;
+        g.value = "Connecting..."
+        const reshowConnect = function() {
+            g.value = "Connect"
+            u.disabled = n.disabled = g.disabled = false;
+            disconnected()
+        }
+        ws = new WebSocket(u.value)
+        ws.addEventListener('open', waitingForOthers)
+        ws.addEventListener('error', reshowConnect)
+        ws.addEventListener('close', reshowConnect)
+        ws.addEventListener('message', handleMsg)
+        ws.onopen = function() {
+            document.getElementById('modal').setAttribute('class', 'hide')
+            ourName = n.value
+            ws.send(n.value)
+        }
     }
-    const ws = new WebSocket(u.value)
-    ws.addEventListener('open', waitingForOthers)
-    ws.addEventListener('error', reshowConnect)
-    ws.addEventListener('close', reshowConnect)
-    ws.addEventListener('message', getHandleMsg(ws))
-    ws.onopen = function() {
-        document.getElementById('modal').setAttribute('class', 'hide')
-        ourName = n.value
-        ws.send(n.value)
-    }
-}
-
-window.onload = function() {
-    playerListElem = document.getElementById('playerList')
-    turnIndicator = document.getElementById('turnIndicator')
-    turnIndicatorCallback = new Pressable(turnIndicator)
-    iface = new SVGInterface("A")
-    f = document.getElementById('connect')
-    f.addEventListener('submit', connect)
+    document.getElementById('connect').addEventListener('submit', connect)
     disconnected()
 }
+
+window.onload = () => serverConnector(new SVGInterface("A"))
 </script>
 </html>
