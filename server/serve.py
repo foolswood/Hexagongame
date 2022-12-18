@@ -3,7 +3,7 @@
 import asyncio
 from websockets import serve, WebSocketException
 from json import loads, dumps
-from random import shuffle
+from random import shuffle, choice
 
 
 class Player:
@@ -19,6 +19,20 @@ class Player:
     async def recv(self):
         s = await self.ws.recv()
         return loads(s)
+
+
+def generate_maze(width, height, colours='rgby'):
+    maze = []
+    for l in range((2 * height) - 1):
+        s = ''
+        for c in range((2 * width) - 1):
+            rchr = choice(colours)
+            if l % 2 == 0 and c % 2 == 0:  # hex
+                s += rchr.upper()
+            else:
+                s += rchr
+        maze.append(s)
+    return maze
 
 
 class GameRoom:
@@ -74,10 +88,7 @@ class GameRoom:
         # TODO: Actual generator, not just a single example I copied in
         return {
             "mode":"shard",
-            "maze":[
-                "YbYgYyRgY","bbgyrggyy","RrRbYyBgR","rggybgbby",
-                "YbRgRgGrG","gbyrbyygy","YgRyGbRbR","grybyyyrb",
-                "RyGgYgYrG"],
+            "maze": generate_maze(5, 5),
             "starts":[[1,1],[3,3]],
             "startColour":"g"}
 
