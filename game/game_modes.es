@@ -1,3 +1,5 @@
+let mazeModes = {}
+
 function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
     const sm = new shardMoves(iface, m)
     const returnToMenu = function(col) {
@@ -29,3 +31,16 @@ function gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb) {
 }
 
 mazeModes.shard = (i, m, c, p, s) => new gameShardAssemble(i, m, c, p, s)
+
+function gameStandard(iface, m, doneCallback, progress, saveProgressCb) {
+    m['starts'] = [m['start']]
+    return new gameShardAssemble(iface, m, doneCallback, progress, saveProgressCb)
+}
+
+mazeModes.std = gameStandard
+
+function playMaze(iface, m, cb, progress, saveProgressCb) {
+    if (typeof setHelp !== 'undefined')
+        setHelp(m.mode)
+    return mazeModes[m.mode](iface, m, cb, progress, saveProgressCb)
+}
