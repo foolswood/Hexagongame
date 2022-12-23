@@ -11,6 +11,8 @@
     <ol id="playerList" class="centered">
     </ol>
 </div>
+<object id="won" class="hide" type="image/svg+xml" data="star.svg"></object>
+<object id="lost" class="hide" type="image/svg+xml" data="spoon.svg"></object>
 <div id="modal" class="modalshow centered">
     <form id="connect">
         <label>URL:</label><input id="url" type="url" required autofocus>
@@ -96,9 +98,12 @@ const getTurnLabeller = function() {
 
 const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
     const sm = new shardMoves(iface, maze)
+    var outcomeElem
     const cleanUp = function() {
         sm.cleanUp()
         tl.cleanUp()
+        if (outcomeElem !== undefined)
+            outcomeElem.setAttribute("class", "hide")
     }
     this.cleanUp = cleanUp
     const gameOver = function() {
@@ -106,7 +111,11 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
         cleanUp()
     }
     const win = function(player) {
-        alert("Player " + player + " won!")
+        if (player === ourName)
+            outcomeElem = document.getElementById("won")
+        else
+            outcomeElem = document.getElementById("lost")
+        outcomeElem.setAttribute("class", "centered prize")
         setTimeout(gameOver, 5000)
     }
     var shardHexMoves = {}

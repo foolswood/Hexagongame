@@ -5,6 +5,12 @@
     transform: translate(-50%, -50%);
 }
 
+.prize {
+    width: 70%;
+    height: 70%;
+    opacity: 0.9;
+}
+
 #turnIndicator {
     position: absolute;
     top: 0;
