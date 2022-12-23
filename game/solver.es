@@ -90,7 +90,6 @@ function is_win_state(state, end) {
 }
 
 function showSolution(iface, soln) {
-    console.log(soln)
     let routes = soln[0].pos.map((_) => [])
     for (const s of soln) {
         for (let mIdx = 0; mIdx < s.pos.length; mIdx++) {
