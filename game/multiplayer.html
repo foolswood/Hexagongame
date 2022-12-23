@@ -83,10 +83,9 @@ const getTurnLabeller = function() {
         }
         this.eliminate = function(player) {
             arrayRemove(players, player)
-            if (turnIdx === players.length) {
+            if (turnIdx === players.length)
                 turnIdx = 0
-                turnChanged()
-            }
+            turnChanged()
             turnLabels[player].setAttribute('class', 'out')
         }
         this.__defineGetter__('players', () => players)
