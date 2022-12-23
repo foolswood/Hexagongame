@@ -94,7 +94,7 @@ class GameRoom:
         return {
             "mode":"shard",
             "maze": generate_maze(5, 5, 'rgby'),
-            "starts":[[1,1],[3,3]],
+            "starts":choice(([[1,1],[3,3]], [[1,3],[3,1]])),
             "startColour":choice('rgby')}
 
 
