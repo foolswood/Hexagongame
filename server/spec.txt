@@ -16,6 +16,8 @@ Client -> Server
 Server -> Client
 ----------------
 
+{"type": "lobby"}
+
 {"type": "start", "game_id": <token>, "players": [<names in turn order>], ...<maze data>}
 
 {"type": "left", "player": <player name>}

@@ -172,14 +172,13 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
 }
 
 const serverConnector = function(iface) {
-    const disconnected = function() {
+    const modal = document.getElementById('modal')
+    const startScreen = function() {
         iface.clear()
         iface.addHex([0,0], 'b')
         iface.addHex([2,0], 'g')
         iface.addHex([1,1], 'r')
         iface.maximise()
-        m = document.getElementById('modal')
-        m.setAttribute('class', 'modalshow centered')
     }
     var ws
     const sendMsg = function(type, extra) {
@@ -191,6 +190,14 @@ const serverConnector = function(iface) {
     const handleMsg = function(e) {
         const m = JSON.parse(e.data)
         switch (m.type) {
+            case 'lobby':
+                if (game !== undefined) {
+                    game.cleanUp()
+                    game = undefined
+                }
+                startScreen()
+                showSpinner()
+                break
             case 'start':
                 if (game !== undefined)
                     game.cleanUp()
@@ -208,7 +215,7 @@ const serverConnector = function(iface) {
                 break
         }
     }
-    const waitingForOthers = function() {
+    const showSpinner = function() {
         iface.addRoute([[[1, 1], 'g'], [[0, 0], 'r'], [[2, 0], 'b'], [[1, 1], 'g']])
     }
     const u = document.getElementById('url')
@@ -221,21 +228,21 @@ const serverConnector = function(iface) {
         const reshowConnect = function() {
             g.value = "Connect"
             u.disabled = n.disabled = g.disabled = false;
-            disconnected()
+            modal.setAttribute('class', 'modalshow centered')
+            startScreen()
         }
         ws = new WebSocket(u.value)
-        ws.addEventListener('open', waitingForOthers)
         ws.addEventListener('error', reshowConnect)
         ws.addEventListener('close', reshowConnect)
         ws.addEventListener('message', handleMsg)
-        ws.onopen = function() {
-            document.getElementById('modal').setAttribute('class', 'hide')
+        ws.addEventListener('open', function() {
+            modal.setAttribute('class', 'hide')
             ourName = n.value
             ws.send(n.value)
-        }
+        })
     }
     document.getElementById('connect').addEventListener('submit', connect)
-    disconnected()
+    startScreen()
 }
 
 window.onload = () => serverConnector(new SVGInterface("A"))

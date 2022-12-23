@@ -37,14 +37,19 @@ def generate_maze(width, height, colours='rgby'):
 class GameRoom:
     def __init__(self):
         self._players = []
-        self._current_players = None
+        self._current_players = []
         self._game_id = 0
+
+    def _lobby(self, player):
+        return player.send('lobby')
 
     async def join(self, player):
         if player.name in (p.name for p in self._players):
             raise Exception("Implement name clash handling protocol")
         self._players.append(player)
-        if not self._current_players:
+        if self._current_players:
+            await self._lobby(player)
+        else:
             await self._start()
 
     async def leave(self, player):
@@ -55,6 +60,7 @@ class GameRoom:
 
     async def over(self, game_id):
         if game_id == self._game_id:
+            self._current_players = []
             await self._start()
 
     def move(self, player, pos):
@@ -75,6 +81,7 @@ class GameRoom:
 
     async def _start(self):
         if len(self._players) < 2:
+            await self._lobby(self._players[0])
             return  # Not going to be that fun on your own
         self._game_id += 1
         self._current_players = list(self._players)  # snapshot for this round
