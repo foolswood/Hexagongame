@@ -76,7 +76,7 @@ function shardMoves(iface, m) {
                 }
             }
             if (finishCols.length === 0) {
-                return
+                return null
             }
             if (allEqual(finishCols, (a, b) => a === b)) {
                 updateCol(finishCols[0])
