@@ -20,7 +20,7 @@ class Player:
         return loads(s)
 
 
-def generate_maze(width, height, colours='rgby'):
+def generate_maze(width, height, colours):
     maze = []
     for l in range((2 * height) - 1):
         s = ''
@@ -93,9 +93,9 @@ class GameRoom:
     def _gen_maze(self):
         return {
             "mode":"shard",
-            "maze": generate_maze(5, 5),
+            "maze": generate_maze(5, 5, 'rgby'),
             "starts":[[1,1],[3,3]],
-            "startColour":"g"}
+            "startColour":choice('rgby')}
 
 
 room = GameRoom()  # TODO: rooms by URL
