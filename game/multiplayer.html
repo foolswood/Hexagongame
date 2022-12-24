@@ -117,7 +117,7 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
         else
             outcomeElem = document.getElementById("lost")
         outcomeElem.setAttribute("class", "centered prize")
-        setTimeout(gameOver, 5000)
+        setTimeout(gameOver, 10000)
     }
     var shardHexMoves = {}
     const checkWin = function() {
