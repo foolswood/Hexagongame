@@ -1,8 +1,6 @@
 Client -> Server
 ----------------
 
-<on connection a string for the player name>
-
 {"type": "move": "pos": <pos>}
 
 {"type": "impossible"}
@@ -10,18 +8,17 @@ Client -> Server
 {"type": "over", "game_id": <game_id>}
 
     For telling the server (which doesn't know the game rules) when a round is
-    over, the game ID is used to make this idempotent.
-
+    over, the game ID (per player) is used to make this idempotent.
 
 Server -> Client
 ----------------
 
 {"type": "lobby"}
 
-{"type": "start", "game_id": <token>, "players": [<names in turn order>], ...<maze data>}
+{"type": "start", "game_id": <token>, "players": <unsigned>, "own_id": <unsigned>, ...<maze data>}
 
-{"type": "left", "player": <player name>}
+{"type": "left", "player": <unsigned>}
 
 {"type": "move", "pos": <pos>}
 
-{"type": "impossible", "player": <player name>}
+{"type": "impossible", "player": <unsigned>}

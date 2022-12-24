@@ -16,7 +16,6 @@
 <div id="modal" class="modalshow centered">
     <form id="connect">
         <label>URL:</label><input id="url" type="url" required autofocus>
-        <label>Name:</label><input id="name" type="text" required maxlength="20">
         <input id="go" type="submit" value="Connect">
     </form>
 </div>
@@ -35,8 +34,6 @@ let mazeModes = {}  // dummy maze launcher (works slightly differently for multi
 <script src="solver.es" type="text/ecmascript"></script>
 
 <script>
-var ourName
-
 const arrayRemove = function(arr, item) {
     for (var idx = 0; idx < arr.length; idx++) {
         if (arr[idx] === item) {
@@ -51,7 +48,10 @@ const getTurnLabeller = function() {
     const playerListElem = document.getElementById('playerList')
     const turnIndicator = document.getElementById('turnIndicator')
     const turnIndicatorCallback = new Pressable(turnIndicator)
-    return function(players) {
+    return function(nPlayers, ownId) {
+        var players = []
+        for (var i = 0; i < nPlayers; i++)
+            players.push(i)
         var turnIdx = 0
         var turnLabels = {}
         for (var player in players) {
@@ -65,7 +65,7 @@ const getTurnLabeller = function() {
         const turnChanged = function() {
             turnLabels[currentPlayer].classList.remove('active')
             currentPlayer = players[turnIdx]
-            if (currentPlayer === ourName)
+            if (currentPlayer === ownId)
                 turnIndicator.setAttribute('class', 'hide')
             else
                 turnIndicator.setAttribute('class', '')
@@ -90,6 +90,7 @@ const getTurnLabeller = function() {
             turnChanged()
             turnLabels[player].setAttribute('class', 'out')
         }
+        this.__defineGetter__('ownId', () => ownId)
         this.__defineGetter__('players', () => players)
         this.__defineGetter__('currentPlayer', () => currentPlayer)
         this.__defineSetter__('callback', turnIndicatorCallback.set)
@@ -111,7 +112,7 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
         cleanUp()
     }
     const win = function(player) {
-        if (player === ourName)
+        if (player === tl.ownId)
             outcomeElem = document.getElementById("won")
         else
             outcomeElem = document.getElementById("lost")
@@ -162,7 +163,7 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
             if (is_win_state(JSON.parse(s), undefined)) {
                 // Show the solution briefly (if it was our guess)
                 eliminate(guessingPlayer)
-                if (guessingPlayer === ourName)
+                if (guessingPlayer === tl.ownId)
                     showSolution(iface, solutions[s][0])
                 return
             }
@@ -173,7 +174,7 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
     this.impossible = impossibleGuessed
     const impossiblePressed = function() {
         sendMsg('impossible', {})
-        impossibleGuessed(ourName)
+        impossibleGuessed(tl.ownId)
     }
     sm.setMarkerCb(impossiblePressed)
     tl.callback = impossiblePressed
@@ -210,7 +211,7 @@ const serverConnector = function(iface) {
                 if (game !== undefined)
                     game.cleanUp()
                 game = new multiplayerGame(
-                    iface, sendMsg, new turnLabeller(m.players), m, m.game_id)
+                    iface, sendMsg, new turnLabeller(m.players, m.own_id), m, m.game_id)
                 break
             case 'left':
                 game.leave(m.player)
@@ -227,15 +228,14 @@ const serverConnector = function(iface) {
         iface.addRoute([[[1, 1], 'g'], [[0, 0], 'r'], [[2, 0], 'b'], [[1, 1], 'g']])
     }
     const u = document.getElementById('url')
-    const n = document.getElementById('name')
     const g = document.getElementById('go')
     const connect = function(e) {
         e.preventDefault();
-        u.disabled = n.disabled = g.disabled = true;
+        u.disabled = g.disabled = true;
         g.value = "Connecting..."
         const reshowConnect = function() {
             g.value = "Connect"
-            u.disabled = n.disabled = g.disabled = false;
+            u.disabled = g.disabled = false;
             modal.setAttribute('class', 'modalshow centered')
             startScreen()
         }
@@ -243,11 +243,7 @@ const serverConnector = function(iface) {
         ws.addEventListener('error', reshowConnect)
         ws.addEventListener('close', reshowConnect)
         ws.addEventListener('message', handleMsg)
-        ws.addEventListener('open', function() {
-            modal.setAttribute('class', 'hide')
-            ourName = n.value
-            ws.send(n.value)
-        })
+        ws.addEventListener('open', () => modal.setAttribute('class', 'hide'))
     }
     document.getElementById('connect').addEventListener('submit', connect)
     startScreen()

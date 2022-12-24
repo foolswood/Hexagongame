@@ -7,9 +7,10 @@ from random import shuffle, choice
 
 
 class Player:
-    def __init__(self, ws, name):
+    def __init__(self, ws):
         self.ws = ws
-        self.name = name
+        self.game_id = 0
+        self.id = None  # index in the current game
 
     def send(self, t, **extra):
         extra['type'] = t
@@ -38,14 +39,11 @@ class GameRoom:
     def __init__(self):
         self._players = []
         self._current_players = []
-        self._game_id = 0
 
     def _lobby(self, player):
         return player.send('lobby')
 
     async def join(self, player):
-        if player.name in (p.name for p in self._players):
-            raise Exception("Implement name clash handling protocol")
         self._players.append(player)
         if self._current_players:
             await self._lobby(player)
@@ -56,10 +54,10 @@ class GameRoom:
         self._players.remove(player)
         if player in self._current_players:
             self._current_players.remove(player)
-            await self._relay(None, "left", player=player.name)
+            await self._relay(None, "left", player=player.id)
 
-    async def over(self, game_id):
-        if game_id == self._game_id:
+    async def over(self, player, game_id):
+        if game_id == player.game_id:
             self._current_players = []
             await self._start()
 
@@ -69,8 +67,8 @@ class GameRoom:
     def impossible(self, player):
         # TODO: Which move was this guess actually made at? (To avoid guesses
         # that were wrong being marked right, though that'd require some luck
-        # to profit from.)
-        return self._relay(player, "impossible", player=player.name)
+        # to profit from it would cause an inconsistent view.)
+        return self._relay(player, "impossible", player=player.id)
 
     async def _relay(self, originator, t, **extra):
         # FIXME: because we're sending to other websockets, if they fail here
@@ -83,12 +81,15 @@ class GameRoom:
         if len(self._players) < 2:
             await self._lobby(self._players[0])
             return  # Not going to be that fun on your own
-        self._game_id += 1
         self._current_players = list(self._players)  # snapshot for this round
         shuffle(self._current_players)
-        await self._relay(
-            None, "start", players=[p.name for p in self._current_players],
-            game_id=self._game_id, **self._gen_maze())
+        maze = self._gen_maze()
+        coros = []
+        for i, p in enumerate(self._current_players):
+            p.id = i
+            p.game_id += 1
+            coros.append(p.send('start', game_id=p.game_id, players=len(self._current_players), own_id=p.id, **maze))
+        await asyncio.gather(*coros)  # These sends should error their players, not whoever triggers start!
 
     def _gen_maze(self):
         return {
@@ -98,12 +99,11 @@ class GameRoom:
             "startColour":choice('rgby')}
 
 
-room = GameRoom()  # TODO: rooms by URL
+room = GameRoom()  # TODO: Allocate players to games automatically
 
 
 async def handle_player(ws):
-    name = await ws.recv()
-    p = Player(ws, name)
+    p = Player(ws)
     await room.join(p)
     try:
         while True:
@@ -114,13 +114,13 @@ async def handle_player(ws):
                 case 'impossible':
                     await room.impossible(p)
                 case 'over':
-                    await room.over(msg['game_id'])
+                    await room.over(p, msg['game_id'])
     except WebSocketException:
         pass
     await room.leave(p)
 
 async def main():
-    async with serve(handle_player, 'localhost', 9000):
+    async with serve(handle_player, '0.0.0.0', 9000):
         await asyncio.Future()
 
 
