@@ -20,26 +20,6 @@
     background: #0004;
 }
 
-ol {
-    font-size: 100px;
-    color: #FFF5;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-li.active {
-    color: #FFFA;
-}
-
-.out {
-    text-decoration: line-through;
-}
-
 .hide {
     display: none;
-}
-
-input {
-    width: 100%;
 }

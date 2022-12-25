@@ -7,9 +7,10 @@
 </head>
 <body>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"></object>
-<div id="turnIndicator">
-    <ol id="playerList" class="centered">
-    </ol>
+<div id="turnIndicator" class="hide">
+    <svg class="centered" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+       <polygon id="octagon" points="27,1 73,1 99,27 99,73 73,99 27,99 1,74 1,27" stroke="white" opacity="0.3"/>
+    </svg>
 </div>
 <object id="won" class="hide" type="image/svg+xml" data="star.svg"></object>
 <object id="lost" class="hide" type="image/svg+xml" data="spoon.svg"></object>
@@ -37,31 +38,28 @@ const arrayRemove = function(arr, item) {
 
 
 const getTurnLabeller = function() {
-    const playerListElem = document.getElementById('playerList')
     const turnIndicator = document.getElementById('turnIndicator')
+    const octagon = document.getElementById('octagon')
     const turnIndicatorCallback = new Pressable(turnIndicator)
+    const octagonCallback = new Pressable(octagon)
     return function(nPlayers, ownId) {
         var players = []
         for (var i = 0; i < nPlayers; i++)
             players.push(i)
         var turnIdx = 0
-        var turnLabels = {}
-        for (var player in players) {
-            const name = document.createTextNode(players[player])
-            const li = document.createElement('li')
-            li.appendChild(name)
-            playerListElem.appendChild(li)
-            turnLabels[players[player]] = li
+        const turnsToGo = function() {
+            if (turnIdx <= ownId)
+                return players.indexOf(ownId) - turnIdx
+            return players.indexOf(ownId) + players.length - turnIdx
         }
-        var currentPlayer = players[0]
+        var currentPlayer
         const turnChanged = function() {
-            turnLabels[currentPlayer].classList.remove('active')
+            octagon.setAttribute('fill', '#FFF' + Math.round(15 * turnsToGo() / (players.length - 1)).toString(16))
             currentPlayer = players[turnIdx]
-            if (currentPlayer === ownId)
+            if (currentPlayer === ownId || players.indexOf(ownId) === -1)
                 turnIndicator.setAttribute('class', 'hide')
             else
                 turnIndicator.setAttribute('class', '')
-            turnLabels[currentPlayer].setAttribute('class', 'active')
         }
         turnChanged()
         this.advance = function() {
@@ -71,21 +69,21 @@ const getTurnLabeller = function() {
             turnChanged()
         }
         this.cleanUp = function() {
-            for (p in turnLabels) {
-                turnLabels[p].remove()
-            }
+            turnIndicator.setAttribute('class', 'hide')
         }
         this.eliminate = function(player) {
             arrayRemove(players, player)
             if (turnIdx === players.length)
                 turnIdx = 0
             turnChanged()
-            turnLabels[player].setAttribute('class', 'out')
         }
         this.__defineGetter__('ownId', () => ownId)
         this.__defineGetter__('players', () => players)
         this.__defineGetter__('currentPlayer', () => currentPlayer)
-        this.__defineSetter__('callback', turnIndicatorCallback.set)
+        this.__defineSetter__('callback', function(f) {
+            turnIndicatorCallback.set(f)
+            octagonCallback.set(f)
+        })
     }
 }
 
@@ -101,9 +99,9 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
     this.cleanUp = cleanUp
     const gameOver = function() {
         sendMsg('over', {game_id: gameId})
-        cleanUp()
     }
     const win = function(player) {
+        tl.cleanUp()
         if (player === tl.ownId)
             outcomeElem = document.getElementById("won")
         else
@@ -139,6 +137,10 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
         }
     }
     const eliminate = function(player) {
+        if (player === tl.ownId) {
+            outcomeElem = document.getElementById("lost")
+            outcomeElem.setAttribute("class", "centered prize")
+        }
         tl.eliminate(player)
         if (tl.players.length === 1) {
             win(tl.currentPlayer)
