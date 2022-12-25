@@ -4,6 +4,8 @@ import asyncio
 from websockets import serve, WebSocketException
 from json import loads, dumps
 from random import shuffle, choice
+from collections import deque
+from time import monotonic
 
 
 class InvalidMsg(Exception):
@@ -68,9 +70,16 @@ class Player:
             pass    # will come out in the rx loop and cause a disconnect there
 
     async def recv_loop(self):
+        rx_times = deque()
         while True:
             try:
                 s = await self.ws.recv()
+                now = monotonic()
+                rx_times.append(now)
+                if len(rx_times) == 5:
+                    if now - rx_times.popleft() < 5:
+                        print("Hit rate limit")
+                        break  # rate limited
             except WebSocketException:
                 break  # disconnected
             await self.handler.rx(self, loads(s))
