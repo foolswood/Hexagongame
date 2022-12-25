@@ -6,19 +6,74 @@ from json import loads, dumps
 from random import shuffle, choice
 
 
+class InvalidMsg(Exception):
+    pass
+
+
+class Handler:
+    async def leave(self, player):
+        raise NotImplementedError()
+
+    async def rx(self, player, msg):
+        raise NotImplementedError()
+
+
+class Lobby(Handler):
+    def __init__(self):
+        self._players = []
+
+    async def join(self, *players):
+        for p in players:
+            p.handler = self
+        self._players += players
+        if len(self._players) == 1:
+            await p.send('lobby')
+            return
+        shuffle(self._players)
+        while len(self._players) > 3:  # Pair up as many as we can
+            players = self._players[:2]
+            self._players = self._players[2:]
+            await Game(players).play()
+        if self._players:  # Remaining 2 or 3
+            players = self._players
+            self._players = []
+            await Game(players).play()
+
+    async def leave(self, player):
+        self._players.remove(player)
+
+    async def rx(self, player, msg):
+        if player.id is None:  # Hasn't played any games yet
+            raise InvalidMsg('Attempted to send message out of game')
+        elif msg['type'] in ('over', 'impossible', 'move'):
+            return  # Could be a late message, just drop it
+        raise InvalidMsg('Bad message type {msg["type"]}')
+
+
+lobby = Lobby()
+
+
 class Player:
     def __init__(self, ws):
         self.ws = ws
         self.game_id = 0
         self.id = None  # index in the current game
+        self.handler = None
 
-    def send(self, t, **extra):
+    async def send(self, t, **extra):
         extra['type'] = t
-        return self.ws.send(dumps(extra))
+        try:
+            await self.ws.send(dumps(extra))
+        except WebSocketException:
+            pass    # will come out in the rx loop and cause a disconnect there
 
-    async def recv(self):
-        s = await self.ws.recv()
-        return loads(s)
+    async def recv_loop(self):
+        while True:
+            try:
+                s = await self.ws.recv()
+            except WebSocketException:
+                break  # disconnected
+            await self.handler.rx(self, loads(s))
 
 
 def generate_maze(width, height, colours):
@@ -35,61 +90,50 @@ def generate_maze(width, height, colours):
     return maze
 
 
-class GameRoom:
-    def __init__(self):
-        self._players = []
-        self._current_players = []
+class Game:
+    def __init__(self, players):
+        self._players = players
+        self._over = asyncio.Future()
 
-    def _lobby(self, player):
-        return player.send('lobby')
+    async def _play(self):
+        await self._over
+        await lobby.join(*self._players)
 
-    async def join(self, player):
-        self._players.append(player)
-        if self._current_players:
-            await self._lobby(player)
-        else:
-            await self._start()
+    async def play(self):
+        for p in self._players:
+            p.handler = self
+        asyncio.Task(self._play())  # Task intentionally left unreferenced to avoid infinite recursion
+        await self._start()
 
     async def leave(self, player):
         self._players.remove(player)
-        if player in self._current_players:
-            self._current_players.remove(player)
-            await self._relay(None, "left", player=player.id)
+        await self._relay(None, "left", player=player.id)
+        if len(self._players) == 1:
+            self._over.set_result(None)
 
-    async def over(self, player, game_id):
-        if game_id == player.game_id:
-            self._current_players = []
-            await self._start()
-
-    def move(self, player, pos):
+    def _move(self, player, pos):
         return self._relay(player, "move", pos=pos)
 
-    def impossible(self, player):
+    def _impossible(self, player):
         # TODO: Which move was this guess actually made at? (To avoid guesses
         # that were wrong being marked right, though that'd require some luck
         # to profit from it would cause an inconsistent view.)
+        # Could theoretically be cross game, but because of the 10s wait this is unlikely.
         return self._relay(player, "impossible", player=player.id)
 
-    async def _relay(self, originator, t, **extra):
-        # FIXME: because we're sending to other websockets, if they fail here
-        # we need to handle them appropriately instead of failing the
-        # initiator:
-        await asyncio.gather(*(
-            p.send(t, **extra) for p in self._current_players if p is not originator))
+    def _relay(self, originator, t, **extra):
+        # Could potentially optimise using websockets.broadcast()
+        return asyncio.gather(*(
+            p.send(t, **extra) for p in self._players if p is not originator))
 
     async def _start(self):
-        if len(self._players) < 2:
-            await self._lobby(self._players[0])
-            return  # Not going to be that fun on your own
-        self._current_players = list(self._players)  # snapshot for this round
-        shuffle(self._current_players)
         maze = self._gen_maze()
         coros = []
-        for i, p in enumerate(self._current_players):
+        for i, p in enumerate(self._players):
             p.id = i
             p.game_id += 1
-            coros.append(p.send('start', game_id=p.game_id, players=len(self._current_players), own_id=p.id, **maze))
-        await asyncio.gather(*coros)  # These sends should error their players, not whoever triggers start!
+            coros.append(p.send('start', game_id=p.game_id, players=len(self._players), own_id=p.id, **maze))
+        await asyncio.gather(*coros)
 
     def _gen_maze(self):
         return {
@@ -98,32 +142,34 @@ class GameRoom:
             "starts":choice(([[1,1],[3,3]], [[1,3],[3,1]])),
             "startColour":choice('rgby')}
 
-
-room = GameRoom()  # TODO: Allocate players to games automatically
+    async def rx(self, player, msg):
+        # TODO: Validation
+        match msg['type']:
+            case 'move':
+                await self._move(player, msg['pos'])
+            case 'impossible':
+                await self._impossible(player)
+            case 'over':
+                if msg['game_id'] == player.game_id:
+                    self._over.set_result(None)
+            case _:
+                raise InvalidMsg('Unexpected type: {msg["type"]}')
 
 
 async def handle_player(ws):
+    if ws.path != '/mph':
+        return
     p = Player(ws)
-    await room.join(p)
     try:
-        while True:
-            msg = await p.recv()
-            match msg['type']:
-                case 'move':
-                    await room.move(p, msg['pos'])
-                case 'impossible':
-                    await room.impossible(p)
-                case 'over':
-                    await room.over(p, msg['game_id'])
-    except WebSocketException:
-        pass
-    await room.leave(p)
+        await lobby.join(p)
+        await p.recv_loop()
+    finally:
+        await p.handler.leave(p)
+
 
 async def main():
-    async with serve(handle_player, '0.0.0.0', 9000):
+    async with serve(handle_player, '0.0.0.0', 9000, max_size=256, max_queue=4):
         await asyncio.Future()
 
 
 asyncio.run(main())
-
-# TODO: Timeout if nothing happens for ages?
