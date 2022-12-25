@@ -177,7 +177,7 @@ async def handle_player(ws):
 
 
 async def main():
-    async with serve(handle_player, '0.0.0.0', 9000, max_size=256, max_queue=4):
+    async with serve(handle_player, '0.0.0.0', 9783, max_size=256, max_queue=4):
         await asyncio.Future()
 
 
