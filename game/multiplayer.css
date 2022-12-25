@@ -36,14 +36,6 @@ li.active {
     text-decoration: line-through;
 }
 
-.modalshow {
-    display: block;
-    width: 20em;
-    background: #FFF9;
-    padding: 4em;
-    border-radius: 1em
-}
-
 .hide {
     display: none;
 }

@@ -13,20 +13,10 @@
 </div>
 <object id="won" class="hide" type="image/svg+xml" data="star.svg"></object>
 <object id="lost" class="hide" type="image/svg+xml" data="spoon.svg"></object>
-<div id="modal" class="modalshow centered">
-    <form id="connect">
-        <label>URL:</label><input id="url" type="url" required autofocus>
-        <input id="go" type="submit" value="Connect">
-    </form>
-</div>
 <a href="instructions.html#multiplayer" target="_blank"/>
     <img id="q" src="qmark.svg"/>
 </a>
 </body>
-
-<script>
-let mazeModes = {}  // dummy maze launcher (works slightly differently for multiplayer, refactor?)
-</script>
 
 <script src="svg_interface.es" type="text/ecmascript"></script>
 <script src="serialiser.es" type="text/ecmascript"></script>
@@ -34,6 +24,8 @@ let mazeModes = {}  // dummy maze launcher (works slightly differently for multi
 <script src="solver.es" type="text/ecmascript"></script>
 
 <script>
+const server = 'ws://svr.foolswood.co.uk:9783/mph'  // Change this when developing locally
+
 const arrayRemove = function(arr, item) {
     for (var idx = 0; idx < arr.length; idx++) {
         if (arr[idx] === item) {
@@ -181,14 +173,6 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
 }
 
 const serverConnector = function(iface) {
-    const modal = document.getElementById('modal')
-    const startScreen = function() {
-        iface.clear()
-        iface.addHex([0,0], 'b')
-        iface.addHex([2,0], 'g')
-        iface.addHex([1,1], 'r')
-        iface.maximise()
-    }
     var ws
     const sendMsg = function(type, extra) {
         extra['type'] = type
@@ -196,14 +180,21 @@ const serverConnector = function(iface) {
     }
     const turnLabeller = getTurnLabeller()
     var game
+    const startScreen = function() {
+        if (game !== undefined) {
+            game.cleanUp()
+            game = undefined
+        }
+        iface.clear()
+        iface.addHex([0,0], 'b')
+        iface.addHex([2,0], 'g')
+        iface.addHex([1,1], 'r')
+        iface.maximise()
+    }
     const handleMsg = function(e) {
         const m = JSON.parse(e.data)
         switch (m.type) {
             case 'lobby':
-                if (game !== undefined) {
-                    game.cleanUp()
-                    game = undefined
-                }
                 startScreen()
                 showSpinner()
                 break
@@ -227,26 +218,12 @@ const serverConnector = function(iface) {
     const showSpinner = function() {
         iface.addRoute([[[1, 1], 'g'], [[0, 0], 'r'], [[2, 0], 'b'], [[1, 1], 'g']])
     }
-    const u = document.getElementById('url')
-    const g = document.getElementById('go')
-    const connect = function(e) {
-        e.preventDefault();
-        u.disabled = g.disabled = true;
-        g.value = "Connecting..."
-        const reshowConnect = function() {
-            g.value = "Connect"
-            u.disabled = g.disabled = false;
-            modal.setAttribute('class', 'modalshow centered')
-            startScreen()
-        }
-        ws = new WebSocket(u.value)
-        ws.addEventListener('error', reshowConnect)
-        ws.addEventListener('close', reshowConnect)
-        ws.addEventListener('message', handleMsg)
-        ws.addEventListener('open', () => modal.setAttribute('class', 'hide'))
-    }
-    document.getElementById('connect').addEventListener('submit', connect)
     startScreen()
+    ws = new WebSocket(server)
+    ws.addEventListener('message', handleMsg)
+    // When you get here it'd be good to do something with the error and give a reconnect option
+    ws.addEventListener('error', startScreen)
+    ws.addEventListener('close', startScreen)
 }
 
 window.onload = () => serverConnector(new SVGInterface("A"))
