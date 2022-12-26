@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="multiplayer.css">
 </head>
 <body>
+<div id="turnTimer" class="bg"></div>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"></object>
 <div id="turnIndicator" class="hide">
     <svg class="centered" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
@@ -26,6 +27,7 @@
 
 <script>
 const server = 'ws://svr.foolswood.co.uk:9783/mph'  // Change this when developing locally
+const turnTime = 30
 
 const arrayRemove = function(arr, item) {
     for (var idx = 0; idx < arr.length; idx++) {
@@ -36,13 +38,14 @@ const arrayRemove = function(arr, item) {
     }
 }
 
-
 const getTurnLabeller = function() {
     const turnIndicator = document.getElementById('turnIndicator')
     const octagon = document.getElementById('octagon')
     const turnIndicatorCallback = new Pressable(turnIndicator)
     const octagonCallback = new Pressable(octagon)
+    const turnTimer = document.getElementById('turnTimer')
     return function(nPlayers, ownId) {
+        var timeoutCb
         var players = []
         for (var i = 0; i < nPlayers; i++)
             players.push(i)
@@ -56,10 +59,18 @@ const getTurnLabeller = function() {
         const turnChanged = function() {
             octagon.setAttribute('fill', '#FFF' + Math.round(15 * turnsToGo() / (players.length - 1)).toString(16))
             currentPlayer = players[turnIdx]
-            if (currentPlayer === ownId || players.indexOf(ownId) === -1)
+            if (players.indexOf(ownId) === -1 || players.length === 1) {
                 turnIndicator.setAttribute('class', 'hide')
-            else
+                turnTimer.setAttribute('style', 'background: #EEE; height: 0%;')
+            } else if (currentPlayer === ownId) {
+                turnIndicator.setAttribute('class', 'hide')
+                turnTimer.style.transition = 'all ' + turnTime.toString() + 's ease-in'
+                turnTimer.style.background = '#222'
+                turnTimer.style.height = '100%'
+            } else {
                 turnIndicator.setAttribute('class', '')
+                turnTimer.setAttribute('style', 'background: #EEE; height: 0%;')
+            }
         }
         turnChanged()
         this.advance = function() {
@@ -70,6 +81,7 @@ const getTurnLabeller = function() {
         }
         this.cleanUp = function() {
             turnIndicator.setAttribute('class', 'hide')
+            turnTimer.removeEventListener('transitionend', timeoutCb)
         }
         this.eliminate = function(player) {
             arrayRemove(players, player)
@@ -83,6 +95,10 @@ const getTurnLabeller = function() {
         this.__defineSetter__('callback', function(f) {
             turnIndicatorCallback.set(f)
             octagonCallback.set(f)
+        })
+        this.__defineSetter__('turnTimeoutCb', function(cb) {
+            timeoutCb = cb
+            turnTimer.addEventListener('transitionend', cb)
         })
     }
 }
@@ -172,6 +188,10 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
     }
     sm.setMarkerCb(impossiblePressed)
     tl.callback = impossiblePressed
+    tl.turnTimeoutCb = function () {
+        sendMsg('timeout', {})
+        eliminate(tl.ownId)
+    }
 }
 
 const serverConnector = function(iface) {

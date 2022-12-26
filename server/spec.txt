@@ -5,6 +5,8 @@ Client -> Server
 
 {"type": "impossible"}
 
+{"type": "timeout"}
+
 {"type": "over", "game_id": <game_id>}
 
     For telling the server (which doesn't know the game rules) when a round is

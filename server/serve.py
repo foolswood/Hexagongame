@@ -47,7 +47,7 @@ class Lobby(Handler):
     async def rx(self, player, msg):
         if player.id is None:  # Hasn't played any games yet
             raise InvalidMsg('Attempted to send message out of game')
-        elif msg['type'] in ('over', 'impossible', 'move'):
+        elif msg['type'] in ('over', 'impossible', 'move', 'timeout'):
             return  # Could be a late message, just drop it
         raise InvalidMsg('Bad message type {msg["type"]}')
 
@@ -78,7 +78,7 @@ class Player:
                 rx_times.append(now)
                 if len(rx_times) == 5:
                     if now - rx_times.popleft() < 5:
-                        print("Hit rate limit")
+                        print('Hit rate limit')
                         break  # rate limited
             except WebSocketException:
                 break  # disconnected
@@ -116,19 +116,22 @@ class Game:
 
     async def leave(self, player):
         self._players.remove(player)
-        await self._relay(None, "left", player=player.id)
+        await self._relay(None, 'left', player=player.id)
         if len(self._players) == 1:
             self._over.set_result(None)
 
     def _move(self, player, pos):
-        return self._relay(player, "move", pos=pos)
+        return self._relay(player, 'move', pos=pos)
 
     def _impossible(self, player):
         # TODO: Which move was this guess actually made at? (To avoid guesses
         # that were wrong being marked right, though that'd require some luck
         # to profit from it would cause an inconsistent view.)
         # Could theoretically be cross game, but because of the 10s wait this is unlikely.
-        return self._relay(player, "impossible", player=player.id)
+        return self._relay(player, 'impossible', player=player.id)
+
+    def _timeout(self, player):
+        return self._relay(player, 'left', player=player.id)
 
     def _relay(self, originator, t, **extra):
         # Could potentially optimise using websockets.broadcast()
@@ -146,10 +149,10 @@ class Game:
 
     def _gen_maze(self):
         return {
-            "mode":"shard",
-            "maze": generate_maze(5, 5, 'rgby'),
-            "starts":choice(([[1,1],[3,3]], [[1,3],[3,1]])),
-            "startColour":choice('rgby')}
+            'mode':'shard',
+            'maze': generate_maze(5, 5, 'rgby'),
+            'starts':choice(([[1,1],[3,3]], [[1,3],[3,1]])),
+            'startColour':choice('rgby')}
 
     async def rx(self, player, msg):
         # TODO: Validation
@@ -158,6 +161,8 @@ class Game:
                 await self._move(player, msg['pos'])
             case 'impossible':
                 await self._impossible(player)
+            case 'timeout':
+                await self._timeout(player)
             case 'over':
                 if msg['game_id'] == player.game_id:
                     self._over.set_result(None)
