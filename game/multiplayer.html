@@ -44,6 +44,9 @@ const getTurnLabeller = function() {
     const turnIndicatorCallback = new Pressable(turnIndicator)
     const octagonCallback = new Pressable(octagon)
     const turnTimer = document.getElementById('turnTimer')
+    const resetTimer = function() {
+        turnTimer.setAttribute('style', 'background: #EEE; height: 0%;')
+    }
     return function(nPlayers, ownId) {
         var timeoutCb
         var players = []
@@ -60,16 +63,16 @@ const getTurnLabeller = function() {
             octagon.setAttribute('fill', '#FFF' + Math.round(15 * turnsToGo() / (players.length - 1)).toString(16))
             currentPlayer = players[turnIdx]
             if (players.indexOf(ownId) === -1 || players.length === 1) {
+                resetTimer()
                 turnIndicator.setAttribute('class', 'hide')
-                turnTimer.setAttribute('style', 'background: #EEE; height: 0%;')
             } else if (currentPlayer === ownId) {
                 turnIndicator.setAttribute('class', 'hide')
                 turnTimer.style.transition = 'all ' + turnTime.toString() + 's ease-in'
                 turnTimer.style.background = '#222'
                 turnTimer.style.height = '100%'
             } else {
+                resetTimer()
                 turnIndicator.setAttribute('class', '')
-                turnTimer.setAttribute('style', 'background: #EEE; height: 0%;')
             }
         }
         turnChanged()
@@ -81,6 +84,7 @@ const getTurnLabeller = function() {
         }
         this.cleanUp = function() {
             turnIndicator.setAttribute('class', 'hide')
+            resetTimer()
             turnTimer.removeEventListener('transitionend', timeoutCb)
         }
         this.eliminate = function(player) {
@@ -121,20 +125,20 @@ const multiplayerGame = function(iface, ws, tl, maze, gameId) {
     const gameOver = function() {
         sendMsg('over', {})
     }
-    const win = function(player) {
+    const win = function(player, waitSecs) {
         tl.cleanUp()
         if (player === tl.ownId)
             outcomeElem = document.getElementById("won")
         else
             outcomeElem = document.getElementById("lost")
         outcomeElem.setAttribute("class", "centered prize")
-        setTimeout(gameOver, 10000)
+        setTimeout(gameOver, 1000 * waitSecs)
     }
     var shardHexMoves = {}
     const checkWin = function() {
         if (sm.finished()) {
             sm.showWin(gameOver)
-            win(tl.currentPlayer)
+            win(tl.currentPlayer, 4)
         } else
             tl.advance()
     }
@@ -164,7 +168,7 @@ const multiplayerGame = function(iface, ws, tl, maze, gameId) {
         }
         tl.eliminate(player)
         if (tl.players.length === 1) {
-            win(tl.currentPlayer)
+            win(tl.currentPlayer, 6)
             return
         }
     }
@@ -184,7 +188,7 @@ const multiplayerGame = function(iface, ws, tl, maze, gameId) {
             }
         }
         // No valid solutions, so a correct guess
-        win(guessingPlayer)
+        win(guessingPlayer, 8)
     }
     this.impossible = impossibleGuessed
     const impossiblePressed = function() {
