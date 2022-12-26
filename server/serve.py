@@ -117,7 +117,7 @@ class Game:
     async def leave(self, player):
         self._players.remove(player)
         await self._relay(None, 'left', player=player.id)
-        if len(self._players) == 1:
+        if len(self._players) == 1 and not self._over.done():
             self._over.set_result(None)
 
     def _move(self, player, pos):
@@ -162,7 +162,8 @@ class Game:
             case 'timeout':
                 await self._timeout(player)
             case 'over':
-                self._over.set_result(None)
+                if not self._over.done():
+                    self._over.set_result(None)
             case _:
                 raise InvalidMsg('Unexpected type: {msg["type"]}')
 
