@@ -9,8 +9,10 @@
 <div id="turnTimer" class="bg"></div>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"></object>
 <div id="turnIndicator" class="hide">
-    <svg class="centered" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
-       <polygon id="octagon" points="27,1 73,1 99,27 99,73 73,99 27,99 1,74 1,27" stroke="white" opacity="0.3"/>
+    <svg class="centered" height="50%" width="50%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+       <polygon id="octagon" points="27,1 73,1 99,27 99,73 73,99 27,99 1,74 1,27" stroke="white" opacity="0.3">
+            <animate attributeName="fill" from="#FFFF" to="#FFF0" fill="freeze"/>
+       </polygon>
     </svg>
 </div>
 <object id="won" class="hide" type="image/svg+xml" data="star.svg"></object>
@@ -41,6 +43,7 @@ const arrayRemove = function(arr, item) {
 const getTurnLabeller = function() {
     const turnIndicator = document.getElementById('turnIndicator')
     const octagon = document.getElementById('octagon')
+    const octagonAnim = octagon.children[0]
     const turnIndicatorCallback = new Pressable(turnIndicator)
     const octagonCallback = new Pressable(octagon)
     const turnTimer = document.getElementById('turnTimer')
@@ -53,14 +56,12 @@ const getTurnLabeller = function() {
         for (var i = 0; i < nPlayers; i++)
             players.push(i)
         var turnIdx = 0
-        const turnsToGo = function() {
-            if (turnIdx <= ownId)
-                return players.indexOf(ownId) - turnIdx
-            return players.indexOf(ownId) + players.length - turnIdx
-        }
-        var currentPlayer
+        var currentPlayer = ownId
         const turnChanged = function() {
-            octagon.setAttribute('fill', '#FFF' + Math.round(15 * turnsToGo() / (players.length - 1)).toString(16))
+            if (currentPlayer == ownId) {
+                octagonAnim.setAttribute('dur', (turnTime * (players.length - 1)).toString() + 's')
+                octagonAnim.beginElement()
+            }
             currentPlayer = players[turnIdx]
             if (players.indexOf(ownId) === -1 || players.length === 1) {
                 resetTimer()
