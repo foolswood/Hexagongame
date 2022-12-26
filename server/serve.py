@@ -123,12 +123,8 @@ class Game:
     def _move(self, player, pos):
         return self._relay(player, 'move', pos=pos)
 
-    def _impossible(self, player):
-        # TODO: Which move was this guess actually made at? (To avoid guesses
-        # that were wrong being marked right, though that'd require some luck
-        # to profit from it would cause an inconsistent view.)
-        # Could theoretically be cross game, but because of the 10s wait this is unlikely.
-        return self._relay(player, 'impossible', player=player.id)
+    def _impossible(self, player, state):
+        return self._relay(player, 'impossible', player=player.id, state=state)
 
     def _timeout(self, player):
         return self._relay(player, 'left', player=player.id)
@@ -156,16 +152,17 @@ class Game:
 
     async def rx(self, player, msg):
         # TODO: Validation
+        if msg['game_id'] != player.game_id:
+            return
         match msg['type']:
             case 'move':
                 await self._move(player, msg['pos'])
             case 'impossible':
-                await self._impossible(player)
+                await self._impossible(player, msg['state'])
             case 'timeout':
                 await self._timeout(player)
             case 'over':
-                if msg['game_id'] == player.game_id:
-                    self._over.set_result(None)
+                self._over.set_result(None)
             case _:
                 raise InvalidMsg('Unexpected type: {msg["type"]}')
 

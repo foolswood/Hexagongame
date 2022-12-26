@@ -103,7 +103,12 @@ const getTurnLabeller = function() {
     }
 }
 
-const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
+const multiplayerGame = function(iface, ws, tl, maze, gameId) {
+    const sendMsg = function(type, extra) {
+        extra['type'] = type
+        extra['game_id'] = gameId
+        ws.send(JSON.stringify(extra))
+    }
     const sm = new shardMoves(iface, maze)
     var outcomeElem
     const cleanUp = function() {
@@ -114,7 +119,7 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
     }
     this.cleanUp = cleanUp
     const gameOver = function() {
-        sendMsg('over', {game_id: gameId})
+        sendMsg('over', {})
     }
     const win = function(player) {
         tl.cleanUp()
@@ -166,9 +171,9 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
     this.leave = function(player) {
         eliminate(player)
     }
-    const impossibleGuessed = function(guessingPlayer) {
+    const impossibleGuessed = function(guessingPlayer, state) {
         // Run solver to determine if a win condition exists
-        var solutions = solver(sm.state(), get_shard_moves_func(iface), undefined)
+        var solutions = solver(state, get_shard_moves_func(iface), undefined)
         for (let s in solutions) {
             if (is_win_state(JSON.parse(s), undefined)) {
                 // Show the solution briefly (if it was our guess)
@@ -183,8 +188,9 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
     }
     this.impossible = impossibleGuessed
     const impossiblePressed = function() {
-        sendMsg('impossible', {})
-        impossibleGuessed(tl.ownId)
+        const state = sm.state()
+        sendMsg('impossible', {state: state})
+        impossibleGuessed(tl.ownId, state)
     }
     sm.setMarkerCb(impossiblePressed)
     tl.callback = impossiblePressed
@@ -196,10 +202,6 @@ const multiplayerGame = function(iface, sendMsg, tl, maze, gameId) {
 
 const serverConnector = function(iface) {
     var ws
-    const sendMsg = function(type, extra) {
-        extra['type'] = type
-        ws.send(JSON.stringify(extra))
-    }
     const turnLabeller = getTurnLabeller()
     var game
     const startScreen = function() {
@@ -224,7 +226,7 @@ const serverConnector = function(iface) {
                 if (game !== undefined)
                     game.cleanUp()
                 game = new multiplayerGame(
-                    iface, sendMsg, new turnLabeller(m.players, m.own_id), m, m.game_id)
+                    iface, ws, new turnLabeller(m.players, m.own_id), m, m.game_id)
                 break
             case 'left':
                 game.leave(m.player)
@@ -233,7 +235,7 @@ const serverConnector = function(iface) {
                 game.move(m.pos)
                 break
             case 'impossible':
-                game.impossible(m.player)
+                game.impossible(m.player, m.state)
                 break
         }
     }

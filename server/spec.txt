@@ -1,16 +1,13 @@
 Client -> Server
 ----------------
 
-{"type": "move": "pos": <pos>}
+{"type": "move": "pos": <pos>, "game_id": <game_id>}
 
-{"type": "impossible"}
+{"type": "impossible", "game_id": <game_id>, "state": <state at guess>}
 
-{"type": "timeout"}
+{"type": "timeout", "game_id": <game_id>}
 
 {"type": "over", "game_id": <game_id>}
-
-    For telling the server (which doesn't know the game rules) when a round is
-    over, the game ID (per player) is used to make this idempotent.
 
 Server -> Client
 ----------------
