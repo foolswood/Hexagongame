@@ -11,8 +11,7 @@
 <div id="turnIndicator" class="hide">
     <svg class="centered"height="50%" width="50%" viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
        <polygon id="octagon" points="-23,-49 23,-49 49,-23 49,23 23,49 -23,49 -49,23 -49,-23" stroke="white" opacity="0.3">
-            <animate id="octFill" attributeName="fill" values="#FFF0;#FFF0;#FFFF;#FFF0" fill="freeze"/>
-            <animateTransform id="octTran" attributeName="transform" attributeType="XML" type="scale" from="8,1" to="1,1" fill="freeze"/>
+            <animate id="octFill" attributeName="fill" values="#0007;#0005;#FFFF;#FFF0" fill="freeze"/>
        </polygon>
     </svg>
 </div>
@@ -46,7 +45,6 @@ const getTurnLabeller = function() {
     const turnIndicator = document.getElementById('turnIndicator')
     const octagon = document.getElementById('octagon')
     const octagonFill = octagon.children[0]
-    const octagonTran = octagon.children[1]
     const turnIndicatorCallback = new Pressable(turnIndicator)
     const octagonCallback = new Pressable(octagon)
     const turnTimer = document.getElementById('turnTimer')
@@ -62,11 +60,9 @@ const getTurnLabeller = function() {
         const octagonAnimate = function(lockTime) {
             const allTurns = turnTime * (players.length - 1)
             const lockEnd = lockTime / allTurns
-            octagonFill.setAttribute('keyTimes', '0;' + (lockEnd * 0.97).toString() + ';' + lockEnd.toString() + ';1')
+            octagonFill.setAttribute('keyTimes', '0;' + (lockEnd * 0.90).toString() + ';' + lockEnd.toString() + ';1')
             octagonFill.setAttribute('dur', allTurns.toString() + 's')
             octagonFill.setAttribute('begin', octagonFill.getCurrentTime())
-            octagonTran.setAttribute('dur', lockTime.toString() + 's')
-            octagonTran.setAttribute('begin', octagonTran.getCurrentTime())
         }
         var currentPlayer
         const turnChanged = function() {
