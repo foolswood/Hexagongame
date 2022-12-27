@@ -9,9 +9,10 @@
 <div id="turnTimer" class="bg"></div>
 <object id="A" type="image/svg+xml" data="hexagons.svg" width="100%" height="100%"></object>
 <div id="turnIndicator" class="hide">
-    <svg class="centered" height="50%" width="50%" viewBox="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
-       <polygon id="octagon" points="27,1 73,1 99,27 99,73 73,99 27,99 1,74 1,27" stroke="white" opacity="0.3">
-            <animate attributeName="fill" from="#FFFF" to="#FFF0" fill="freeze"/>
+    <svg class="centered"height="50%" width="50%" viewBox="-50 -50 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+       <polygon id="octagon" points="-23,-49 23,-49 49,-23 49,23 23,49 -23,49 -49,23 -49,-23" stroke="white" opacity="0.3">
+            <animate id="octFill" attributeName="fill" values="#FFF0;#FFF0;#FFFF;#FFF0" fill="freeze"/>
+            <animateTransform id="octTran" attributeName="transform" attributeType="XML" type="scale" from="8,1" to="1,1" fill="freeze"/>
        </polygon>
     </svg>
 </div>
@@ -30,6 +31,7 @@
 <script>
 const server = 'ws://svr.foolswood.co.uk:9783/mph'  // Change this when developing locally
 const turnTime = 30
+const lockoutTime = 1.5
 
 const arrayRemove = function(arr, item) {
     for (var idx = 0; idx < arr.length; idx++) {
@@ -43,7 +45,8 @@ const arrayRemove = function(arr, item) {
 const getTurnLabeller = function() {
     const turnIndicator = document.getElementById('turnIndicator')
     const octagon = document.getElementById('octagon')
-    const octagonAnim = octagon.children[0]
+    const octagonFill = octagon.children[0]
+    const octagonTran = octagon.children[1]
     const turnIndicatorCallback = new Pressable(turnIndicator)
     const octagonCallback = new Pressable(octagon)
     const turnTimer = document.getElementById('turnTimer')
@@ -56,11 +59,19 @@ const getTurnLabeller = function() {
         for (var i = 0; i < nPlayers; i++)
             players.push(i)
         var turnIdx = 0
-        var currentPlayer = ownId
+        const octagonAnimate = function(lockTime) {
+            const allTurns = turnTime * (players.length - 1)
+            const lockEnd = lockTime / allTurns
+            octagonFill.setAttribute('keyTimes', '0;' + (lockEnd * 0.97).toString() + ';' + lockEnd.toString() + ';1')
+            octagonFill.setAttribute('dur', allTurns.toString() + 's')
+            octagonFill.setAttribute('begin', octagonFill.getCurrentTime())
+            octagonTran.setAttribute('dur', lockTime.toString() + 's')
+            octagonTran.setAttribute('begin', octagonTran.getCurrentTime())
+        }
+        var currentPlayer
         const turnChanged = function() {
-            if (currentPlayer == ownId) {
-                octagonAnim.setAttribute('dur', (turnTime * (players.length - 1)).toString() + 's')
-                octagonAnim.beginElement()
+            if (currentPlayer === ownId && players.length) {
+                octagonAnimate(lockoutTime)
             }
             currentPlayer = players[turnIdx]
             if (players.indexOf(ownId) === -1 || players.length === 1) {
@@ -76,6 +87,7 @@ const getTurnLabeller = function() {
                 turnIndicator.setAttribute('class', '')
             }
         }
+        octagonAnimate(0.001)
         turnChanged()
         this.advance = function() {
             turnIdx++;
@@ -143,6 +155,7 @@ const multiplayerGame = function(iface, ws, tl, maze, gameId) {
         } else
             tl.advance()
     }
+    var lastMoved = -lockoutTime
     const getMoveFunc = function(hex) {
         const pos = hex.position
         const shardMoveFunc = sm.getHexFunc(hex)
@@ -150,6 +163,7 @@ const multiplayerGame = function(iface, ws, tl, maze, gameId) {
         const moveFunc = function() { // hex click cb
             const c = shardMoveFunc()
             if (c !== null) {
+                lastMoved = performance.now()
                 sendMsg('move', {pos: pos})
                 checkWin()
             }
@@ -193,6 +207,9 @@ const multiplayerGame = function(iface, ws, tl, maze, gameId) {
     }
     this.impossible = impossibleGuessed
     const impossiblePressed = function() {
+        if (performance.now() - lastMoved < lockoutTime * 1000) {
+            return
+        }
         const state = sm.state()
         sendMsg('impossible', {state: state})
         impossibleGuessed(tl.ownId, state)
