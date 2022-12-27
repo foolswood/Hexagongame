@@ -17,6 +17,7 @@
 </div>
 <object id="won" class="hide" type="image/svg+xml" data="star.svg"></object>
 <object id="lost" class="hide" type="image/svg+xml" data="spoon.svg"></object>
+<div id="stats" class="hide"></div>
 <a href="instructions.html#multiplayer" target="_blank"/>
     <img id="q" src="qmark.svg"/>
 </a>
@@ -116,19 +117,57 @@ const getTurnLabeller = function() {
     }
 }
 
-const multiplayerGame = function(iface, ws, tl, maze, gameId) {
+const statTracker = function() {
+    const wonElem = document.getElementById('won')
+    const lostElem = document.getElementById('lost')
+    const statsElem = document.getElementById('stats')
+    var stats = new Map()
+    var curPlayers
+    var outcomeElem = wonElem  // avoid special case if cleanUp is called early
+    this.start = function(nPlayers) {
+        curPlayers = nPlayers
+        existing = stats.get(curPlayers)
+        if (existing === undefined)
+            stats.set(curPlayers, {'played': 1, 'won': 0})
+        else
+            existing['played']++
+    }
+    const report = function() {
+        outcomeElem.setAttribute("class", 'centered prize')
+        var lines = []
+        for (var [n, s] of stats.entries())
+            lines.push(n + ": " + s['won'] + "/" + s['played'])
+        statsElem.innerHTML = '<p>' + lines.join('<br>') + '</p>'
+        statsElem.setAttribute('class', 'centered')
+    }
+    this.won = function() {
+        stats.get(curPlayers)['won']++
+        outcomeElem = wonElem
+        report()
+    }
+    // Can be called twice for a single game if >2 player when guessing
+    // impossibility incorrectly:
+    this.lost = function() {
+        outcomeElem = lostElem
+        report()
+    }
+    this.cleanUp = function() {
+        outcomeElem.setAttribute('class', 'hide')
+        statsElem.setAttribute('class', 'hide')
+    }
+}
+
+const multiplayerGame = function(iface, ws, tl, stats, maze, gameId) {
     const sendMsg = function(type, extra) {
         extra['type'] = type
         extra['game_id'] = gameId
         ws.send(JSON.stringify(extra))
     }
     const sm = new shardMoves(iface, maze)
-    var outcomeElem
     const cleanUp = function() {
         sm.cleanUp()
         tl.cleanUp()
-        if (outcomeElem !== undefined)
-            outcomeElem.setAttribute("class", "hide")
+        stats.cleanUp()
     }
     this.cleanUp = cleanUp
     const gameOver = function() {
@@ -136,11 +175,11 @@ const multiplayerGame = function(iface, ws, tl, maze, gameId) {
     }
     const win = function(player, waitSecs) {
         tl.cleanUp()
-        if (player === tl.ownId)
-            outcomeElem = document.getElementById("won")
+        if (player === tl.ownId) {
+            stats.won()
+        }
         else
-            outcomeElem = document.getElementById("lost")
-        outcomeElem.setAttribute("class", "centered prize")
+            stats.lost()
         setTimeout(gameOver, 1000 * waitSecs)
     }
     var shardHexMoves = {}
@@ -173,10 +212,8 @@ const multiplayerGame = function(iface, ws, tl, maze, gameId) {
         }
     }
     const eliminate = function(player) {
-        if (player === tl.ownId) {
-            outcomeElem = document.getElementById("lost")
-            outcomeElem.setAttribute("class", "centered prize")
-        }
+        if (player === tl.ownId)
+            stats.lost()
         tl.eliminate(player)
         if (tl.players.length === 1) {
             win(tl.currentPlayer, 6)
@@ -219,6 +256,7 @@ const multiplayerGame = function(iface, ws, tl, maze, gameId) {
 }
 
 const serverConnector = function(iface) {
+    const stats = new statTracker()
     var ws
     const turnLabeller = getTurnLabeller()
     var game
@@ -243,8 +281,9 @@ const serverConnector = function(iface) {
             case 'start':
                 if (game !== undefined)
                     game.cleanUp()
+                stats.start(m.players)
                 game = new multiplayerGame(
-                    iface, ws, new turnLabeller(m.players, m.own_id), m, m.game_id)
+                    iface, ws, new turnLabeller(m.players, m.own_id), stats, m, m.game_id)
                 break
             case 'left':
                 game.leave(m.player)

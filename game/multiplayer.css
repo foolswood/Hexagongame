@@ -29,6 +29,11 @@
     height: 0%;
 }
 
+#stats {
+    color: white;
+    font-size: 60pt;
+}
+
 .hide {
     display: none;
 }
