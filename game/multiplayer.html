@@ -33,15 +33,6 @@ const server = 'ws://svr.foolswood.co.uk:9783/mph'  // Change this when developi
 const turnTime = 30
 const lockoutTime = 1.5
 
-const arrayRemove = function(arr, item) {
-    for (var idx = 0; idx < arr.length; idx++) {
-        if (arr[idx] === item) {
-            arr.splice(idx, 1)
-            return
-        }
-    }
-}
-
 const getTurnLabeller = function() {
     const turnIndicator = document.getElementById('turnIndicator')
     const octagon = document.getElementById('octagon')
@@ -54,27 +45,28 @@ const getTurnLabeller = function() {
     }
     return function(nPlayers, ownId) {
         var timeoutCb
-        var players = []
+        var eliminated = []
+        var nRemaining = nPlayers
         for (var i = 0; i < nPlayers; i++)
-            players.push(i)
-        var turnIdx = 0
+            eliminated.push(false)
         const octagonAnimate = function(lockTime) {
-            const allTurns = turnTime * (players.length - 1)
+            const allTurns = turnTime * (nRemaining - 1)
             const lockEnd = lockTime / allTurns
             octagonFill.setAttribute('keyTimes', '0;' + (lockEnd * 0.90).toString() + ';' + lockEnd.toString() + ';1')
             octagonFill.setAttribute('dur', allTurns.toString() + 's')
             octagonFill.setAttribute('begin', octagonFill.getCurrentTime())
         }
-        var currentPlayer
+        var turnIdx = 0
+        var prevPlayer
         const turnChanged = function() {
-            if (currentPlayer === ownId && players.length > 1) {
+            if (prevPlayer === ownId && nRemaining > 1) {
                 octagonAnimate(lockoutTime)
             }
-            currentPlayer = players[turnIdx]
-            if (players.indexOf(ownId) === -1 || players.length === 1) {
+            prevPlayer = turnIdx
+            if (eliminated[ownId] || nRemaining === 1) {
                 resetTimer()
                 turnIndicator.setAttribute('class', 'hide')
-            } else if (currentPlayer === ownId) {
+            } else if (turnIdx === ownId) {
                 turnIndicator.setAttribute('class', 'hide')
                 turnTimer.style.transition = 'all ' + turnTime.toString() + 's ease-in'
                 turnTimer.style.background = '#222'
@@ -87,9 +79,11 @@ const getTurnLabeller = function() {
         octagonAnimate(0.001)
         turnChanged()
         this.advance = function() {
-            turnIdx++;
-            if (turnIdx === players.length)
-                turnIdx = 0
+            do {
+                turnIdx++;
+                if (turnIdx === nPlayers)
+                    turnIdx = 0
+            } while (eliminated[turnIdx])
             turnChanged()
         }
         this.cleanUp = function() {
@@ -98,22 +92,20 @@ const getTurnLabeller = function() {
             turnTimer.removeEventListener('transitionend', timeoutCb)
         }
         this.eliminate = function(player) {
-            arrayRemove(players, player)
-            if (turnIdx === players.length)
-                turnIdx = 0
-            turnChanged()
+            nRemaining--
+            eliminated[player] = true
+            if (turnIdx === player)
+                this.advance()
         }
         this.__defineGetter__('ownId', () => ownId)
-        this.__defineGetter__('players', () => players)
-        this.__defineGetter__('currentPlayer', () => currentPlayer)
-        this.__defineSetter__('callback', function(f) {
-            turnIndicatorCallback.set(f)
-            octagonCallback.set(f)
-        })
-        this.__defineSetter__('turnTimeoutCb', function(cb) {
-            timeoutCb = cb
-            turnTimer.addEventListener('transitionend', cb)
-        })
+        this.__defineGetter__('nPlayersIn', () => nRemaining)
+        this.__defineGetter__('currentPlayer', () => turnIdx)
+        this.setCallbacks = function(clickCb, timeCb) {
+            turnIndicatorCallback.set(clickCb)
+            octagonCallback.set(clickCb)
+            timeoutCb = timeCb
+            turnTimer.addEventListener('transitionend', timeCb)
+        }
     }
 }
 
@@ -215,10 +207,8 @@ const multiplayerGame = function(iface, ws, tl, stats, maze, gameId) {
         if (player === tl.ownId)
             stats.lost()
         tl.eliminate(player)
-        if (tl.players.length === 1) {
+        if (tl.nPlayersIn === 1)
             win(tl.currentPlayer, 6)
-            return
-        }
     }
     this.leave = function(player) {
         eliminate(player)
@@ -248,11 +238,10 @@ const multiplayerGame = function(iface, ws, tl, stats, maze, gameId) {
         impossibleGuessed(tl.ownId, state)
     }
     sm.setMarkerCb(impossiblePressed)
-    tl.callback = impossiblePressed
-    tl.turnTimeoutCb = function () {
+    tl.setCallbacks(impossiblePressed, function () {
         sendMsg('timeout', {})
         eliminate(tl.ownId)
-    }
+    })
 }
 
 const serverConnector = function(iface) {
