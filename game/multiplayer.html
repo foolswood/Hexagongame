@@ -165,11 +165,14 @@ const multiplayerGame = function(iface, ws, tl, stats, maze, gameId) {
     const gameOver = function() {
         sendMsg('over', {})
     }
+    var someoneWon = false
     const win = function(player, waitSecs) {
+        if (someoneWon)
+            return
+        someoneWon = true
         tl.cleanUp()
-        if (player === tl.ownId) {
+        if (player === tl.ownId)
             stats.won()
-        }
         else
             stats.lost()
         setTimeout(gameOver, 1000 * waitSecs)
@@ -235,7 +238,6 @@ const multiplayerGame = function(iface, ws, tl, stats, maze, gameId) {
         }
         const state = sm.state()
         sendMsg('impossible', {state: state})
-        impossibleGuessed(tl.ownId, state)
     }
     sm.setMarkerCb(impossiblePressed)
     tl.setCallbacks(impossiblePressed, function () {

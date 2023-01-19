@@ -124,7 +124,7 @@ class Game:
         return self._relay(player, 'move', pos=pos)
 
     def _impossible(self, player, state):
-        return self._relay(player, 'impossible', player=player.id, state=state)
+        return self._relay(None, 'impossible', player=player.id, state=state)
 
     def _timeout(self, player):
         return self._relay(player, 'left', player=player.id)
