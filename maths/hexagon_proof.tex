@@ -102,4 +102,17 @@ that $x = B = S$, again this makes the constraint redundant.
 Therefore the maximum number of simultaneous inequalities that can be affect
 $y$ in any maze is 2, and thus 3 colours is the maximum required to express
 any 1D maze.
+
+\subsection{A more general upper bound}
+A maze of $n$ sided shapes can be thought of as a set of regions (shapes) with connections to at most $n$ other regions (lines).
+The number of possible colours we can be in a region cannot be more than the number of connections to it (plus 1 for the region in which the traversal starts).
+
+Consider a connection between 2 regions.
+For the colours of the regions at either end of the connection to themselves contribute inequalities with that connection, it is necessary to be able to pass through the connection so their colour can take effect in an adjoining region.
+Therefore one of the surrounding regions (or the start colour) must match the colour of the connection, which means that both cannot simultaneously contribute effectual inequalities.
+
+Thus an upper bound on the number of colours needed to express an $n$ sided maze is given by:
+\begin{equation}
+2(n - 1) + 1
+\end{equation}
 \end{document}
