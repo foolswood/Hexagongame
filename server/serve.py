@@ -99,7 +99,7 @@ def generate_maze(width, height, colours):
     return maze
 
 
-class Game:
+class Game(Handler):
     def __init__(self, players):
         self._players = players
         self._over = asyncio.Future()
