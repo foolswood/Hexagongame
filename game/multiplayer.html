@@ -225,9 +225,9 @@ const multiplayerGame = function(iface, ws, tl, stats, maze, gameId) {
         var solutions = solver(state, get_shard_moves_func(iface), undefined)
         for (let s in solutions) {
             if (is_win_state(JSON.parse(s), undefined)) {
-                // Show the solution briefly (if it was our guess)
+                // Show the solution briefly (if it was our guess or it ended the game)
                 eliminate(guessingPlayer)
-                if (guessingPlayer === tl.ownId)
+                if (guessingPlayer === tl.ownId || someoneWon)
                     showSolution(iface, solutions[s][0])
                 return
             }
