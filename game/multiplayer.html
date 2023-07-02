@@ -44,13 +44,14 @@ const getTurnLabeller = function() {
         turnTimer.setAttribute('style', 'background: #EEE; height: 0%;')
     }
     return function(nPlayers, ownId) {
+        var curTurnTime = turnTime
         var timeoutCb
         var eliminated = []
         var nRemaining = nPlayers
         for (var i = 0; i < nPlayers; i++)
             eliminated.push(false)
         const octagonAnimate = function(lockTime) {
-            const allTurns = turnTime * (nRemaining - 1)
+            const allTurns = curTurnTime * (nRemaining - 1)
             const lockEnd = lockTime / allTurns
             octagonFill.setAttribute('keyTimes', '0;' + (lockEnd * 0.90).toString() + ';' + lockEnd.toString() + ';1')
             octagonFill.setAttribute('dur', allTurns.toString() + 's')
@@ -68,7 +69,7 @@ const getTurnLabeller = function() {
                 turnIndicator.setAttribute('class', 'hide')
             } else if (turnIdx === ownId) {
                 turnIndicator.setAttribute('class', 'hide')
-                turnTimer.style.transition = 'all ' + turnTime.toString() + 's ease-in'
+                turnTimer.style.transition = 'all ' + curTurnTime.toString() + 's ease-in'
                 turnTimer.style.background = '#222'
                 turnTimer.style.height = '100%'
             } else {
@@ -82,7 +83,10 @@ const getTurnLabeller = function() {
             do {
                 turnIdx++;
                 if (turnIdx === nPlayers)
+                {
                     turnIdx = 0
+                    curTurnTime -= 0.25
+                }
             } while (eliminated[turnIdx])
             turnChanged()
         }
